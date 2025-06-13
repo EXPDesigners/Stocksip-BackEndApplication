@@ -31,4 +31,11 @@
 
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="InventoryManagement\Domain\Model\Aggregates\" />
+      <Folder Include="InventoryManagement\Domain\Model\Commands\" />
+      <Folder Include="InventoryManagement\Domain\Model\Entities\" />
+      <Folder Include="InventoryManagement\Domain\Model\Queries\" />
+    </ItemGroup>
+
 </Project>
