@@ -1,5 +1,8 @@
 namespace StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 
+/// <summary>
+/// This is a value object that represents the current stock of a product.
+/// </summary>
 public record ProductStock()
 {
     /// <summary>
