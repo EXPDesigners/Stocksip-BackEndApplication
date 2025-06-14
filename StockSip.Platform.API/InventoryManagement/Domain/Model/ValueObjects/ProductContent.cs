@@ -6,14 +6,29 @@
 public record ProductContent
 {
     /// <summary>
+    /// The content of the product.
+    /// </summary>
+    public double Content { get; }
+    
+    /// <summary>
     /// Default constructor that validates the input parameter to ensure that it is a positive number.
     /// </summary>
     /// <param name="content">
     /// The content of the product and the one that will be validated.
     /// </param>
+    /// <exception cref="ArgumentException">
+    /// Throws this exception if the content is not a positive number.
+    /// </exception>
     public ProductContent(double content)
     {
-        ValidateProductContent(content);
+        if (IsValidate(content))
+        {
+            Content = content;
+        }
+        else
+        {
+            throw new ArgumentException("Product content must be a positive number.");
+        }
     }
     
     /// <summary>
@@ -22,14 +37,11 @@ public record ProductContent
     /// <param name="content">
     /// The content of the product and the one that will be validated.
     /// </param>
-    /// <exception cref="ArgumentException">
-    /// Throws this exception if the content is negative or zero.
-    /// </exception>
-    private static void ValidateProductContent(double content)
+    /// <returns>
+    /// Returns true if the content is a positive number. Returns false if it is a negative number or zero.
+    /// </returns>
+    private static bool IsValidate(double content)
     {
-        if (content < 0)
-        {
-            throw new ArgumentException("Product content must be greater than zero.");
-        }
+        return !(content < 0);
     }
 }
