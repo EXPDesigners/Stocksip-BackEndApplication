@@ -6,4 +6,4 @@
 /// <param name="Id">
 /// The unique identifier for the profile.
 /// </param>
-public record ProfileId(int Id);
+public record ProfileId(string Id);
