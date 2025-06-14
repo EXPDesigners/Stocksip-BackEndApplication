@@ -34,9 +34,9 @@
     <ItemGroup>
       <Folder Include="InventoryManagement\Domain\Model\Commands\" />
       <Folder Include="InventoryManagement\Domain\Model\Queries\" />
-      <Folder Include="orderOperationAndMonitoring\Domain\Model\Commands\" />
-      <Folder Include="orderOperationAndMonitoring\Domain\Model\Entities\" />
-      <Folder Include="orderOperationAndMonitoring\Domain\Model\Queries\" />
+      <Folder Include="OrderOperationAndMonitoring\Domain\Model\Commands\" />
+      <Folder Include="OrderOperationAndMonitoring\Domain\Model\Queries\" />
+      <Folder Include="OrderOperationAndMonitoring\Domain\Model\ValueObjects\" />
     </ItemGroup>
 
 </Project>
