@@ -15,12 +15,12 @@ public record ProfileId()
     /// The default constructor for the ProfileId record.
     /// </summary>
     /// <param name="id">The unique identifier for the profile</param>
-    /// <exception cref="ArgumentOutOfRangeException">Profile Id must be non-negative integer</exception>
+    /// <exception cref="ArgumentException">Profile Id must be non-negative integer</exception>
     public ProfileId(int id) : this()
     {
         if (!IsValidId(id))
         {
-            throw new ArgumentOutOfRangeException("Profile ID must be a non-negative integer.");
+            throw new ArgumentException("Profile ID must be a non-negative integer.");
         }
         Id = id;
     }

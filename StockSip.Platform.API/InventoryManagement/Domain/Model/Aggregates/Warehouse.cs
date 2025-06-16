@@ -7,7 +7,7 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 /// <summary>
 /// This class defines the properties and behaviors of a warehouse, including its name, address, temperature range, capacity, and associated profile ID.
 /// </summary>
-public class Warehouse
+public class Warehouse()
 {
     public long WarehouseId { get; }
     public string Name { get; private set; }
@@ -19,7 +19,7 @@ public class Warehouse
     
     public ProfileId Id { get; internal set; }
 
-    public Warehouse(CreateWarehouseCommand command)
+    public Warehouse(CreateWarehouseCommand command) : this()
     {
         this.Name = command.Name;
         this.Address = command.Address;

@@ -6,53 +6,61 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 /// </summary>
 public record Temperature()
 {
+    /*
+     * The minimum temperature limit for the warehouse.
+     */
+    private const double MinTemperatureLimit = -50.0;
+
+    /*
+     * The maximum temperature limit for the warehouse.
+     */
+    private const double MaxTemperatureLimit = 50.0;
+
     /// <summary>
-    /// The maximum allowed temperature for a warehouse.
+    /// The minimum temperature.
     /// </summary>
-    private const double MaxAllowedTemperature = 40.0;
-    private const double MinAllowedTemperature = -20.0;
+    private double MinTemperature { get; }
     
     /// <summary>
-    /// The maximum temperature for the warehouse.
+    /// The maximum temperature.
     /// </summary>
     private double MaxTemperature { get; }
-    private double MinTemperature { get; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Temperature"/> record with default values.
+    /// The minimum temperature.
     /// </summary>
-    /// <param name="maxTemperature">The maximum temperature of a warehouse</param>
-    /// <param name="minTemperature">The minimum temperature of a warehouse</param>
-    /// <exception cref="ArgumentOutOfRangeException">Validates the allowed temperature</exception>
-    public Temperature(double maxTemperature, double minTemperature) : this()
+    /// <param name="minTemperature">The minimum temperature</param>
+    /// <param name="maxTemperature">The maximum temperature</param>
+    public Temperature(double minTemperature, double maxTemperature) : this()
     {
-        if (!IsValidTemperature(maxTemperature, minTemperature))
-        {
-            throw new ArgumentOutOfRangeException($"Max temperature must be less than or equal to {MaxAllowedTemperature} and Min temperature must be greater than or equal to {MinAllowedTemperature}.");
-        }
-
-        MaxTemperature = maxTemperature;
+        ValidateTemperature(MinTemperature, MaxTemperature);
         MinTemperature = minTemperature;
+        MaxTemperature = maxTemperature;
     }
-    
+
     /// <summary>
-    /// This method checks if the provided maximum and minimum temperatures are valid.
+    /// This method validates the temperature range.
     /// </summary>
-    /// <param name="maxTemperature">A double that represents the max temperature</param>
-    /// <param name="minTemperature">A double that represents the min temperature</param>
-    /// <returns>A boolean</returns>
-    private static bool IsValidTemperature(double maxTemperature, double minTemperature)
+    /// <param name="minTemperature">The minimum temperature</param>
+    /// <param name="maxTemperature">The maximum temperature</param>
+    /// <exception cref="ArgumentException">Validates the allowed temperature</exception>
+    private static void ValidateTemperature(double minTemperature, double maxTemperature)
     {
-        if (maxTemperature < minTemperature && maxTemperature > MaxAllowedTemperature && maxTemperature < MinAllowedTemperature)
+        if (minTemperature >= maxTemperature)
         {
-            return false;
+            throw new ArgumentException("The maximum temperature must be greater than the minimum temperature.");
         }
-        
-        if (minTemperature < MaxAllowedTemperature && minTemperature > MinAllowedTemperature && minTemperature < maxTemperature)
+
+        if (minTemperature is < MinTemperatureLimit or > MaxTemperatureLimit)
         {
-            return false;
+            throw new ArgumentException(
+                $"The minimum temperature must be between {MinTemperatureLimit} and {MaxTemperatureLimit} degrees Celsius.");
         }
-        
-        return true;
+
+        if (maxTemperature is < MinTemperatureLimit or > MaxTemperatureLimit)
+        {
+            throw new ArgumentException(
+                $"The maximum temperature must be between {MinTemperatureLimit} and {MaxTemperatureLimit} degrees Celsius.");
+        }
     }
 }
