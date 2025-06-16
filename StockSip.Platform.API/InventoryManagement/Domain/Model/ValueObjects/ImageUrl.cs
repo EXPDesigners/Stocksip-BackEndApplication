@@ -14,7 +14,7 @@ public record ImageUrl()
     /// <summary>
     /// The image URL for the product or warehouse.
     /// </summary>
-    private Uri? ImageUri { get; }
+    public Uri? ImageUri { get; }
 
     /// <summary>
     /// The constructor initializes a new instance of the ImageUrl class with a default image URL.

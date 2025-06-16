@@ -10,7 +10,7 @@ public record Capacity()
     /// <summary>
     /// This property defines the maximum allowed capacity for a warehouse.
     /// </summary>
-    private double TotalCapacity { get; }
+    public double TotalCapacity { get; }
 
     /// <summary>
     /// Default constructor for the Capacity record.
