@@ -9,7 +9,7 @@ public record ProfileId()
     /// <summary>
     /// The unique identifier for the profile.
     /// </summary>
-    private int Id { get; }
+    public int Id { get; }
     
     /// <summary>
     /// The default constructor for the ProfileId record.
@@ -18,17 +18,10 @@ public record ProfileId()
     /// <exception cref="ArgumentException">Profile Id must be non-negative integer</exception>
     public ProfileId(int id) : this()
     {
-        if (!IsValidId(id))
+        if (id < 0)
         {
             throw new ArgumentException("Profile ID must be a non-negative integer.");
         }
         Id = id;
     }
-    
-    /// <summary>
-    /// This method checks if the provided profile ID is valid.
-    /// </summary>
-    /// <param name="id">The unique identifier for the profile</param>
-    /// <returns>A boolean</returns>
-    private static bool IsValidId(int id) => id >= 0;
 }

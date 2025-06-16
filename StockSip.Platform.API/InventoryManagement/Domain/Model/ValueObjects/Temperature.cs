@@ -19,12 +19,12 @@ public record Temperature()
     /// <summary>
     /// The minimum temperature.
     /// </summary>
-    private double MinTemperature { get; }
+    public double MinTemperature { get; }
     
     /// <summary>
     /// The maximum temperature.
     /// </summary>
-    private double MaxTemperature { get; }
+    public double MaxTemperature { get; }
 
     /// <summary>
     /// The minimum temperature.

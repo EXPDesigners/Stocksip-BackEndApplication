@@ -6,11 +6,11 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 /// </summary>
 public record WarehouseAddress()
 {
-    private string? Street { get; }
-    private string? City { get; }
-    private string? District { get; }
-    private string? PostalCode { get; }
-    private string? Country { get; }
+    public string? Street { get; }
+    public string? City { get; }
+    public string? District { get; }
+    public string? PostalCode { get; }
+    public string? Country { get; }
 
     /// <summary>
     /// The default constructor for the WarehouseAddress record.
