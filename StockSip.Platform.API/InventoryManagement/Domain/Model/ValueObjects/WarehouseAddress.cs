@@ -52,4 +52,9 @@ public record WarehouseAddress()
                !string.IsNullOrWhiteSpace(postalCode) &&
                !string.IsNullOrWhiteSpace(country);
     }
+    
+    public string GetFullAddress()
+    {
+        return $"{Street}, {City}, {District}, {PostalCode}, {Country}";
+    }
 }
