@@ -45,4 +45,9 @@ public record ImageUrl()
         
         return uriResult; 
     }
+    
+    public override string ToString()
+    {
+        return ImageUri?.AbsoluteUri ?? string.Empty;
+    }
 }
