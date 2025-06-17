@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Repositories;
-using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Repositories;
 
@@ -22,7 +21,7 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
     /// <c>true</c> if a warehouse exists with the specified name and profile ID; 
     /// <c>false</c> otherwise.
     /// </returns>
-    public async Task<bool> ExistByNameAndProfileIdAsync(string name, ProfileId profileId)
+    public async Task<bool> ExistByNameAndProfileIdAsync(string name, int profileId)
     {
         return await Context.Set<Warehouse>()
             .AnyAsync(w => 
@@ -39,7 +38,7 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
     /// <c>true</c> if a warehouse exists with the exact address components and profile ID;
     /// <c>false</c> otherwise.
     /// </returns>
-    public async Task<bool> ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileId(string address, string city, string postalCode, ProfileId profileId) 
+    public async Task<bool> ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileId(string address, string city, string postalCode, int profileId) 
     {
         return await Context.Set<Warehouse>()
             .AnyAsync(w => 

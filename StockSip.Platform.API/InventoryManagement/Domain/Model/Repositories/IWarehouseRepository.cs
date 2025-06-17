@@ -12,10 +12,10 @@ public interface IWarehouseRepository : IBaseRepository<Warehouse>
     /// <summary>
     /// This method checks if a warehouse with the specified name and profile ID exists in the database.
     /// </summary>
-    Task<bool> ExistByNameAndProfileIdAsync(string name, ProfileId profileId);
+    Task<bool> ExistByNameAndProfileIdAsync(string name, int profileId);
     
     /// <summary>
     /// This method checks if a warehouse exists by its address, city, postal code, and profile ID.
     /// </summary>
-    Task<bool> ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileId(string address, string city, string postalCode, ProfileId profileId);
+    Task<bool> ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileId(string address, string city, string postalCode, int profileId);
 }

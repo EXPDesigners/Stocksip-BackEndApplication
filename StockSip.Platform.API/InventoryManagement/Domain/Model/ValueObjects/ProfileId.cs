@@ -24,4 +24,9 @@ public record ProfileId()
         }
         Id = id;
     }
+    
+    /// <summary>
+    /// This method transforms the ProfileId to a string representation.
+    /// </summary>
+    public static implicit operator ProfileId(int value) => new(value);
 }
