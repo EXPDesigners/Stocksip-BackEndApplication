@@ -35,7 +35,6 @@
       <Folder Include="InventoryManagement\Domain\Model\Commands\" />
       <Folder Include="InventoryManagement\Domain\Model\Entities\" />
       <Folder Include="InventoryManagement\Domain\Model\Queries\" />
-      <Folder Include="OrderOperationAndMonitoring\Domain\Model\Commands\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\Queries\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\ValueObjects\" />
       <Folder Include="Shared\Domain\Model\" />

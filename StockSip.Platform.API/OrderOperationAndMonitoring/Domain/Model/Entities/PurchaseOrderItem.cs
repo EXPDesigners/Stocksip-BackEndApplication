@@ -17,4 +17,5 @@ public class PurchaseOrderItem(
     public int Quantity { get; } = quantity;
     public Money UnitPrice { get; } = unitPrice;
     public string ProductId { get; } = productId;
+    
 }
