@@ -1,4 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
+using StockSip.Platform.API.InventoryManagement.Application.Internal.QueryService;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Repositories;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Services;
+using StockSip.Platform.API.InventoryManagement.Infrastructure.Repositories;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 using StockSip.Platform.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
@@ -48,6 +53,11 @@ builder.Services.AddSwaggerGen(options => {
 
 // Shared Bounded Context
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Inventory Management Bounded Context
+builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+builder.Services.AddScoped<IWarehouseCommandService, WarehouseCommandService>();
+builder.Services.AddScoped<IWarehouseQueryService, WarehouseQueryService>();
 
 var app = builder.Build();
 
