@@ -1,4 +1,5 @@
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 
 namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
@@ -51,6 +52,19 @@ public class Inventory
         WarehouseId = warehouseId;
         ProductId = productId;
         ProductStock = new ProductStock(stock);
+    }
+
+    /// <summary>
+    /// Command handler constructor for the AddProductsToWarehouseCommand.
+    /// </summary>
+    /// <param name="command">
+    /// The command that contains the necessary information to create an inventory entry.
+    /// </param>
+    public Inventory(AddProductsToWarehouseCommand command)
+    {
+        WarehouseId = command.WarehouseId;
+        ProductId = command.ProductId;
+        ProductStock = new ProductStock(command.Quantity);
     }
 
     /// <summary>
