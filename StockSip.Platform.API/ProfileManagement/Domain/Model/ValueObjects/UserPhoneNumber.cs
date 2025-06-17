@@ -4,3 +4,4 @@ public record UserPhoneNumber(string PhoneNumber)
 {
     public UserPhoneNumber() : this(string.Empty) {}
 }
+

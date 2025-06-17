@@ -4,4 +4,5 @@ public record UserBusinessAddress(string Address)
 {
     public UserBusinessAddress() : this(string.Empty) {}
 
+    
 }
