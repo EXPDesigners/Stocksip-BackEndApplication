@@ -1,7 +1,6 @@
-using StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.Shared.Domain.Model.ValueObjects;
-using Object = Mysqlx.Expr.Object;
+using DateTime = System.DateTime;
 
 namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 
@@ -10,11 +9,6 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 /// </summary>
 public partial class Product
 {
-    /// <summary>
-    /// The unique identifier of the warehouse where the product is stored.
-    /// </summary>
-    public string WarehouseId { get; private set; }
-    
     /// <summary>
     /// The unique identifier of the product.
     /// </summary>
@@ -31,19 +25,14 @@ public partial class Product
     public Money UnitPrice { get; private set; }
     
     /// <summary>
-    /// The state of the product, which can be either WithStock or OutOfStock.
-    /// </summary>
-    public EProductState ProductState { get; private set; } = EProductState.WithStock;
-    
-    /// <summary>
     /// The brand associated with the product, represented as a Brand entity.
     /// </summary>
-    public Brand Brand { get; internal set; }
+    public string Brand { get; internal set; }
     
     /// <summary>
-    /// The unique identifier of the brand associated with the product.
+    /// The expiration date of the product, represented as a DateTime value.
     /// </summary>
-    public string BrandId { get; private set; }
+    public DateTime ExpirationDate { get; }
     
     /// <summary>
     /// The type of liquor represented by the product, defined as an enumeration.
@@ -51,14 +40,9 @@ public partial class Product
     public ELiquorType LiquorType { get; private set; }
     
     /// <summary>
-    /// The current stock of the product, represented as a ProductStock value object.
-    /// </summary>
-    public ProductStock CurrentStock { get; private set; }
-    
-    /// <summary>
     /// The minimum stock level for the product, represented as a ProductMinimumStock value object.
     /// </summary>
-    public ProductMinimumStock MinimumStock { get; private set; } = new ProductMinimumStock(1);
+    public ProductMinimumStock MinimumStock { get; private set; }
     
     /// <summary>
     /// The URL of the product's image, represented as an ImageUrl value object.
@@ -85,17 +69,11 @@ public partial class Product
     /// <param name="liquorType">
     /// The type of liquor represented by the product, defined as a string.
     /// </param>
-    /// <param name="currentStock">
-    /// The current stock level of the product, represented as an integer.
-    /// </param>
     /// <param name="unitPriceAmount">
     /// The unit price of the product, represented as an integer amount.
     /// </param>
-    /// <param name="brandId">
-    /// The unique identifier of the brand associated with the product.
-    /// </param>
-    /// <param name="warehouseId">
-    /// The unique identifier of the warehouse where the product is stored.
+    /// <param name="expirationDate">
+    /// The expiration date of the product, represented as a DateTime value.
     /// </param>
     /// <param name="providerId">
     /// The unique identifier of the provider associated with the product, if any.
@@ -104,29 +82,56 @@ public partial class Product
                     string? additionalName, 
                     string brandName, 
                     string liquorType, 
-                    int currentStock, 
                     int unitPriceAmount,
-                    string brandId,
-                    string warehouseId,
+                    DateTime expirationDate,
                     ProviderId? providerId = null)
     {
-        ProductName = new ProductName(Enum.Parse<EBrandName>(brandName, true), 
+        ProductName = new ProductName(brandName, 
             Enum.Parse<ELiquorType>(liquorType, true), 
                         additionalName);
         LiquorType = Enum.Parse<ELiquorType>(liquorType, true); ;
-        CurrentStock = new ProductStock(currentStock);
-        BrandId = brandId;
+        Brand = brandName;
         UnitPrice = new Money(unitPriceAmount, new Currency("PEN"));
+        ExpirationDate = expirationDate;
         ImageUrl = new ImageUrl(imageUrl);
-        WarehouseId = warehouseId;
-        ProviderId = providerId;
+        ProviderId = providerId ?? null;
     }
 
     /// <summary>
-    /// Method to handle the creation of a product with a CreateProductCommand command.
+    /// Method to set the minimum stock level for the product.
     /// </summary>
-    public Product()
+    /// <param name="newMinimumStock">
+    /// The new minimum stock level to be set, represented as an integer.
+    /// </param>
+    private void SetMinimumStock(int newMinimumStock)
     {
-        // TODO: Add handler for CreateProductCommand.
+        MinimumStock = MinimumStock.UpdateMinimumStock(newMinimumStock);
+    }
+
+    /// <summary>
+    /// Method to update the product's information, including price, minimum stock, and image URL.
+    /// </summary>
+    /// <param name="updatedPrice">
+    /// The updated price of the product, represented as a double.
+    /// </param>
+    /// <param name="updatedMinimumStock">
+    /// The updated minimum stock level for the product, represented as an integer.
+    /// </param>
+    /// <param name="updatedImageUrl">
+    /// The updated URL of the product's image, represented as a string.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the updated price is less than or equal to zero.
+    /// </exception>
+    public void UpdateInformation(double updatedPrice, int updatedMinimumStock, string updatedImageUrl)
+    {
+        if (updatedPrice <= 0)
+        {
+            throw new ArgumentException("Price must be greater than zero: ", nameof(updatedPrice));
+        } 
+        
+        SetMinimumStock(updatedMinimumStock);
+        ImageUrl = new ImageUrl(updatedImageUrl);
+        UnitPrice = new Money(updatedPrice, UnitPrice.Currency);
     }
 }
