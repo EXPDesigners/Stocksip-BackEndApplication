@@ -43,7 +43,7 @@ public class Warehouse
     }
     
     /// <summary>
-    /// The constructor initializes a new instance of the Warehouse class using a CreateWarehouseCommand.
+    /// Constructs a new instance of the Warehouse class using a CreateWarehouseCommand.
     /// </summary>
     /// <param name="command">The command to create a warehouse</param>
     public Warehouse(CreateWarehouseCommand command) : this(
@@ -54,6 +54,20 @@ public class Warehouse
         new ImageUrl(null),
         new ProfileId(command.ProfileId)) 
     {}
+
+    /// <summary>
+    /// Constructs a new instance of the Warehouse class using an UpdateWarehouseCommand.
+    /// </summary>
+    /// <param name="command"></param>
+    public void UpdateWarehouse(UpdateWarehouseCommand command)
+    {
+        Name = ValidateName(command.Name);
+        Address = command.Address;
+        Temperature = command.Temperature;
+        Capacity = command.Capacity;
+        ImageUrl = new ImageUrl(command.ImageUrl);
+        ProfileId = new ProfileId(command.ProfileId);
+    }
     
     /// <summary>
     /// This method validates the warehouse name.
