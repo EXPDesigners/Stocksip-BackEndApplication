@@ -42,10 +42,10 @@ public static class ModelBuilderExtensions
         builder.Entity<Warehouse>().OwnsOne(w => w.ImageUrl, i =>
         {
             i.WithOwner();
-            i.Property(img => img.ImageUri).IsRequired().HasMaxLength(500);
+            i.Property(img => img.ImageUri).IsRequired().HasMaxLength(500).HasColumnName("image_url");
         });
         
-        builder.Entity<Warehouse>().Property(w => w.ProfileId).HasConversion(v => v.Id, v => new ProfileId(v)).IsRequired().HasColumnName("image_url");
+        builder.Entity<Warehouse>().Property(w => w.ProfileId).HasConversion(v => v.Id, v => new ProfileId(v)).IsRequired().HasColumnName("profile_id");
         
     }
     
