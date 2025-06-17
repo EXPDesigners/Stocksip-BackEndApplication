@@ -9,5 +9,5 @@
 public enum EProductState
 {
     OutOfStock,
-    InStock
+    WithStock
 }
