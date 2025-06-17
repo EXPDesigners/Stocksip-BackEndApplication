@@ -39,6 +39,23 @@ public class WarehousesController(IWarehouseCommandService warehouseCommandServi
         var createdResource = WarehouseResourceFromEntityAssembler.ToResourceFromEntity(warehouse);
         return CreatedAtAction(nameof(GetWarehouseById), new { warehouseId = warehouse.WarehouseId }, createdResource);
     }
+    
+        
+    [HttpPut("{warehouseId:int}")]
+    [SwaggerOperation(
+        Summary = "Update an Existing Warehouse",
+        Description = "Update the information of an existing warehouse.",
+        OperationId = "UpdateWarehouse")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Warehouse updated successfully", typeof(WarehouseResource))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Warehouse could not be updated")]
+    public async Task<IActionResult> UpdateWarehouse([FromRoute] int warehouseId, [FromBody] UpdateWarehouseResource resource)
+    {
+        var createWarehouseCommand = UpdateWarehouseCommandFromResourceAssembler.ToCommandFromResource(resource, warehouseId);
+        var warehouse = await warehouseCommandService.Handle(createWarehouseCommand);
+        if (warehouse is null) return BadRequest("Failed to update warehouse. Please check the provided data.");
+        var updatedResource = WarehouseResourceFromEntityAssembler.ToResourceFromEntity(warehouse);
+        return CreatedAtAction(nameof(GetWarehouseById), new { warehouseId = warehouse.WarehouseId }, updatedResource);
+    }
 
     /// <summary>
     /// This endpoint retrieves a warehouse by its unique identifier.
