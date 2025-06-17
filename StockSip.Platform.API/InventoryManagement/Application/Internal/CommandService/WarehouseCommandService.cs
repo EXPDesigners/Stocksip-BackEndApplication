@@ -29,7 +29,7 @@ public class WarehouseCommandService(IWarehouseRepository warehouseRepository, I
         if (await warehouseRepository.ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAsync(
                 command.Street, command.City, command.PostalCode, command.ProfileId))
         {
-            throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.Country} already exists.");
+            throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.PostalCode} already exists.");
         }
         
         var warehouse = new Warehouse(command);
@@ -37,7 +37,13 @@ public class WarehouseCommandService(IWarehouseRepository warehouseRepository, I
         await unitOfWork.CompleteAsync();
         return warehouse;
     }
-
+    
+    /// <summary>
+    /// This method handles the update of an existing warehouse.
+    /// </summary>
+    /// <param name="command">The command containing the details for updating a warehouse.</param>
+    /// <returns>The updated warehouse or null if the update fails.</returns>
+    /// <exception cref="ArgumentException">Thrown when a warehouse with the same name or address already exists, or if the warehouse to update does not exist.</exception>
     public async Task<Warehouse?> Handle(UpdateWarehouseCommand command)
     {
         var warehouseToUpdate = await warehouseRepository.FindByIdAsync(command.WarehouseId)
@@ -52,7 +58,7 @@ public class WarehouseCommandService(IWarehouseRepository warehouseRepository, I
         if (await warehouseRepository.ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAndProfileIdIsNotAsync(
                 command.Street, command.City, command.PostalCode, command.ProfileId, command.WarehouseId))
         {
-            throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.Country} already exists.");
+            throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.PostalCode} already exists.");
         }
         
         warehouseToUpdate.UpdateWarehouse(
@@ -62,10 +68,9 @@ public class WarehouseCommandService(IWarehouseRepository warehouseRepository, I
             command.District,
             command.PostalCode,
             command.Country,
-            command.MinTemperature,
             command.MaxTemperature,
-            command.Capacity,
-            command.ImageUrl
+            command.MinTemperature,
+            command.Capacity
         );
         
         warehouseRepository.Update(warehouseToUpdate);
