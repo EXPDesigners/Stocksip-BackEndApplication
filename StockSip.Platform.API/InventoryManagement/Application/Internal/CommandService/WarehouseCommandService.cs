@@ -26,7 +26,7 @@ public class WarehouseCommandService(IWarehouseRepository warehouseRepository, I
             throw new ArgumentException($"Warehouse with name {command.Name} already exists.");
         }
 
-        if (await warehouseRepository.ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileId(
+        if (await warehouseRepository.ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAsync(
                 command.Street, command.City, command.PostalCode, command.ProfileId))
         {
             throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.Country} already exists.");
@@ -36,5 +36,40 @@ public class WarehouseCommandService(IWarehouseRepository warehouseRepository, I
         await warehouseRepository.AddAsync(warehouse);
         await unitOfWork.CompleteAsync();
         return warehouse;
+    }
+
+    public async Task<Warehouse?> Handle(UpdateWarehouseCommand command)
+    {
+        var warehouseToUpdate = await warehouseRepository.FindByIdAsync(command.WarehouseId)
+            ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
+
+        if (await warehouseRepository.ExistsByNameIgnoreCaseAndProfileIdAndWarehouseIdIsNotAsync(
+                command.Name, command.ProfileId, command.WarehouseId))
+        {
+            throw new ArgumentException($"Warehouse with name {command.Name} already exists.");
+        }
+        
+        if (await warehouseRepository.ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAndProfileIdIsNotAsync(
+                command.Street, command.City, command.PostalCode, command.ProfileId, command.WarehouseId))
+        {
+            throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.Country} already exists.");
+        }
+        
+        warehouseToUpdate.UpdateWarehouse(
+            command.Name,
+            command.Street,
+            command.City,
+            command.District,
+            command.PostalCode,
+            command.Country,
+            command.MinTemperature,
+            command.MaxTemperature,
+            command.Capacity,
+            command.ImageUrl
+        );
+        
+        warehouseRepository.Update(warehouseToUpdate);
+        await unitOfWork.CompleteAsync();
+        return warehouseToUpdate;
     }
 }

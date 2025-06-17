@@ -38,13 +38,42 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
     /// <c>true</c> if a warehouse exists with the exact address components and profile ID;
     /// <c>false</c> otherwise.
     /// </returns>
-    public async Task<bool> ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileId(string address, string city, string postalCode, int profileId) 
+    public async Task<bool> ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAsync(string street, string city, string postalCode, int profileId) 
     {
         return await Context.Set<Warehouse>()
             .AnyAsync(w => 
-                w.Address.Street.ToLower() == address.ToLower() &&
+                w.Address.Street.ToLower() == street.ToLower() &&
                 w.Address.City.ToLower() == city.ToLower() &&
                 w.Address.PostalCode.ToLower() == postalCode.ToLower() &&
                 w.ProfileId == profileId);
+    }
+
+    /// <summary>
+    /// This method checks if a warehouse with the specified name, profile ID, and a different warehouse ID exists in the database.
+    /// </summary>
+    /// <returns>True if a warehouse exists with the specified name, profile ID, and a different warehouse ID; otherwise, false.</returns>
+    public async Task<bool> ExistsByNameIgnoreCaseAndProfileIdAndWarehouseIdIsNotAsync(string name, int profileId, int warehouseId)
+    {
+        return await Context.Set<Warehouse>()
+            .AnyAsync(w =>
+                w.Name.ToLower() == name.ToLower() &&
+                w.ProfileId == profileId &&
+                w.WarehouseId == warehouseId);
+    }
+
+    /// <summary>
+    /// This method checks if a warehouse exists by its address, city, postal code, profile ID, and a different warehouse ID.
+    /// </summary>
+    /// <returns>True if a warehouse exists with the specified address, city, postal code, profile ID, and a different warehouse ID; otherwise, false.</returns>
+    public async Task<bool> ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAndProfileIdIsNotAsync(
+            string street, string city, string postalCode, int profileId, int warehouseId)
+    {
+        return await Context.Set<Warehouse>()
+            .AnyAsync(w =>
+                w.Address.Street.ToLower() == street.ToLower() &&
+                w.Address.City.ToLower() == city.ToLower() &&
+                w.Address.PostalCode.ToLower() == postalCode.ToLower() &&
+                w.ProfileId == profileId &&
+                w.WarehouseId == warehouseId);
     }
 }
