@@ -58,15 +58,13 @@ public class Warehouse
     /// <summary>
     /// Constructs a new instance of the Warehouse class using an UpdateWarehouseCommand.
     /// </summary>
-    /// <param name="command"></param>
-    public void UpdateWarehouse(UpdateWarehouseCommand command)
+    public void UpdateWarehouse(string Name, string Street, string City, string District, string PostalCode, string Country, double MinTemperature, double MaxTemperature, double Capaciy, string imageUrl)
     {
-        Name = ValidateName(command.Name);
-        Address = command.Address;
-        Temperature = command.Temperature;
-        Capacity = command.Capacity;
-        ImageUrl = new ImageUrl(command.ImageUrl);
-        ProfileId = new ProfileId(command.ProfileId);
+        Name = ValidateName(Name);
+        Address = new WarehouseAddress(Street, City, District, PostalCode, Country);
+        Temperature = new Temperature(MinTemperature, MaxTemperature);
+        Capacity = new Capacity(Capaciy);
+        ImageUrl = new ImageUrl(imageUrl);
     }
     
     /// <summary>
