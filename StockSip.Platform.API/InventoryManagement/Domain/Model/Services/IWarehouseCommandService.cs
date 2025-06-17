@@ -5,5 +5,5 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Services;
 
 public interface IWarehouseCommandService
 {
-    Task<Warehouse?> handle(CreateWarehouseCommand command); 
+    Task<Warehouse?> Handle(CreateWarehouseCommand command); 
 }
