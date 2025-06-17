@@ -1,7 +1,7 @@
 ﻿using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
-using StockSip.Platform.API.InventoryManagement.Domain.Model.Services;
+using StockSip.Platform.API.InventoryManagement.Domain.Services;
 using StockSip.Platform.API.InventoryManagement.Interfaces.REST.Resources;
 using StockSip.Platform.API.InventoryManagement.Interfaces.REST.Transform;
 using Swashbuckle.AspNetCore.Annotations;
