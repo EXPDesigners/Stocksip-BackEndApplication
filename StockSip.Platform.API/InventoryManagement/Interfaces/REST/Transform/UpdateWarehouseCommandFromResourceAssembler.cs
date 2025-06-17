@@ -13,9 +13,10 @@ public class UpdateWarehouseCommandFromResourceAssembler
     /// </summary>
     /// <param name="resource">The UpdateWarehouseResource to transform.</param>
     /// <returns>A new UpdateWarehouseCommand created from the resource.</returns>
-    public static UpdateWarehouseCommand ToCommandFromResource(UpdateWarehouseResource resource)
+    public static UpdateWarehouseCommand ToCommandFromResource(int WarehouseId, UpdateWarehouseResource resource)
     {
         return new UpdateWarehouseCommand(
+            WarehouseId,
             resource.Name,
             resource.Street,
             resource.City,
