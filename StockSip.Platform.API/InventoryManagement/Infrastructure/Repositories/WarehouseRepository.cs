@@ -58,7 +58,7 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
             .AnyAsync(w =>
                 w.Name.ToLower() == name.ToLower() &&
                 w.ProfileId == profileId &&
-                w.WarehouseId == warehouseId);
+                w.WarehouseId != warehouseId);
     }
 
     /// <summary>
@@ -74,6 +74,6 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
                 w.Address.City.ToLower() == city.ToLower() &&
                 w.Address.PostalCode.ToLower() == postalCode.ToLower() &&
                 w.ProfileId == profileId &&
-                w.WarehouseId == warehouseId);
+                w.WarehouseId != warehouseId);
     }
 }
