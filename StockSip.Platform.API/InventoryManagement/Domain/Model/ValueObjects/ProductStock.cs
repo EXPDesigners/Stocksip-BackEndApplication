@@ -96,4 +96,9 @@ public record ProductStock()
 
         return new ProductStock(Stock - quantity);
     }
+    
+    public int GetCurrentStock()
+    {
+        return Stock;
+    }
 }

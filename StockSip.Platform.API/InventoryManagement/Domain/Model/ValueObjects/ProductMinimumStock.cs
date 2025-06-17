@@ -19,7 +19,7 @@ public record ProductMinimumStock()
     /// <exception cref="ArgumentException">
     /// Throws this exception if the minimum stock is not a positive number.
     /// </exception>
-    public ProductMinimumStock(int minimumStock) : this()
+    private ProductMinimumStock(int minimumStock) : this()
     {
         if (IsMinimumStockValidate(minimumStock))
         {
@@ -40,6 +40,17 @@ public record ProductMinimumStock()
     private static bool IsMinimumStockValidate(int minimumStock)
     {
         return !(minimumStock < 0);
+    }
+
+    /// <summary>
+    /// Retrieves the minimum stock of the product.
+    /// </summary>
+    /// <returns>
+    /// Returns the minimum stock of the product as an integer.
+    /// </returns>
+    public int GetMinimumStock()
+    {
+        return MinimumStock;
     }
     
     /// <summary>

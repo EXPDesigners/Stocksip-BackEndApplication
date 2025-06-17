@@ -22,7 +22,7 @@ public partial class Product
     /// <summary>
     /// The unit price of the product, represented as a Money value object.
     /// </summary>
-    public Money UnitPrice { get; private set; }
+    private Money UnitPrice { get; set; }
     
     /// <summary>
     /// The brand associated with the product, represented as a Brand entity.
@@ -106,6 +106,17 @@ public partial class Product
     private void SetMinimumStock(int newMinimumStock)
     {
         MinimumStock = MinimumStock.UpdateMinimumStock(newMinimumStock);
+    }
+    
+    /// <summary>
+    /// Retrieves the current minimum stock level of the product.
+    /// </summary>
+    /// <returns>
+    /// Returns the current minimum stock level as a ProductMinimumStock value object.
+    /// </returns>
+    public ProductMinimumStock GetMinimumStock()
+    {
+        return MinimumStock;
     }
 
     /// <summary>
