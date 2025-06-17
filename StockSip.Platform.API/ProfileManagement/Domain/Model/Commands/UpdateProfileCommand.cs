@@ -15,3 +15,4 @@ public record UpdateProfileCommand(
         BusinessName,
         BusinessAddress
     );
+    
