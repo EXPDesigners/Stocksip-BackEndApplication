@@ -1,5 +1,8 @@
 ﻿namespace StockSip.Platform.API.InventoryManagement.Interfaces.REST.Resources;
 
+/// <summary>
+/// This record defines the warehouse resource.
+/// </summary>
 public record CreateWarehouseResource(string Name,
                                       string Street,
                                       string City,
@@ -9,4 +12,5 @@ public record CreateWarehouseResource(string Name,
                                       double MaxTemperature,
                                       double MinTemperature,
                                       double Capacity,
-                                      int ProfileId);
+                                      int ProfileId
+                                      );

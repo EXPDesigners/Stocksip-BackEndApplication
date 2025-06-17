@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 
 namespace StockSip.Platform.API.InventoryManagement.Infrastructure.Configuration.Extensions;
 
@@ -44,7 +45,7 @@ public static class ModelBuilderExtensions
             i.Property(img => img.ImageUri).IsRequired().HasMaxLength(500);
         });
         
-        builder.Entity<Warehouse>().Property(w => w.ProfileId).IsRequired();
+        builder.Entity<Warehouse>().Property(w => w.ProfileId).HasConversion(v => v.Id, v => new ProfileId(v)).IsRequired().HasColumnName("image_url");
         
     }
     

@@ -21,11 +21,11 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
     /// <c>true</c> if a warehouse exists with the specified name and profile ID; 
     /// <c>false</c> otherwise.
     /// </returns>
-    public async Task<bool> ExistByNameAndProfileIdAsync(string name, int profileId)
+    public async Task<bool> ExistByNameIgnoreCaseAndProfileIdAsync(string name, int profileId)
     {
         return await Context.Set<Warehouse>()
             .AnyAsync(w => 
-                w.Name.Equals(name, StringComparison.OrdinalIgnoreCase) && 
+                w.Name.ToLower() == name.ToLower() && 
                 w.ProfileId == profileId);
     }
 
@@ -42,9 +42,9 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
     {
         return await Context.Set<Warehouse>()
             .AnyAsync(w => 
-                w.Address.Street.Equals(address, StringComparison.OrdinalIgnoreCase) && 
-                w.Address.City.Equals(city, StringComparison.OrdinalIgnoreCase) && 
-                w.Address.PostalCode.Equals(postalCode, StringComparison.OrdinalIgnoreCase) && 
+                w.Address.Street.ToLower() == address.ToLower() &&
+                w.Address.City.ToLower() == city.ToLower() &&
+                w.Address.PostalCode.ToLower() == postalCode.ToLower() &&
                 w.ProfileId == profileId);
     }
 }

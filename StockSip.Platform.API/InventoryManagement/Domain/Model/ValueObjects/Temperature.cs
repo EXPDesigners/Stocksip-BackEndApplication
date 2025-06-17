@@ -33,7 +33,8 @@ public record Temperature()
     /// <param name="maxTemperature">The maximum temperature</param>
     public Temperature(double minTemperature, double maxTemperature) : this()
     {
-        ValidateTemperature(MinTemperature, MaxTemperature);
+        Console.WriteLine($"Received min: {minTemperature}, max: {maxTemperature}");
+        ValidateTemperature(minTemperature, maxTemperature);
         MinTemperature = minTemperature;
         MaxTemperature = maxTemperature;
     }

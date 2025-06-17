@@ -13,15 +13,21 @@ namespace StockSip.Platform.API.InventoryManagement.Application.Internal.Command
 /// <param name="unitOfWork">The unit of work for managing transactions.</param>
 public class WarehouseCommandService(IWarehouseRepository warehouseRepository, IUnitOfWork unitOfWork) : IWarehouseCommandService
 {
-    public async Task<Warehouse?> handle(CreateWarehouseCommand command)
+    /// <summary>
+    /// This method handles the creation of a new warehouse.
+    /// </summary>
+    /// <param name="command">The command containing the details for creating a warehouse.</param>
+    /// <returns> The created warehouse or null if the creation fails.</returns>
+    /// <exception cref="ArgumentException"> Thrown when a warehouse with the same name or address already exists.</exception>
+    public async Task<Warehouse?> Handle(CreateWarehouseCommand command)
     {
-        if (await warehouseRepository.ExistByNameAndProfileIdAsync(command.Name, command.ProfileId))
+        if (await warehouseRepository.ExistByNameIgnoreCaseAndProfileIdAsync(command.Name, command.ProfileId))
         {
             throw new ArgumentException($"Warehouse with name {command.Name} already exists.");
         }
 
         if (await warehouseRepository.ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileId(
-                command.Street, command.City, command.Country, command.ProfileId))
+                command.Street, command.City, command.PostalCode, command.ProfileId))
         {
             throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.Country} already exists.");
         }
