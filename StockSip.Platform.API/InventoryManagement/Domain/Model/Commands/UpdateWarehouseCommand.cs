@@ -11,7 +11,6 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 /// <param name="Address">The address of the warehouse</param>
 /// <param name="Capacity">The capacity of the warehouse</param>
 /// <param name="Temperature">The temperature range in the warehouse</param>
-/// <param name="ImageUrl">The image url of the warehouse</param>
 /// <param name="ProfileId">The unique identifier of the warehouse</param>
 public record UpdateWarehouseCommand(int WarehouseId,
                                      string Name, 
@@ -20,8 +19,7 @@ public record UpdateWarehouseCommand(int WarehouseId,
                                      string District,
                                      string PostalCode, 
                                      string Country,
-                                     double MinTemperature,
                                      double MaxTemperature,
+                                     double MinTemperature,
                                      double Capacity,
-                                     int ProfileId,
-                                     string ImageUrl);
+                                     int ProfileId);

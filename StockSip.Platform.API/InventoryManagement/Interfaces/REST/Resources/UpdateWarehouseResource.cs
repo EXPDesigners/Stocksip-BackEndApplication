@@ -9,9 +9,7 @@ public record UpdateWarehouseResource(string Name,
                                       string District,
                                       string PostalCode,
                                       string Country,
-                                      double MinTemperature,
                                       double MaxTemperature,
+                                      double MinTemperature,
                                       double Capacity,
-                                      int ProfileId,
-                                      string ImageUrl
-                                      );
+                                      int ProfileId);

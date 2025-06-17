@@ -13,7 +13,7 @@ public class UpdateWarehouseCommandFromResourceAssembler
     /// </summary>
     /// <param name="resource">The UpdateWarehouseResource to transform.</param>
     /// <returns>A new UpdateWarehouseCommand created from the resource.</returns>
-    public static UpdateWarehouseCommand ToCommandFromResource(int WarehouseId, UpdateWarehouseResource resource)
+    public static UpdateWarehouseCommand ToCommandFromResource(UpdateWarehouseResource resource, int WarehouseId)
     {
         return new UpdateWarehouseCommand(
             WarehouseId,
@@ -26,8 +26,7 @@ public class UpdateWarehouseCommandFromResourceAssembler
             resource.MaxTemperature,
             resource.MinTemperature,
             resource.Capacity,
-            resource.ProfileId,
-            resource.ImageUrl
+            resource.ProfileId
         );
     }
 }
