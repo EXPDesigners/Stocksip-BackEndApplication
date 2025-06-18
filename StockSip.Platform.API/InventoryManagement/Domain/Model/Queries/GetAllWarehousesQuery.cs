@@ -6,5 +6,4 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
 /// <summary>
 /// This record defines a query to get all warehouses by a specific profile ID.
 /// </summary>
-/// <param name="ProfileId">The unique identifier of a profile</param>
-public record GetAllWarehousesByProfileId(ProfileId ProfileId);
+public record GetAllWarehousesQuery();

@@ -1,7 +1,7 @@
 ﻿using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
-using StockSip.Platform.API.InventoryManagement.Domain.Model.Repositories;
-using StockSip.Platform.API.InventoryManagement.Domain.Model.Services;
+using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
+using StockSip.Platform.API.InventoryManagement.Domain.Services;
 
 namespace StockSip.Platform.API.InventoryManagement.Application.Internal.QueryService;
 
@@ -19,5 +19,10 @@ public class WarehouseQueryService(IWarehouseRepository warehouseRepository) : I
     public async Task<Warehouse?> Handle(GetWarehouseByIdQuery query)
     {
         return await warehouseRepository.FindByIdAsync(query.WarehouseId);
+    }
+
+    public async Task<IEnumerable<Warehouse>> Handle(GetAllWarehousesQuery query)
+    {
+        return await warehouseRepository.ListAsync();
     }
 }

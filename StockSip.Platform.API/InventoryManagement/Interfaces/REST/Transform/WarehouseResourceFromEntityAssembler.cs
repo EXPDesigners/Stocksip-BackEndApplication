@@ -24,4 +24,9 @@ public class WarehouseResourceFromEntityAssembler
             entity.ImageUrl.ToString()
         );
     }
+    
+    public static IEnumerable<WarehouseResource> ToResourcesFromEntities(IEnumerable<Warehouse> entities)
+    {
+        return entities.Select(ToResourceFromEntity);
+    }
 }
