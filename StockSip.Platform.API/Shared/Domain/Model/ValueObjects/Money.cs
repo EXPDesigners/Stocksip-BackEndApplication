@@ -1,11 +1,11 @@
 namespace StockSip.Platform.API.Shared.Domain.Model.ValueObjects;
 
-public record Money(int amount, Currency currency)
+public record Money(double amount, Currency currency)
 {
     /// <summary>
     /// Gets the amount of money.
     /// </summary>
-    public int Amount { get; } = amount;
+    private double Amount { get; } = amount;
 
     /// <summary>
     /// Gets the currency of the money.

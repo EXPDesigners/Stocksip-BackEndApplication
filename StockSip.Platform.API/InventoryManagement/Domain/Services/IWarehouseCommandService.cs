@@ -1,7 +1,7 @@
 ﻿using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 
-namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Services;
+namespace StockSip.Platform.API.InventoryManagement.Domain.Services;
 
 public interface IWarehouseCommandService
 {

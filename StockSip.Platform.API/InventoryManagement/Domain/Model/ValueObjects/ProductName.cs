@@ -22,10 +22,10 @@ public record ProductName()
     /// <param name="name">
     /// The additional name of the product. It can be null.
     /// </param>
-    public ProductName(EBrandName brandName, ELiquorType productType, string? name) : this()
+    public ProductName(string brandName, ELiquorType productType, string? name) : this()
     {
         FullName = string.Join(" ", 
-            brandName.ToString(),
+            brandName,
             productType.ToString(),
             string.IsNullOrWhiteSpace(name) ? null : name.Trim()
             ).Trim();

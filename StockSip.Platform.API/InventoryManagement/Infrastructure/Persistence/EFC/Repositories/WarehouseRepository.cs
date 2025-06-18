@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
-using StockSip.Platform.API.InventoryManagement.Domain.Model.Repositories;
+using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Repositories;
 
-namespace StockSip.Platform.API.InventoryManagement.Infrastructure.Repositories;
+namespace StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Repositories;
 
 /// <summary>
 /// This class implements the IWarehouseRepository interface, providing methods to interact with the Warehouse aggregate.
