@@ -4,7 +4,7 @@ using StockSip.Platform.API.InventoryManagement.Application.Internal.QueryServic
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
-using StockSip.Platform.API.InventoryManagement.Infrastructure.Repositories;
+using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Repositories;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 using StockSip.Platform.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;

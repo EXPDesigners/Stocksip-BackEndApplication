@@ -19,7 +19,7 @@ public class Inventory
     /// <summary>
     /// The unique identifier of the product in the inventory.
     /// </summary>
-    private string ProductId { get; set; }
+    public string ProductId { get; set; }
     
     /// <summary>
     /// The Warehouse where the inventory is located, represented as a Warehouse entity.
@@ -29,17 +29,17 @@ public class Inventory
     /// <summary>
     /// The unique identifier of the warehouse where the inventory is stored.
     /// </summary>
-    private string WarehouseId { get; set; }
+    public string WarehouseId { get; set; }
     
     /// <summary>
     /// The current stock of the product, represented as a ProductStock value object.
     /// </summary>
-    private ProductStock ProductStock { get; set; }
+    public ProductStock ProductStock { get; set; }
 
     /// <summary>
     /// The state of the product in the inventory, represented as an enumeration of type EProductState.
     /// </summary>
-    private EProductState ProductState { get; set; } = EProductState.WithStock;
+    public EProductState ProductState { get; set; } = EProductState.WithStock;
     
     /// <summary>
     /// Default constructor for the Inventory class. 

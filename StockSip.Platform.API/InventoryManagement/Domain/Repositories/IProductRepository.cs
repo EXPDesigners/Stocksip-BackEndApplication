@@ -1,4 +1,5 @@
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 
@@ -23,7 +24,7 @@ public interface IProductRepository : IBaseRepository<Product>
     /// <returns>
     /// An enumerable collection of Product aggregates that belong to the specified warehouse.
     /// </returns>
-    Task<IEnumerable<Product>> FindByWarehouseIdAsync(string warehouseId);
+    Task<IEnumerable<Inventory>> FindByWarehouseIdAsync(string warehouseId);
     
     /// <summary>
     /// This method checks if a product with the specified ID exists in the database.

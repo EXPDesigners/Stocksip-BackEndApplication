@@ -2,7 +2,7 @@
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 
-namespace StockSip.Platform.API.InventoryManagement.Infrastructure.Configuration.Extensions;
+namespace StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 /// <summary>
 /// This static class contains extension methods for the ModelBuilder to apply configuration for the Inventory Management domain model.
