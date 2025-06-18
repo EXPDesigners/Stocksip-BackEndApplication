@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
-using StockSip.Platform.API.InventoryManagement.Domain.Model.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
+using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Repositories;
 
@@ -45,6 +45,7 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
             .Include(inventory => inventory.Product)
             .ToListAsync();
     }
+    
 
     /// <summary>
     /// This async method checks if a product with the specified ID exists in the database.

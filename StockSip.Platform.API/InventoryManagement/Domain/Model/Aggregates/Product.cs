@@ -1,3 +1,4 @@
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.Shared.Domain.Model.ValueObjects;
 using DateTime = System.DateTime;
@@ -83,6 +84,7 @@ public partial class Product
                     string brandName, 
                     string liquorType, 
                     int unitPriceAmount,
+                    int minimumStock,
                     DateTime expirationDate,
                     ProviderId? providerId = null)
     {
@@ -92,9 +94,24 @@ public partial class Product
         LiquorType = Enum.Parse<ELiquorType>(liquorType, true); ;
         Brand = brandName;
         UnitPrice = new Money(unitPriceAmount, new Currency("PEN"));
+        MinimumStock = new ProductMinimumStock(minimumStock);
         ExpirationDate = expirationDate;
         ImageUrl = new ImageUrl(imageUrl);
         ProviderId = providerId ?? null;
+    }
+
+    public Product(CreateProductCommand command)
+    {
+        ProductName = new ProductName(command.BrandName,
+                Enum.Parse<ELiquorType>(command.LiquorType, true),
+                            command.AdditionalName);
+        LiquorType = Enum.Parse<ELiquorType>(command.LiquorType, true);
+        Brand = command.BrandName;
+        UnitPrice = new Money(command.UnitPriceAmount, new Currency("PEN"));
+        MinimumStock = new ProductMinimumStock(command.MinimumStock);
+        ExpirationDate = command.ExpirationDate;
+        ImageUrl = new ImageUrl(command.ImageUrl);
+        ProviderId = command.ProviderId;
     }
 
     /// <summary>

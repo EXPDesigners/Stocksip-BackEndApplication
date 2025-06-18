@@ -3,7 +3,7 @@ using StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 
-namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Repositories;
+namespace StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 
 /// <summary>
 /// This interface defines the contract for a repository that manages Product aggregates.

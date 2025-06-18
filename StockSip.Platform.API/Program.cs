@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.QueryService;
-using StockSip.Platform.API.InventoryManagement.Domain.Model.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Repositories;
