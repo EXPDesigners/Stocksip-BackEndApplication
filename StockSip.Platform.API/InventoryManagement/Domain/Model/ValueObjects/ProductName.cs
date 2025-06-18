@@ -30,4 +30,15 @@ public record ProductName()
             string.IsNullOrWhiteSpace(name) ? null : name.Trim()
             ).Trim();
     }
+    
+    /// <summary>
+    /// Method to get the full name of the product.
+    /// </summary>
+    /// <returns>
+    /// The full name of the product as a string. If FullName is null, it returns an empty string.
+    /// </returns>
+    public string GetFullName()
+    {
+        return FullName ?? string.Empty;
+    }
 }

@@ -23,7 +23,7 @@ public partial class Product
     /// <summary>
     /// The unit price of the product, represented as a Money value object.
     /// </summary>
-    private Money UnitPrice { get; set; }
+    public Money UnitPrice { get; private set; }
     
     /// <summary>
     /// The brand associated with the product, represented as a Brand entity.
@@ -103,7 +103,7 @@ public partial class Product
         UnitPrice = new Money(command.UnitPriceAmount, new Currency("PEN"));
         MinimumStock = new ProductMinimumStock(command.MinimumStock);
         ImageUrl = new ImageUrl(command.ImageUrl);
-        ProviderId = command.ProviderId;
+        if (command.ProviderId != null) ProviderId = new ProviderId(command.ProviderId);
     }
 
     /// <summary>
