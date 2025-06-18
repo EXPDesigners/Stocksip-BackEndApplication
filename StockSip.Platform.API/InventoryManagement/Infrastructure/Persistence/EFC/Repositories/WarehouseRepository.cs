@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Repositories;
@@ -21,7 +22,7 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
     /// <c>true</c> if a warehouse exists with the specified name and profile ID; 
     /// <c>false</c> otherwise.
     /// </returns>
-    public async Task<bool> ExistByNameIgnoreCaseAndProfileIdAsync(string name, int profileId)
+    public async Task<bool> ExistByNameIgnoreCaseAndProfileIdAsync(string name, ProfileId profileId)
     {
         return await Context.Set<Warehouse>()
             .AnyAsync(w => 
@@ -38,7 +39,7 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
     /// <c>true</c> if a warehouse exists with the exact address components and profile ID;
     /// <c>false</c> otherwise.
     /// </returns>
-    public async Task<bool> ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAsync(string street, string city, string postalCode, int profileId) 
+    public async Task<bool> ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAsync(string street, string city, string postalCode, ProfileId profileId) 
     {
         return await Context.Set<Warehouse>()
             .AnyAsync(w => 
@@ -52,7 +53,7 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
     /// This method checks if a warehouse with the specified name, profile ID, and a different warehouse ID exists in the database.
     /// </summary>
     /// <returns>True if a warehouse exists with the specified name, profile ID, and a different warehouse ID; otherwise, false.</returns>
-    public async Task<bool> ExistsByNameIgnoreCaseAndProfileIdAndWarehouseIdIsNotAsync(string name, int profileId, int warehouseId)
+    public async Task<bool> ExistsByNameIgnoreCaseAndProfileIdAndWarehouseIdIsNotAsync(string name, ProfileId profileId, string warehouseId)
     {
         return await Context.Set<Warehouse>()
             .AnyAsync(w =>
@@ -66,7 +67,7 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
     /// </summary>
     /// <returns>True if a warehouse exists with the specified address, city, postal code, profile ID, and a different warehouse ID; otherwise, false.</returns>
     public async Task<bool> ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAndProfileIdIsNotAsync(
-            string street, string city, string postalCode, int profileId, int warehouseId)
+            string street, string city, string postalCode, ProfileId profileId, string warehouseId)
     {
         return await Context.Set<Warehouse>()
             .AnyAsync(w =>

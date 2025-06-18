@@ -1,3 +1,5 @@
+using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
+
 namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 
 /// <summary>
@@ -12,4 +14,4 @@ public record CreateWarehouseCommand(string Name,
                                      double MaxTemperature,
                                      double MinTemperature,
                                      double Capacity,
-                                     int ProfileId);
+                                     string ProfileId);

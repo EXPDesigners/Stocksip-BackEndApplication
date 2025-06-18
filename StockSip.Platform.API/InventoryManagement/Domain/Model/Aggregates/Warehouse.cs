@@ -9,7 +9,7 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 /// </summary>
 public class Warehouse
 {
-    public int WarehouseId { get; internal set; }
+    public string WarehouseId { get; internal set; }
     public string? Name { get; private set; }
     public WarehouseAddress? Address { get; internal set; }
     public Temperature? Temperature { get; internal set; }
@@ -33,7 +33,6 @@ public class Warehouse
     public Warehouse(string name, WarehouseAddress address, Temperature temperature, Capacity capacity,
         ImageUrl imageUrl, ProfileId profileId)
     {
-        
         Name = ValidateName(name);
         Address = address;
         Temperature = temperature;
@@ -58,12 +57,12 @@ public class Warehouse
     /// <summary>
     /// Constructs a new instance of the Warehouse class using an UpdateWarehouseCommand.
     /// </summary>
-    public void UpdateWarehouse(string Name, string Street, string City, string District, string PostalCode, string Country, double MaxTemperature, double MinTemperature, double TotalCapacity)
+    public void UpdateWarehouse(string name, string street, string city, string district, string postalCode, string country, double maxTemperature, double minTemperature, double totalCapacity)
     {
-        this.Name = ValidateName(Name);
-        Address = new WarehouseAddress(Street, City, District, PostalCode, Country);
-        Temperature = new Temperature(MinTemperature, MaxTemperature);
-        Capacity = new Capacity(TotalCapacity);
+        this.Name = ValidateName(name);
+        Address = new WarehouseAddress(street, city, district, postalCode, country);
+        Temperature = new Temperature(minTemperature, maxTemperature);
+        Capacity = new Capacity(totalCapacity);
         ImageUrl = new ImageUrl(null);
     }
     

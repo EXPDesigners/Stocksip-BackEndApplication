@@ -1,4 +1,5 @@
 ﻿using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.InventoryManagement.Interfaces.REST.Resources;
 
 namespace StockSip.Platform.API.InventoryManagement.Interfaces.REST.Transform;

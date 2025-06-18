@@ -1,4 +1,5 @@
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.InventoryManagement.Interfaces.REST.Resources;
 
 namespace StockSip.Platform.API.InventoryManagement.Interfaces.REST.Transform;
@@ -13,10 +14,10 @@ public class UpdateWarehouseCommandFromResourceAssembler
     /// </summary>
     /// <param name="resource">The UpdateWarehouseResource to transform.</param>
     /// <returns>A new UpdateWarehouseCommand created from the resource.</returns>
-    public static UpdateWarehouseCommand ToCommandFromResource(UpdateWarehouseResource resource, int WarehouseId)
+    public static UpdateWarehouseCommand ToCommandFromResource(UpdateWarehouseResource resource, string warehouseId)
     {
         return new UpdateWarehouseCommand(
-            WarehouseId,
+            warehouseId,
             resource.Name,
             resource.Street,
             resource.City,
@@ -26,7 +27,7 @@ public class UpdateWarehouseCommandFromResourceAssembler
             resource.MaxTemperature,
             resource.MinTemperature,
             resource.Capacity,
-            resource.ProfileId
+            new ProfileId(resource.ProfileId)
         );
     }
 }
