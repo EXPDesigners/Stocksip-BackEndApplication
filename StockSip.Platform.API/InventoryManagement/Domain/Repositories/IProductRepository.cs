@@ -33,6 +33,24 @@ public interface IProductRepository : IBaseRepository<Product>
     /// A task that returns an Inventory object if found, or null if not found.
     /// </returns>
     Task<Inventory?> FindInventoryByProductIdAndWarehouseIdAndExpirationDateAsync(string productId, string warehouseId, DateTime expirationDate);
+
+    /// <summary>
+    /// This method retrieves a product by its ID, warehouse ID, and expiration date.
+    /// </summary>
+    /// <returns>
+    /// The Inventory and its Product object if found, or null if not found.
+    /// </returns>
+    Task<Inventory?> FindByProductIdAndWarehouseIdAndExpirationDateAsync(string productId, string warehouseId, DateTime expirationDate);
+    
+    /// <summary>
+    /// This method retrieves all inventory items that match the specified full name and warehouse ID.
+    /// </summary>
+    Task<IEnumerable<Inventory>> FindByFullNameAndWarehouseId(string brandName, string liquorType, string? additionalName, string warehouseId);
+
+    /// <summary>
+    /// Method to retrieve all products associated with a specific profile ID.
+    /// </summary>
+    Task<IEnumerable<Inventory>> FindProductsByProfileIdAsync(ProfileId profileId);
     
     /// <summary>
     /// This method checks if a product with the specified ID exists in the database.

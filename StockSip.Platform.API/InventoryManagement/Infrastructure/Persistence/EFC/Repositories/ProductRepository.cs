@@ -71,6 +71,76 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     }
 
     /// <summary>
+    /// This async method retrieves a product by its ID, warehouse ID, and expiration date.
+    /// </summary>
+    /// <param name="productId">
+    /// The ID of the product to be retrieved.
+    /// </param>
+    /// <param name="warehouseId">
+    /// The ID of the warehouse where the product is located.
+    /// </param>
+    /// <param name="expirationDate">
+    /// The expiration date of the product's inventory.
+    /// </param>
+    /// <returns>
+    /// The Inventory and its Product object if found, or null if not found.
+    /// </returns>
+    public async Task<Inventory?> FindByProductIdAndWarehouseIdAndExpirationDateAsync(string productId,
+        string warehouseId, DateTime expirationDate)
+    {
+        return await Context.Set<Inventory>()
+            .Include(inventory => inventory.Product)
+            .FirstOrDefaultAsync(inventory => inventory.ProductId == productId
+                                              && inventory.WarehouseId == warehouseId
+                                              && inventory.ExpirationDate == new ProductExpirationDate(expirationDate));
+    }
+
+    /// <summary>
+    /// This async method retrieves all inventory items that match the specified full name and warehouse ID.
+    /// </summary>
+    /// <param name="brandName">
+    /// The name of the brand of the product.
+    /// </param>
+    /// <param name="liquorType">
+    /// The type of liquor of the product.
+    /// </param>
+    /// <param name="additionalName">
+    /// The additional name of the product, if any.
+    /// </param>
+    /// <param name="warehouseId">
+    /// The ID of the warehouse where the inventory is located.
+    /// </param>
+    /// <returns>
+    /// A list of Inventory objects that match the specified criteria.
+    /// </returns>
+    public async Task<IEnumerable<Inventory>> FindByFullNameAndWarehouseId(string brandName, string liquorType,
+        string? additionalName, string warehouseId)
+    {
+        return await Context.Set<Inventory>()
+            .Where(inventory => inventory.WarehouseId == warehouseId
+                                && inventory.Product.ProductName == new ProductName(brandName, Enum.Parse<ELiquorType>(liquorType, true), additionalName))
+            .Include(inventory => inventory.Product)
+            .ToListAsync();
+    }
+
+    /// <summary>
+    /// Async method to retrieve all products associated with a specific profile ID.
+    /// </summary>
+    /// <param name="profileId">
+    /// The ID of the profile whose products are to be retrieved.
+    /// </param>
+    /// <returns>
+    /// The list of products associated with the specified profile ID.
+    /// </returns>
+    public async Task<IEnumerable<Inventory>> FindProductsByProfileIdAsync(ProfileId profileId)
+    {
+        return await Context.Set<Inventory>()
+            .Where(inventory => inventory.Warehouse.ProfileId == profileId)
+            .Include(inventory => inventory.Product)
+            .ToListAsync();
+    }
+
+    /// <summary>
     /// This async method checks if a product with the specified ID exists in the database.
     /// </summary>
     /// <param name="productId">
