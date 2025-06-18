@@ -31,11 +31,6 @@ public partial class Product
     public string Brand { get; internal set; }
     
     /// <summary>
-    /// The expiration date of the product, represented as a DateTime value.
-    /// </summary>
-    public DateTime ExpirationDate { get; }
-    
-    /// <summary>
     /// The type of liquor represented by the product, defined as an enumeration.
     /// </summary>
     public ELiquorType LiquorType { get; private set; }
@@ -73,9 +68,9 @@ public partial class Product
     /// <param name="unitPriceAmount">
     /// The unit price of the product, represented as an integer amount.
     /// </param>
-    /// <param name="expirationDate">
-    /// The expiration date of the product, represented as a DateTime value.
-    /// </param>
+    /// <param name="minimumStock">
+    /// The minimum stock level for the product, represented as an integer.
+    /// </param> 
     /// <param name="providerId">
     /// The unique identifier of the provider associated with the product, if any.
     /// </param>
@@ -85,7 +80,6 @@ public partial class Product
                     string liquorType, 
                     int unitPriceAmount,
                     int minimumStock,
-                    DateTime expirationDate,
                     ProviderId? providerId = null)
     {
         ProductName = new ProductName(brandName, 
@@ -95,7 +89,6 @@ public partial class Product
         Brand = brandName;
         UnitPrice = new Money(unitPriceAmount, new Currency("PEN"));
         MinimumStock = new ProductMinimumStock(minimumStock);
-        ExpirationDate = expirationDate;
         ImageUrl = new ImageUrl(imageUrl);
         ProviderId = providerId ?? null;
     }
@@ -109,7 +102,6 @@ public partial class Product
         Brand = command.BrandName;
         UnitPrice = new Money(command.UnitPriceAmount, new Currency("PEN"));
         MinimumStock = new ProductMinimumStock(command.MinimumStock);
-        ExpirationDate = command.ExpirationDate;
         ImageUrl = new ImageUrl(command.ImageUrl);
         ProviderId = command.ProviderId;
     }

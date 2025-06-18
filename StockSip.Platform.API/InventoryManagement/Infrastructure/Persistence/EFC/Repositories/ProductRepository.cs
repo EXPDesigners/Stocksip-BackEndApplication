@@ -55,15 +55,20 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// <param name="warehouseId">
     /// The ID of the warehouse where the product's inventory is located.
     /// </param>
+    /// <param name="expirationDate">
+    /// The expiration date of the product's inventory.
+    /// </param>
     /// <returns>
     /// A task that returns an Inventory object if found, or null if not found.
     /// </returns>
-    public async Task<Inventory?> FindInventoryByProductIdAndWarehouseIdAsync(string productId, string warehouseId)
+    public async Task<Inventory?> FindInventoryByProductIdAndWarehouseIdAndExpirationDateAsync(string productId, string warehouseId,
+        DateTime expirationDate)
     {
         return await Context.Set<Inventory>()
-            .FirstOrDefaultAsync(inventory => inventory.ProductId == productId && inventory.WarehouseId == warehouseId);
+            .FirstOrDefaultAsync(inventory => inventory.ProductId == productId
+                                              && inventory.WarehouseId == warehouseId 
+                                              && inventory.ExpirationDate == new ProductExpirationDate(expirationDate));
     }
-
 
     /// <summary>
     /// This async method checks if a product with the specified ID exists in the database.

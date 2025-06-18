@@ -42,15 +42,30 @@ public class Inventory
     public EProductState ProductState { get; set; } = EProductState.WithStock;
     
     /// <summary>
-    /// Default constructor for the Inventory class. 
+    /// The expiration date of the product, represented as a value object.
     /// </summary>
-    /// <param name="warehouseId"></param>
-    /// <param name="productId"></param>
-    /// <param name="stock"></param>
-    public Inventory(string warehouseId, string productId, int stock)
+    public ProductExpirationDate ExpirationDate { get; }
+    
+    /// <summary>
+    /// Default constructor for the Inventory class.
+    /// </summary>
+    /// <param name="warehouseId">
+    /// The unique identifier of the warehouse where the inventory is stored.
+    /// </param>
+    /// <param name="productId">
+    /// The unique identifier of the product in the inventory.
+    /// </param>
+    /// <param name="expirationDate">
+    /// The expiration date of the batch of products, represented as a DateTime value.
+    /// </param>
+    /// <param name="stock">
+    /// The initial stock of the product in the inventory, represented as an integer.
+    /// </param>
+    public Inventory(string warehouseId, string productId, DateTime expirationDate, int stock)
     {
         WarehouseId = warehouseId;
         ProductId = productId;
+        ExpirationDate = new ProductExpirationDate(expirationDate);
         ProductStock = new ProductStock(stock);
     }
 
@@ -64,6 +79,7 @@ public class Inventory
     {
         WarehouseId = command.WarehouseId;
         ProductId = command.ProductId;
+        ExpirationDate = new ProductExpirationDate(command.ExpirationDate);
         ProductStock = new ProductStock(command.Quantity);
     }
 

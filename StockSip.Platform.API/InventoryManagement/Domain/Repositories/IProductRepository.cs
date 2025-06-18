@@ -27,12 +27,12 @@ public interface IProductRepository : IBaseRepository<Product>
     Task<IEnumerable<Inventory>> FindByWarehouseIdAsync(string warehouseId);
     
     /// <summary>
-    /// This method retrieves an inventory item by its product ID and warehouse ID.
+    /// This method retrieves an inventory item by the product ID, warehouse ID and expiration date.
     /// </summary>
     /// <returns>
     /// A task that returns an Inventory object if found, or null if not found.
     /// </returns>
-    Task<Inventory?> FindInventoryByProductIdAndWarehouseIdAsync(string productId, string warehouseId);
+    Task<Inventory?> FindInventoryByProductIdAndWarehouseIdAndExpirationDateAsync(string productId, string warehouseId, DateTime expirationDate);
     
     /// <summary>
     /// This method checks if a product with the specified ID exists in the database.

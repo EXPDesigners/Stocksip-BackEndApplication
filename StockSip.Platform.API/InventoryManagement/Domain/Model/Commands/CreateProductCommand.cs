@@ -14,9 +14,6 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 /// <param name="BrandName">
 /// This field specifies the brand name of the product.
 /// </param>
-/// <param name="ExpirationDate">
-/// This field specifies the expiration date of the product.
-/// </param>
 /// <param name="UnitPriceAmount">
 /// This field specifies the unit price of the product.
 /// </param>
@@ -32,7 +29,6 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 public record CreateProductCommand(string? AdditionalName, 
                                     string LiquorType, 
                                     string BrandName, 
-                                    DateTime ExpirationDate, 
                                     double UnitPriceAmount,
                                     int MinimumStock,
                                     string ImageUrl,

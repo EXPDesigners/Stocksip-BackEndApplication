@@ -9,7 +9,10 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 /// <param name="WarehouseId">
 /// The unique identifier of the warehouse where the stock is being added.
 /// </param>
+/// <param name="StockExpirationDate">
+/// The expiration date of the stock being added, represented as a DateTime value.
+/// </param>
 /// <param name="AddedQuantity">
 /// The quantity of stock to be added to the product.
 /// </param>
-public record AddStockToProductCommand(string ProductId, string WarehouseId, int AddedQuantity);
+public record AddStockToProductCommand(string ProductId, string WarehouseId, DateTime StockExpirationDate, int AddedQuantity);

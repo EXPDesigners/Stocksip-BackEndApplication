@@ -9,5 +9,5 @@ public interface IProductQueryService
     Task<IEnumerable<Product>> Handle(GetAllProductsByProviderIdQuery query);
     Task<IEnumerable<Product>> Handle(GetAllProductsByWarehouseIdQuery query);
     Task<Product?> Handle(GetProductByIdQuery query);
-    Task<Inventory?> Handle(GetInventoryByProductIdAndWarehouseIdQuery query);
+    Task<Inventory?> Handle(GetInventoryByProductIdAndWarehouseIdAndExpirationDateQuery andExpirationDateQuery);
 }
