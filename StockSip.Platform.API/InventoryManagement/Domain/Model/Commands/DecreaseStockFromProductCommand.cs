@@ -7,4 +7,4 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 /// 
 /// </param>
 /// <param name="RemovedQuantity"></param>
-public record DecreaseStockFromProductCommand(string ProductId, int RemovedQuantity);
+public record DecreaseStockFromProductCommand(string ProductId, string WarehouseId, int RemovedQuantity);

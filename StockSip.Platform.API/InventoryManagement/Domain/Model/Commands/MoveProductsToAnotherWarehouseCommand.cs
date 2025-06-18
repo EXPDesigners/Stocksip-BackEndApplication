@@ -12,4 +12,4 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 /// <param name="MovedQuantity">
 /// The quantity of the product to be moved from the current warehouse to the new warehouse.
 /// </param>
-public record MoveProductsToAnotherWarehouseCommand(string ProductId, string NewWarehouseId, int MovedQuantity);
+public record MoveProductsToAnotherWarehouseCommand(string ProductId, string OldWarehouseId, string NewWarehouseId, int MovedQuantity);

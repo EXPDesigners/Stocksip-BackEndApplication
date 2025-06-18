@@ -80,7 +80,7 @@ public record ProductStock()
     /// Throws this exception if the quantity is not a positive integer number.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Throws this exception if the stock is insufficient to decrease by the specified quantity.
+    /// Throws this exception if the stock is not enough to decrease by the specified quantity.
     /// </exception>
     public ProductStock DecreaseStock(int quantity)
     {

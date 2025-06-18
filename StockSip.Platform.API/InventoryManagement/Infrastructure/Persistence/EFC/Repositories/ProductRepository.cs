@@ -45,7 +45,25 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
             .Include(inventory => inventory.Product)
             .ToListAsync();
     }
-    
+
+    /// <summary>
+    /// This async method retrieves an inventory item by its product ID and warehouse ID.
+    /// </summary>
+    /// <param name="productId">
+    /// The ID of the product whose inventory is to be retrieved.
+    /// </param>
+    /// <param name="warehouseId">
+    /// The ID of the warehouse where the product's inventory is located.
+    /// </param>
+    /// <returns>
+    /// A task that returns an Inventory object if found, or null if not found.
+    /// </returns>
+    public async Task<Inventory?> FindInventoryByProductIdAndWarehouseIdAsync(string productId, string warehouseId)
+    {
+        return await Context.Set<Inventory>()
+            .FirstOrDefaultAsync(inventory => inventory.ProductId == productId && inventory.WarehouseId == warehouseId);
+    }
+
 
     /// <summary>
     /// This async method checks if a product with the specified ID exists in the database.
@@ -59,5 +77,19 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     public async Task<bool> ExistsByIdAsync(string productId)
     {
         return await Context.Set<Product>().AnyAsync(product => product.Id == productId);
+    }
+
+    /// <summary>
+    /// This async method checks if a product with the specified full name (brand name, liquor type, and additional name) exists in the database, ignoring upper or lower case.
+    /// </summary>
+    /// <param name="brandName"> The name of the brand. </param>
+    /// <param name="liquorType"> The liquor type of the product. </param>
+    /// <param name="additionalName"> The additional name of the product. </param>
+    /// <returns></returns>
+    public async Task<bool> ExistsByFullNameIgnoreCase(string brandName, string liquorType, string? additionalName)
+    {
+        return await Context.Set<Product>().AnyAsync(product =>
+            product.ProductName ==
+            new ProductName(brandName, Enum.Parse<ELiquorType>(liquorType, true), additionalName));
     }
 }

@@ -27,7 +27,20 @@ public interface IProductRepository : IBaseRepository<Product>
     Task<IEnumerable<Inventory>> FindByWarehouseIdAsync(string warehouseId);
     
     /// <summary>
+    /// This method retrieves an inventory item by its product ID and warehouse ID.
+    /// </summary>
+    /// <returns>
+    /// A task that returns an Inventory object if found, or null if not found.
+    /// </returns>
+    Task<Inventory?> FindInventoryByProductIdAndWarehouseIdAsync(string productId, string warehouseId);
+    
+    /// <summary>
     /// This method checks if a product with the specified ID exists in the database.
     /// </summary>
     Task<bool> ExistsByIdAsync(string productId);
+
+    /// <summary>
+    /// This method checks if a product with the specified full name (brand name, liquor type, and additional name) exists in the database, ignoring lower or upper case.
+    /// </summary>
+    Task<bool> ExistsByFullNameIgnoreCase(string brandName, string liquorType, string? additionalName);
 }

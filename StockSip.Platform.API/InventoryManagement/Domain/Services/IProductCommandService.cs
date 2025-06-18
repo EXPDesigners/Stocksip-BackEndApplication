@@ -8,8 +8,8 @@ public interface IProductCommandService
 {
     Task<Product?> Handle(CreateProductCommand command);
     Task<Product?> Handle(UpdateProductCommand command);
-    Task<Product?> Handle(DeleteProductFromWarehouseCommand command);
     
+    Task<Inventory?> Handle(DeleteProductFromWarehouseCommand command);
     Task<Inventory?> Handle(AddProductsToWarehouseCommand command);
     Task<Inventory?> Handle(DecreaseStockFromProductCommand command);
     Task<Inventory?> Handle(AddStockToProductCommand command);
