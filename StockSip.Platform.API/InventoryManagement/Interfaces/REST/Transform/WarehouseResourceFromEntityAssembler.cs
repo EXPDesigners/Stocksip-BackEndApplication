@@ -6,7 +6,7 @@ namespace StockSip.Platform.API.InventoryManagement.Interfaces.REST.Transform;
 /// <summary>
 /// This class is responsible for transforming a Warehouse entity into a WarehouseResource.
 /// </summary>
-public class WarehouseResourceFromEntityAssembler
+public static class WarehouseResourceFromEntityAssembler
 {
     /// <summary>
     /// Transforms a Warehouse entity into a WarehouseResource.

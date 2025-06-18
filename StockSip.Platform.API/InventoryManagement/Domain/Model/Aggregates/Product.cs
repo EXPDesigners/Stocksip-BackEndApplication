@@ -80,7 +80,7 @@ public partial class Product
                     string liquorType, 
                     int unitPriceAmount,
                     int minimumStock,
-                    ProviderId? providerId = null)
+                    string? providerId = null)
     {
         ProductName = new ProductName(brandName, 
             Enum.Parse<ELiquorType>(liquorType, true), 
@@ -90,7 +90,7 @@ public partial class Product
         UnitPrice = new Money(unitPriceAmount, new Currency("PEN"));
         MinimumStock = new ProductMinimumStock(minimumStock);
         ImageUrl = new ImageUrl(imageUrl);
-        ProviderId = providerId ?? null;
+        if (providerId != null) ProviderId = new ProviderId(providerId);
     }
 
     public Product(CreateProductCommand command)

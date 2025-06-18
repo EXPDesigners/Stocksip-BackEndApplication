@@ -7,7 +7,7 @@ namespace StockSip.Platform.API.InventoryManagement.Interfaces.REST.Transform;
 /// <summary>
 /// This class is responsible for transforming an UpdateWarehouseResource into an UpdateWarehouseCommand.
 /// </summary>
-public class UpdateWarehouseCommandFromResourceAssembler
+public static class UpdateWarehouseCommandFromResourceAssembler
 {
     /// <summary>
     /// This method transforms an UpdateWarehouseResource into an UpdateWarehouseCommand.

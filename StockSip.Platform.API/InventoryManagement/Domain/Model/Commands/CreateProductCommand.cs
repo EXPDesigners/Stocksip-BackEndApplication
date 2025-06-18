@@ -32,4 +32,4 @@ public record CreateProductCommand(string? AdditionalName,
                                     double UnitPriceAmount,
                                     int MinimumStock,
                                     string ImageUrl,
-                                    ProviderId? ProviderId);
+                                    string? ProviderId);
