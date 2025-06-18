@@ -1,7 +1,9 @@
 ﻿using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Services;
+using StockSip.Platform.API.InventoryManagement.Domain.Services;
 using StockSip.Platform.API.InventoryManagement.Interfaces.REST.Resources;
 using StockSip.Platform.API.InventoryManagement.Interfaces.REST.Transform;
 using Swashbuckle.AspNetCore.Annotations;
@@ -46,7 +48,7 @@ public class WarehousesController(IWarehouseCommandService warehouseCommandServi
         Summary = "Update an Existing Warehouse",
         Description = "Update the information of an existing warehouse.",
         OperationId = "UpdateWarehouse")]
-    [SwaggerResponse(StatusCodes.Status201Created, "Warehouse updated successfully", typeof(WarehouseResource))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Warehouse updated successfully", typeof(WarehouseResource))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Warehouse could not be updated")]
     public async Task<IActionResult> UpdateWarehouse([FromRoute] int warehouseId, [FromBody] UpdateWarehouseResource resource)
     {
@@ -75,5 +77,34 @@ public class WarehousesController(IWarehouseCommandService warehouseCommandServi
         if (warehouse is null) return NotFound($"Warehouse with ID {warehouseId} not found.");
         var resource = WarehouseResourceFromEntityAssembler.ToResourceFromEntity(warehouse);
         return Ok(resource);
+    }
+    
+    [HttpGet]
+    [SwaggerOperation(
+        Summary = "Get All Warehouses",
+        Description = "Returns a list of all warehouses.",
+        OperationId = "GetAllWarehouses")]
+    [SwaggerResponse(StatusCodes.Status200OK, "List of warehouses retrieved successfully", typeof(IEnumerable<WarehouseResource>))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "No warehouses found")]
+    public async Task<IActionResult> GetAllWarehouses()
+    {
+        var warehouses = await warehouseQueryService.Handle(new GetAllWarehousesQuery());
+        var resources = WarehouseResourceFromEntityAssembler.ToResourcesFromEntities(warehouses);
+        return Ok(resources);
+        
+    }
+    
+    [HttpDelete("{warehouseId:int}")]
+    [SwaggerOperation(
+        Summary = "Delete a Warehouse",
+        Description = "Deletes a warehouse by its unique identifier.",
+        OperationId = "DeleteWarehouse")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "Warehouse deleted successfully")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Warehouse not found")]
+    public async Task<IActionResult> DeleteWarehouse([FromRoute] int warehouseId)
+    {
+        var deleteWarehouseCommand = new DeleteWarehouseCommand(warehouseId);
+        await warehouseCommandService.Handle(deleteWarehouseCommand);
+        return Ok(new {Message = $"Warehouse with ID {warehouseId} deleted successfully."});
     }
 }
