@@ -10,9 +10,9 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 public partial class ProductExit
 {
     /// <summary>
-    /// The product associated with the exit, represented as a Product entity.
+    /// The inventory of the product associated with the exit, represented as a Inventory entity.
     /// </summary>
-    public Product Product { get; internal set; }
+    public Inventory Inventory { get; internal set; }
     
     /// <summary>
     /// The unique identifier of the product associated with the exit.
@@ -32,7 +32,7 @@ public partial class ProductExit
     /// <summary>
     /// The date and time when the product exit occurred.
     /// </summary>
-    public DateTime ExitDate { get; private set; } = DateTime.Now;
+    public DateTime ExitDate { get; } = DateTime.Now;
 
     public ProductExit(string productId, string exitReason, int productQuantity)
     {
@@ -46,6 +46,17 @@ public partial class ProductExit
     /// </summary>
     public ProductExit()
     {
-        //TODO: Implement the logic to handle the creation of a product exit.
+        //TODO: Implement the logic to handle the creation of a product exit with a command.
+    }
+
+    /// <summary>
+    /// Method to update the inventory after a product exit.
+    /// </summary>
+    /// <param name="quantityExited">
+    /// The quantity of the product that has exited the inventory.
+    /// </param>
+    public void UpdateInventoryAfterExit(int quantityExited)
+    {
+        Inventory.RemoveStockFromProduct(quantityExited);
     }
 }
