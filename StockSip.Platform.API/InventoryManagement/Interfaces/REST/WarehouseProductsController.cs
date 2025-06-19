@@ -1,6 +1,5 @@
 ﻿using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
-using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
@@ -24,7 +23,6 @@ public class WarehouseProductsController(
         Description = "Retrieves all products associated with a specific warehouse ID.",
         OperationId = "GetProductsByWarehouseId")]
     [SwaggerResponse(StatusCodes.Status200OK, "List of products found!", typeof(IEnumerable<ProductResource>))]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "Products with warehouse ID not found...", typeof(IEnumerable<ProductResource>))]
     public async Task<IActionResult> GetProductsByWarehouseId(string warehouseId)
     {
         var getAllProductsByWarehouseIdQuery = new GetAllProductsByWarehouseIdQuery(warehouseId);
@@ -46,7 +44,7 @@ public class WarehouseProductsController(
     /// <returns>
     /// An IActionResult containing a list of product resources if found, or a NotFound result if no products are found for the specified provider and warehouse ID.
     /// </returns>
-    [HttpGet]
+    [HttpGet("providers/{providerId}")]
     [SwaggerOperation(
         Summary = "Get all products by provider and warehouse ID",
         Description = "Retrieves all products with a specific Provider and Warehouse ID.",
@@ -68,32 +66,7 @@ public class WarehouseProductsController(
         return Ok(productsResource);
     }
 
-    [HttpGet]
-    [SwaggerOperation(
-        Summary = "Get all products by warehouse ID and full name",
-        Description = "Retrieves all products associated with a specific warehouse ID and full name (brand, liquor type, and additional name).",
-        OperationId = "GetAllProductsByWarehouseIdAndFullName")]
-    [SwaggerResponse(StatusCodes.Status200OK, "List of products found!", typeof(IEnumerable<ProductResource>))]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "No products found for the specified warehouse ID and full name...")]
-    public async Task<IActionResult> GetAllProductsByWarehouseIdAndFullName(
-        string warehouseId, 
-        string brandName,
-        string liquorType, 
-        string? additionalName)
-    {
-        var getAllProductsByFullNameAndWarehouseIdQuery =
-            new GetProductsByFullNameAndWarehouseIdQuery(warehouseId, brandName, liquorType, additionalName);
-        var products = await productQueryService.Handle(getAllProductsByFullNameAndWarehouseIdQuery);
-        var productsEnumerable = products.ToList();
-        if (productsEnumerable.Count == 0)
-        {
-            return NotFound($"No products found in warehouse {warehouseId} with the specified full name {brandName} {liquorType} {additionalName}.");
-        }
-        var productsResource = productsEnumerable.Select(ProductResourceFromEntityAssembler.ToResourceFromEntity);
-        return Ok(productsResource);
-    }
-
-    [HttpGet]
+    [HttpGet("{productId}/expiration-dates/{expirationDate:datetime}")]
     [SwaggerOperation(
         Summary = "Get a product by its ID, warehouse ID and expiration date",
         Description = "Retrieves a product by its ID, warehouse ID, and expiration date.",
@@ -116,7 +89,7 @@ public class WarehouseProductsController(
         return Ok(productResource);
     }
 
-    [HttpDelete]
+    [HttpDelete("{productId}")]
     [SwaggerOperation(
         Summary = "Deletes a product from a warehouse",
         Description = "Deletes a product from a warehouse by its ID, warehouse ID, and expiration date.",
@@ -137,14 +110,14 @@ public class WarehouseProductsController(
         return Ok($"Product with ID {productId} successfully deleted from warehouse {warehouseId} with expiration date {resource.ExpirationDate}.");
     }
 
-    [HttpPut]
+    [HttpPost("{productId}")]
     [SwaggerOperation(
         Summary = "Add stock to a product in a warehouse",
         Description = "Adds stock to a product in a warehouse by its product ID and warehouse ID, including the expiration date.",
-        OperationId = "AddProductsToWarehouse")]
+        OperationId = "AddProductToWarehouse")]
     [SwaggerResponse(StatusCodes.Status201Created, "Products added to warehouse successfully!", typeof(ProductResource))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Products could not be added to warehouse...")]
-    public async Task<IActionResult> AddProductsToWarehouse(
+    public async Task<IActionResult> AddProductToWarehouse(
         [FromBody] AddProductsToWarehouseResource resource,
         string productId,
         string warehouseId)
@@ -162,7 +135,7 @@ public class WarehouseProductsController(
             productResource);
     }
     
-    [HttpPut]
+    [HttpPut("{productId}/decreases")]
     [SwaggerOperation(
         Summary = "Decrease stock from a product in a warehouse",
         Description = "Decreases stock from a product in a warehouse by its product ID, warehouse ID, and expiration date.",
@@ -188,7 +161,7 @@ public class WarehouseProductsController(
             productResource);
     }
     
-    [HttpPut]
+    [HttpPut("{productId}/additions")]
     [SwaggerOperation(
         Summary = "Add stock to a product in a warehouse",
         Description = "Adds stock to a product in a warehouse by its product ID, warehouse ID, and expiration date.",
@@ -212,7 +185,7 @@ public class WarehouseProductsController(
             productResource);
     }
 
-    [HttpPut]
+    [HttpPut("{productId}/moves")]
     [SwaggerOperation(
         Summary = "Move products to another warehouse",
         Description =
@@ -220,7 +193,7 @@ public class WarehouseProductsController(
         OperationId = "MoveProductsToAnotherWarehouse")]
     [SwaggerResponse(StatusCodes.Status201Created, "Products moved to another warehouse successfully!", typeof(ProductResource))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Product not found in the specified source warehouse...")]
-    public async Task<IActionResult> MoveProductsToAnotherWarehouse(
+    public async Task<IActionResult> MoveProductToAnotherWarehouse(
         [FromBody] MoveProductsToAnotherWarehouseResource resource,
         string warehouseId,
         string productId)
