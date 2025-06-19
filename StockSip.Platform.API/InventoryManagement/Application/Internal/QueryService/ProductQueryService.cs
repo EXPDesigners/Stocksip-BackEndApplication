@@ -86,11 +86,29 @@ public class ProductQueryService(IProductRepository productRepository) : IProduc
     /// <summary>
     /// This async method retrieves an inventory item by its product ID, warehouse ID, and expiration date.
     /// </summary>
-    /// <param name="query"></param>
-    /// <returns></returns>
+    /// <param name="query">
+    /// The query containing the product ID, warehouse ID, and expiration date for which the inventory item is to be retrieved.
+    /// </param>
+    /// <returns>
+    /// A task that returns the product item if found, or null if not found.
+    /// </returns>
     public async Task<Product?> Handle(GetProductByIdAndWarehouseIdAndExpirationDateQuery query)
     {
         return await productRepository.FindByProductIdAndWarehouseIdAndExpirationDateAsync(query.ProductId,
             query.WarehouseId, query.ExpirationDate);
+    }
+
+    /// <summary>
+    /// This async method retrieves all product exits associated with a specific product ID.
+    /// </summary>
+    /// <param name="query">
+    /// The query containing the product ID for which product exits are to be retrieved.
+    /// </param>
+    /// <returns>
+    /// A list of product exits associated with the specified product ID.
+    /// </returns>
+    public async Task<IEnumerable<ProductExit>> Handle(GetAllProductExitsByProductIdQuery query)
+    {
+        return await productRepository.FindProductExitsByProductIdAsync(query.ProductId);
     }
 }

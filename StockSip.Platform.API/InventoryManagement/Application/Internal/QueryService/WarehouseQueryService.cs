@@ -1,4 +1,5 @@
 ﻿using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
@@ -21,8 +22,23 @@ public class WarehouseQueryService(IWarehouseRepository warehouseRepository) : I
         return await warehouseRepository.FindByIdAsync(query.WarehouseId);
     }
 
-    public async Task<IEnumerable<Warehouse>> Handle(GetAllWarehousesQuery query)
+    /// <summary>
+    /// This method retrieves all product exits for a specific warehouse ID.
+    /// </summary>
+    /// <param name="query"> The query containing the warehouse ID. </param>
+    /// <returns> A list of ProductExit objects related to a specific warehouse ID. </returns>
+    public async Task<IEnumerable<ProductExit>> Handle(GetAllProductExitsByWarehouseIdQuery query)
     {
-        return await warehouseRepository.ListAsync();
+        return await warehouseRepository.FindAllProductExitsByWarehouseIdAsync(query.WarehouseId);
+    }
+
+    /// <summary>
+    /// This method retrieves all product exits for a specific product ID and warehouse ID.
+    /// </summary>
+    /// <param name="query"> The query containing the warehouse and product IDs. </param>
+    /// <returns> A list of ProductExit objects related to a specific product and warehouse IDs. </returns>
+    public async Task<IEnumerable<ProductExit>> Handle(GetAllProductExitsByProductIdAndWarehouseIdQuery query)
+    {
+        return await warehouseRepository.FindAllProductExitsByProductIdAndWarehouseIdAsync(query.ProductId, query.WarehouseId);
     }
 }

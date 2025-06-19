@@ -152,6 +152,22 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     }
 
     /// <summary>
+    /// Async method to retrieve all product exits associated with a specific product ID.
+    /// </summary>
+    /// <param name="productId">
+    /// The ID of the product whose exits are to be retrieved.
+    /// </param>
+    /// <returns>
+    /// A list of ProductExit objects associated with the specified product ID.
+    /// </returns>
+    public async Task<IEnumerable<ProductExit>> FindProductExitsByProductIdAsync(string productId)
+    {
+        return await Context.Set<ProductExit>()
+            .Where(exit => exit.ProductId == productId)
+            .ToListAsync();
+    }
+
+    /// <summary>
     /// This async method checks if a product with the specified ID exists in the database.
     /// </summary>
     /// <param name="productId">
@@ -178,4 +194,6 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
             product.ProductName ==
             new ProductName(brandName, Enum.Parse<ELiquorType>(liquorType, true), additionalName));
     }
+    
+    
 }

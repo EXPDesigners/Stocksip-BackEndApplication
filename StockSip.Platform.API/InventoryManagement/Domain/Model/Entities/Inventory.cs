@@ -144,7 +144,7 @@ public class Inventory
         // If the product is currently out of stock, change its state to with stock
         if (ProductStock.GetCurrentStock() == 0)
         {
-            SetProductStateToOutOfStock();
+            SetProductStateToWithStock();
         }
         
         // Increase the stock of the product

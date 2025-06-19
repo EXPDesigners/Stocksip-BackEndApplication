@@ -227,6 +227,12 @@ public class ProductCommandService (
         var newWarehouse = await warehouseRepository.FindByIdAsync(command.NewWarehouseId)
                             ?? throw new ArgumentException($"Warehouse with ID {command.NewWarehouseId} does not exist.");
 
+        // Validate if the old warehouse where the product will be moved exists.
+        if (command.NewWarehouseId == command.OldWarehouseId)
+        {
+            throw new ArgumentException("Cannot move products to the same warehouse.");
+        }
+        
         // Retrieves the current inventory of the product in the old warehouse.
         var currentInventory = await productRepository.FindInventoryByProductIdAndWarehouseIdAndExpirationDateAsync(
                 command.ProductId,
@@ -243,7 +249,7 @@ public class ProductCommandService (
             command.MovedStockExpirationDate);
         
         // If the retrieved inventory already existed, it adds the moved stock to the retrieved inventory.
-        newInventory?.ProductStock.IncreaseStock(command.MovedQuantity);
+        newInventory?.AddStockToProduct(command.MovedQuantity);
         
         // If the retrieved inventory does not exist, creates a new inventory entry with the moved quantity.
         newInventory ??= new Inventory(command.NewWarehouseId, command.ProductId, command.MovedStockExpirationDate, command.MovedQuantity)
