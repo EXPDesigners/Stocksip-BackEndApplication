@@ -9,6 +9,11 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace StockSip.Platform.API.InventoryManagement.Interfaces.REST;
 
+/// <summary>
+/// This controller provides endpoints for managing warehouse products.
+/// </summary>
+/// <param name="productCommandService">The command service for handling product operations.</param>
+/// <param name="productQueryService">The query service for retrieving product information.</param>
 [ApiController]
 [Route("api/v1/warehouses/{warehouseId}/products")]
 [Produces(MediaTypeNames.Application.Json)]
@@ -23,11 +28,17 @@ public class WarehouseProductsController(
         Description = "Retrieves all products associated with a specific warehouse ID.",
         OperationId = "GetProductsByWarehouseId")]
     [SwaggerResponse(StatusCodes.Status200OK, "List of products found!", typeof(IEnumerable<ProductResource>))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "No products found for the specified warehouse ID...")]
     public async Task<IActionResult> GetProductsByWarehouseId(string warehouseId)
     {
         var getAllProductsByWarehouseIdQuery = new GetAllProductsByWarehouseIdQuery(warehouseId);
         var products = await productQueryService.Handle(getAllProductsByWarehouseIdQuery);
-        var productResources = products
+        var enumerable = products.ToList();
+        if (enumerable.Count == 0)
+        {
+            return NotFound($"No products found for warehouse with ID {warehouseId}.");
+        }
+        var productResources = enumerable
             .Select(ProductResourceFromEntityAssembler.ToResourceFromEntity);
         return Ok(productResources);
     }
