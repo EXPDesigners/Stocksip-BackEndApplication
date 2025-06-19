@@ -1,5 +1,6 @@
 ﻿using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
 using StockSip.Platform.API.InventoryManagement.Interfaces.REST.Resources;
@@ -75,5 +76,42 @@ public class WarehousesController(IWarehouseCommandService warehouseCommandServi
         if (warehouse is null) return NotFound($"Warehouse with ID {warehouseId} not found.");
         var resource = WarehouseResourceFromEntityAssembler.ToResourceFromEntity(warehouse);
         return Ok(resource);
+    }
+    
+    [HttpGet]
+    [SwaggerOperation(
+        Summary = "Get All Warehouses",
+        Description = "Returns a list of all warehouses.",
+        OperationId = "GetAllWarehouses")]
+    [SwaggerResponse(StatusCodes.Status200OK, "List of warehouses retrieved successfully", typeof(IEnumerable<WarehouseResource>))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "No warehouses found")]
+    public async Task<IActionResult> GetAllWarehouses()
+    {
+        var warehouses = await warehouseQueryService.Handle(new GetAllWarehousesQuery());
+        var resources = WarehouseResourceFromEntityAssembler.ToResourcesFromEntities(warehouses);
+        return Ok(resources);
+    }
+    
+    /// <summary>
+    /// This endpoint is used to delete a warehouse by its unique identifier.
+    /// </summary>
+    /// <param name="warehouseId">
+    /// The unique identifier of the warehouse to be deleted.
+    /// </param>
+    /// <returns>
+    /// The IActionResult indicating the result of the deletion operation.
+    /// </returns>
+    [HttpDelete("{warehouseId}")]
+    [SwaggerOperation(
+        Summary = "Delete a Warehouse",
+        Description = "Deletes a warehouse by its unique identifier.",
+        OperationId = "DeleteWarehouse")]
+    [SwaggerResponse(StatusCodes.Status204NoContent, "Warehouse deleted successfully")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Warehouse not found")]
+    public async Task<IActionResult> DeleteWarehouse([FromRoute] string warehouseId)
+    {
+        var deleteWarehouseCommand = new DeleteWarehouseCommand(warehouseId);
+        await warehouseCommandService.Handle(deleteWarehouseCommand);
+        return Ok(new {Message = $"Warehouse with ID {warehouseId} deleted successfully."});
     }
 }

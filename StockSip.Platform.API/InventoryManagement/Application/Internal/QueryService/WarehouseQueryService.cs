@@ -23,6 +23,20 @@ public class WarehouseQueryService(IWarehouseRepository warehouseRepository) : I
     }
 
     /// <summary>
+    /// This method retrieves all warehouses.
+    /// </summary>
+    /// <param name="query">
+    /// The query to retrieve all warehouses. This parameter is not used in the current implementation.
+    /// </param>
+    /// <returns>
+    /// The list of all warehouses.
+    /// </returns>
+    public async Task<IEnumerable<Warehouse>> Handle(GetAllWarehousesQuery query)
+    {
+        return await warehouseRepository.ListAsync();
+    }
+
+    /// <summary>
     /// This method retrieves all product exits for a specific warehouse ID.
     /// </summary>
     /// <param name="query"> The query containing the warehouse ID. </param>

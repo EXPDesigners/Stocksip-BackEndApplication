@@ -111,4 +111,22 @@ public class WarehouseCommandService(
         await unitOfWork.CompleteAsync();
         return productExit;
     }
+
+    /// <summary>
+    /// This async method handles the deletion of a warehouse.
+    /// </summary>
+    /// <param name="command">
+    /// The command containing the details for deleting a warehouse.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the warehouse to delete does not exist.
+    /// </exception>
+    public async Task Handle(DeleteWarehouseCommand command)
+    {
+        var warehouseToDelete = await warehouseRepository.FindByIdAsync(command.WarehouseId)
+                                ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
+        
+        warehouseRepository.Remove(warehouseToDelete);
+        await unitOfWork.CompleteAsync();
+    }
 }
