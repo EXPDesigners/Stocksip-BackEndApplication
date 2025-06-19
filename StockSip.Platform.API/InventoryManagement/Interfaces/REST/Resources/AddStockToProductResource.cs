@@ -3,4 +3,4 @@
 /// <summary>
 /// This record represents a resource for adding stock to an existing product in a warehouse.
 /// </summary>
-public record AddStockToProductResource(string ProductId, string WarehouseId, DateTime StockExpirationDate, int AddedQuantity);
+public record AddStockToProductResource(DateTime StockExpirationDate, int AddedQuantity);

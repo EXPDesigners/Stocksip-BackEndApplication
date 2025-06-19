@@ -41,7 +41,7 @@ public class WarehousesController(IWarehouseCommandService warehouseCommandServi
     }
     
         
-    [HttpPut("{warehouseId:int}")]
+    [HttpPut("{warehouseId}")]
     [SwaggerOperation(
         Summary = "Update an Existing Warehouse",
         Description = "Update the information of an existing warehouse.",
@@ -62,7 +62,7 @@ public class WarehousesController(IWarehouseCommandService warehouseCommandServi
     /// </summary>
     /// <param name="warehouseId">The unique identifier of the warehouse to retrieve.</param>
     /// <returns>An IActionResult containing the warehouse resource if found, or a NotFound result if not found.</returns>
-    [HttpGet("{warehouseId:int}")]
+    [HttpGet("{warehouseId}")]
     [SwaggerOperation( 
         Summary = "Get Warehouse by Id",
         Description = "Returns a warehouse by its unique identifier.",

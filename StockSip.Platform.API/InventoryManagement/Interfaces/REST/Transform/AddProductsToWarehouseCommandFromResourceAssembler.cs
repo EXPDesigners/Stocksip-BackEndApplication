@@ -12,9 +12,11 @@ public static class AddProductsToWarehouseCommandFromResourceAssembler
     /// Method to transform an AddProductsToWarehouseResource into an AddProductsToWarehouseCommand.
     /// </summary>
     /// <param name="resource"> The AddProductsToWarehouseResource to transform. </param>
+    /// <param name="productId"> The Product ID of the product where the stock will be added. </param>
+    /// <param name="warehouseId"> The Warehouse ID that contains the product whose stock will increment. </param>
     /// <returns> The AddProductsToWarehouseCommand created from the resource. </returns>
-    public static AddProductsToWarehouseCommand ToCommandFromResource(AddProductsToWarehouseResource resource)
+    public static AddProductsToWarehouseCommand ToCommandFromResource(AddProductsToWarehouseResource resource, string productId, string warehouseId)
     {
-        return new AddProductsToWarehouseCommand(resource.ProductId, resource.WarehouseId, resource.ExpirationDate, resource.Quantity);
+        return new AddProductsToWarehouseCommand(productId, warehouseId, resource.ExpirationDate, resource.Quantity);
     }
 }

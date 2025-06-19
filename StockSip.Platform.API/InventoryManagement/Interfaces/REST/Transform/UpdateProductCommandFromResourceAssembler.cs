@@ -14,12 +14,14 @@ public static class UpdateProductCommandFromResourceAssembler
     /// <param name="resource">
     /// The UpdateProductResource containing the product details to be updated.
     /// </param>
+    /// <param name="productId"> The identifier of the product that its information will be updated. </param>
     /// <returns>
     /// The UpdateProductCommand that encapsulates the product update operation.
     /// </returns>
-    public static UpdateProductCommand ToCommandFromResource(UpdateProductResource resource)
+    public static UpdateProductCommand ToCommandFromResource(UpdateProductResource resource, string productId)
     {
-        return new UpdateProductCommand(resource.ProductId, 
+        return new UpdateProductCommand(
+            productId, 
             resource.UpdatedUnitPriceAmount,
             resource.UpdatedMinimumStock, 
             resource.UpdatedImageUrl);
