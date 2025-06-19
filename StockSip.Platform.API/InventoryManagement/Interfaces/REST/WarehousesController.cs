@@ -91,7 +91,6 @@ public class WarehousesController(IWarehouseCommandService warehouseCommandServi
         var warehouses = await warehouseQueryService.Handle(new GetAllWarehousesQuery());
         var resources = WarehouseResourceFromEntityAssembler.ToResourcesFromEntities(warehouses);
         return Ok(resources);
-        
     }
     
     [HttpDelete("{warehouseId:int}")]
@@ -107,4 +106,5 @@ public class WarehousesController(IWarehouseCommandService warehouseCommandServi
         await warehouseCommandService.Handle(deleteWarehouseCommand);
         return Ok(new {Message = $"Warehouse with ID {warehouseId} deleted successfully."});
     }
+    
 }

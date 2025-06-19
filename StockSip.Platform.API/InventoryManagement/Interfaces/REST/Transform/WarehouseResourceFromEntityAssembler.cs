@@ -16,8 +16,13 @@ public class WarehouseResourceFromEntityAssembler
     public static WarehouseResource ToResourceFromEntity(Warehouse entity)
     {
         return new WarehouseResource(
+            entity.WarehouseId,
             entity.Name,
-            entity.Address.GetFullAddress(),
+            entity.Address.Street,
+            entity.Address.City,
+            entity.Address.District,
+            entity.Address.PostalCode,
+            entity.Address.Country,
             entity.Temperature.MaxTemperature,
             entity.Temperature.MinTemperature,
             entity.Capacity.TotalCapacity,
