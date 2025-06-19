@@ -8,7 +8,7 @@ public record ProductExpirationDate()
     /// <summary>
     /// The expiration date of the product.
     /// </summary>
-    private DateTime ExpirationDate { get; }
+    public DateTime ExpirationDate { get; }
 
     /// <summary>
     /// Default constructor for the ProductExpirationDate value object.

@@ -19,6 +19,9 @@ public class Warehouse
     
     public ProfileId ProfileId { get; internal set; }
     
+    /// <summary>
+    /// Default constructor for Entity Framework Core.
+    /// </summary>
     private Warehouse() { }
 
     /// <summary>

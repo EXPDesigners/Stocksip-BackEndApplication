@@ -14,7 +14,7 @@ public partial class Product
     /// <summary>
     /// The unique identifier of the product.
     /// </summary>
-    public string Id { get; } = Guid.NewGuid().ToString();
+    public string ProductId { get; } = Guid.NewGuid().ToString();
     
     /// <summary>
     /// The name of the product, which includes the brand name, liquor type, and additional name.
@@ -57,6 +57,11 @@ public partial class Product
     public ICollection<Inventory> Inventories { get; private set; }
     
     /// <summary>
+    /// Default constructor for Entity Framework Core.
+    /// </summary>
+    private Product() { }
+    
+    /// <summary>
     /// Default constructor for the Product class.
     /// </summary>
     /// <param name="imageUrl">
@@ -93,7 +98,7 @@ public partial class Product
                         additionalName);
         LiquorType = Enum.Parse<ELiquorType>(liquorType, true); ;
         Brand = brandName;
-        UnitPrice = new Money(unitPriceAmount, new Currency("PEN"));
+        UnitPrice = new Money(unitPriceAmount, "PEN");
         MinimumStock = new ProductMinimumStock(minimumStock);
         ImageUrl = new ImageUrl(imageUrl);
         if (providerId != null) ProviderId = new ProviderId(providerId);
@@ -106,7 +111,7 @@ public partial class Product
                             command.AdditionalName);
         LiquorType = Enum.Parse<ELiquorType>(command.LiquorType, true);
         Brand = command.BrandName;
-        UnitPrice = new Money(command.UnitPriceAmount, new Currency("PEN"));
+        UnitPrice = new Money(command.UnitPriceAmount, "PEN");
         MinimumStock = new ProductMinimumStock(command.MinimumStock);
         ImageUrl = new ImageUrl(command.ImageUrl);
         if (command.ProviderId != null) ProviderId = new ProviderId(command.ProviderId);

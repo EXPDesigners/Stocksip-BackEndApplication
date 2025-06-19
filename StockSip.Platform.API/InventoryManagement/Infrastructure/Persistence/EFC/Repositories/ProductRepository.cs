@@ -94,7 +94,7 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
         string warehouseId, DateTime expirationDate)
     {
         return await Context.Set<Product>()
-            .Where(product => product.Id == productId)
+            .Where(product => product.ProductId == productId)
             .Include(product => product.Inventories
                 .Where(inventory =>
                     inventory.WarehouseId == warehouseId &&
@@ -162,7 +162,7 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// </returns>
     public async Task<bool> ExistsByIdAsync(string productId)
     {
-        return await Context.Set<Product>().AnyAsync(product => product.Id == productId);
+        return await Context.Set<Product>().AnyAsync(product => product.ProductId == productId);
     }
 
     /// <summary>

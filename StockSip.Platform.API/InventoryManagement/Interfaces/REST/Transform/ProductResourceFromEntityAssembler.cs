@@ -21,12 +21,12 @@ public static class ProductResourceFromEntityAssembler
     public static ProductResource ToResourceFromEntity(Product entity)
     {
         return new ProductResource(
-            entity.Id,
+            entity.ProductId,
             entity.ImageUrl.ToString(), 
             entity.ProductName.GetFullName(),
             entity.Brand,
             entity.LiquorType.GetDisplayName(),
-            entity.UnitPrice.amount,
+            entity.UnitPrice.Amount,
             entity.MinimumStock.GetMinimumStock(),
             entity.ProviderId?.ToString());
     }

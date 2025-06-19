@@ -1,16 +1,6 @@
 namespace StockSip.Platform.API.Shared.Domain.Model.ValueObjects;
 
-public record Money(double amount, Currency currency)
+public record Money(double Amount, string Currency)
 {
-    /// <summary>
-    /// Gets the amount of money.
-    /// </summary>
-    private double Amount { get; } = amount;
-
-    /// <summary>
-    /// Gets the currency of the money.
-    /// </summary>
-    public Currency Currency { get; } = currency;
-
     public override string ToString() => $"{Amount} {Currency}";
 }

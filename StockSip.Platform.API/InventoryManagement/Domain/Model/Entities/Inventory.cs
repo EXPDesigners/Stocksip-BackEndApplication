@@ -47,6 +47,11 @@ public class Inventory
     public ProductExpirationDate ExpirationDate { get; }
     
     /// <summary>
+    /// Default constructor for Entity Framework Core.
+    /// </summary>
+    private Inventory() { }
+    
+    /// <summary>
     /// Default constructor for the Inventory class.
     /// </summary>
     /// <param name="warehouseId">

@@ -8,7 +8,7 @@ public record ProductMinimumStock()
     /// <summary>
     /// The minimum stock of the product.
     /// </summary>
-    private int MinimumStock { get; }
+    public int MinimumStock { get; }
 
     /// <summary>
     /// Default constructor for the ProductMinimumStock value object.
