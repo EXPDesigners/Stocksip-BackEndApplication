@@ -1,6 +1,4 @@
-using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
-
-namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
+﻿namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
 
 /// This query is used to retrieve all warehouses associated with a specific profile ID.
 /// <summary>

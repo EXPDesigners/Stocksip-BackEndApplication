@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
-using StockSip.Platform.API.InventoryManagement.Domain.Model.Services;
 using StockSip.Platform.API.InventoryManagement.Interfaces.REST.Resources;
 using StockSip.Platform.API.InventoryManagement.Interfaces.REST.Transform;
 using Swashbuckle.AspNetCore.Annotations;
@@ -48,7 +47,7 @@ public class WarehousesController(IWarehouseCommandService warehouseCommandServi
         Summary = "Update an Existing Warehouse",
         Description = "Update the information of an existing warehouse.",
         OperationId = "UpdateWarehouse")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Warehouse updated successfully", typeof(WarehouseResource))]
+    [SwaggerResponse(StatusCodes.Status201Created, "Warehouse updated successfully", typeof(WarehouseResource))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Warehouse could not be updated")]
     public async Task<IActionResult> UpdateWarehouse([FromRoute] string warehouseId, [FromBody] UpdateWarehouseResource resource)
     {
@@ -93,7 +92,16 @@ public class WarehousesController(IWarehouseCommandService warehouseCommandServi
         return Ok(resources);
     }
     
-    [HttpDelete("{warehouseId:int}")]
+    /// <summary>
+    /// This endpoint is used to delete a warehouse by its unique identifier.
+    /// </summary>
+    /// <param name="warehouseId">
+    /// The unique identifier of the warehouse to be deleted.
+    /// </param>
+    /// <returns>
+    /// The IActionResult indicating the result of the deletion operation.
+    /// </returns>
+    [HttpDelete("{warehouseId}")]
     [SwaggerOperation(
         Summary = "Delete a Warehouse",
         Description = "Deletes a warehouse by its unique identifier.",
@@ -106,5 +114,4 @@ public class WarehousesController(IWarehouseCommandService warehouseCommandServi
         await warehouseCommandService.Handle(deleteWarehouseCommand);
         return Ok(new {Message = $"Warehouse with ID {warehouseId} deleted successfully."});
     }
-    
 }
