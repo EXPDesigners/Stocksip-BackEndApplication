@@ -2,6 +2,7 @@
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
 using StockSip.Platform.API.Shared.Domain.Repositories;
@@ -162,6 +163,10 @@ public class ProductCommandService (
         var updatedInventory = await productRepository.FindInventoryByProductIdAndWarehouseIdAndExpirationDateAsync(command.ProductId, command.WarehouseId, command.ExpirationDate)
                                ?? throw new ArgumentException($"Inventory with Product ID {command.ProductId}, Warehouse ID {command.WarehouseId} and Expiration Date {command.ExpirationDate} does not exist.");
 
+        // Registers a product exit with the provided command details.
+        var productExit = new ProductExit(command.ProductId, command.WarehouseId, "Sold",
+            command.RemovedQuantity, command.ExpirationDate);
+        
         // If the retrieved inventory exists, it decreases the stock to the current inventory.
         updatedInventory.RemoveStockFromProduct(command.RemovedQuantity);
         
