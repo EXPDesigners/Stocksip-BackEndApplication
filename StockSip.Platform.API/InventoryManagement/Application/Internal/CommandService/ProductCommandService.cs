@@ -84,6 +84,9 @@ public class ProductCommandService (
         var inventory = await productRepository.FindInventoryByProductIdAndWarehouseIdAndExpirationDateAsync(command.ProductId, command.WarehouseId, command.ExpirationDate)
                         ?? throw new ArgumentException($"Inventory with Product ID {command.ProductId}, Warehouse ID {command.WarehouseId} and Expiration Date {command.ExpirationDate} does not exist.");
 
+        // If the retrieved inventory exists, it removes the relation between the product and the inventory.
+        product.RemoveInventoryRelation(inventory);
+        
         // If the current stock of the product in the warehouse is zero, it sets the product ID to an empty string to indicate that the product has been deleted from the warehouse.
         if (inventory.ProductStock.GetCurrentStock() == 0)
         {
@@ -127,6 +130,9 @@ public class ProductCommandService (
             Product = product,
             Warehouse = warehouse
         };
+        
+        // Adds the new inventory entry to the product's inventory relations.
+        product.AddInventoryRelation(inventory);
         
         // Completes the inventory creation by saving the changes to the database.
         await unitOfWork.CompleteAsync();
@@ -245,6 +251,9 @@ public class ProductCommandService (
             Product = movedProduct,
             Warehouse = newWarehouse
         };
+        
+        // Adds the new inventory entry to the product's inventory relations if it does not already exist.
+        movedProduct.AddInventoryRelation(newInventory);
         
         // Completes the current inventory update by saving the changes to the database.
         await unitOfWork.CompleteAsync();

@@ -38,11 +38,11 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// <returns>
     /// A list of products that belong to the specified warehouse.
     /// </returns>
-    public async Task<IEnumerable<Inventory>> FindByWarehouseIdAsync(string warehouseId)
+    public async Task<IEnumerable<Product>> FindByWarehouseIdAsync(string warehouseId)
     {
-        return await Context.Set<Inventory>()
-            .Where(inventory => inventory.WarehouseId == warehouseId)
-            .Include(inventory => inventory.Product)
+        return await Context.Set<Product>()
+            .Where(product => product.Inventories.Any(inventory => inventory.WarehouseId == warehouseId))
+            .Include(product => product.Inventories.Where(inventory => inventory.WarehouseId == warehouseId))
             .ToListAsync();
     }
 
@@ -83,20 +83,22 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// The expiration date of the product's inventory.
     /// </param>
     /// <returns>
-    /// The Inventory and its Product object if found, or null if not found.
+    /// The Product and its Inventory object if found, or null if not found.
     /// </returns>
-    public async Task<Inventory?> FindByProductIdAndWarehouseIdAndExpirationDateAsync(string productId,
+    public async Task<Product?> FindByProductIdAndWarehouseIdAndExpirationDateAsync(string productId,
         string warehouseId, DateTime expirationDate)
     {
-        return await Context.Set<Inventory>()
-            .Include(inventory => inventory.Product)
-            .FirstOrDefaultAsync(inventory => inventory.ProductId == productId
-                                              && inventory.WarehouseId == warehouseId
-                                              && inventory.ExpirationDate == new ProductExpirationDate(expirationDate));
+        return await Context.Set<Product>()
+            .Where(product => product.Id == productId)
+            .Include(product => product.Inventories
+                .Where(inventory =>
+                    inventory.WarehouseId == warehouseId &&
+                    inventory.ExpirationDate == new ProductExpirationDate(expirationDate)))
+            .FirstOrDefaultAsync();
     }
 
     /// <summary>
-    /// This async method retrieves all inventory items that match the specified full name and warehouse ID.
+    /// This async method retrieves all product items that match the specified full name and warehouse ID.
     /// </summary>
     /// <param name="brandName">
     /// The name of the brand of the product.
@@ -111,15 +113,18 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// The ID of the warehouse where the inventory is located.
     /// </param>
     /// <returns>
-    /// A list of Inventory objects that match the specified criteria.
+    /// A list of Product objects that match the specified criteria with its correspondent Inventory object.
     /// </returns>
-    public async Task<IEnumerable<Inventory>> FindByFullNameAndWarehouseId(string brandName, string liquorType,
+    public async Task<IEnumerable<Product>> FindByFullNameAndWarehouseId(string brandName, string liquorType,
         string? additionalName, string warehouseId)
     {
-        return await Context.Set<Inventory>()
-            .Where(inventory => inventory.WarehouseId == warehouseId
-                                && inventory.Product.ProductName == new ProductName(brandName, Enum.Parse<ELiquorType>(liquorType, true), additionalName))
-            .Include(inventory => inventory.Product)
+        var targetProductName = new ProductName(brandName, Enum.Parse<ELiquorType>(liquorType, true), additionalName);
+
+        return await Context.Set<Product>()
+            .Where(product => product.ProductName == targetProductName &&
+                              product.Inventories.Any(inventory => inventory.WarehouseId == warehouseId))
+            .Include(product => product.Inventories
+                .Where(inventory => inventory.WarehouseId == warehouseId))
             .ToListAsync();
     }
 
@@ -132,11 +137,12 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// <returns>
     /// The list of products associated with the specified profile ID.
     /// </returns>
-    public async Task<IEnumerable<Inventory>> FindProductsByProfileIdAsync(ProfileId profileId)
+    public async Task<IEnumerable<Product>> FindProductsByProfileIdAsync(ProfileId profileId)
     {
-        return await Context.Set<Inventory>()
-            .Where(inventory => inventory.Warehouse.ProfileId == profileId)
-            .Include(inventory => inventory.Product)
+        return await Context.Set<Product>()
+            .Where(product => product.Inventories.Any(inventory => inventory.Warehouse.ProfileId == profileId))
+            .Include(product => product.Inventories
+                .Where(inventory => inventory.Warehouse.ProfileId == profileId))
             .ToListAsync();
     }
 

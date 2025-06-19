@@ -24,7 +24,7 @@ public interface IProductRepository : IBaseRepository<Product>
     /// <returns>
     /// An enumerable collection of Product aggregates that belong to the specified warehouse.
     /// </returns>
-    Task<IEnumerable<Inventory>> FindByWarehouseIdAsync(string warehouseId);
+    Task<IEnumerable<Product>> FindByWarehouseIdAsync(string warehouseId);
     
     /// <summary>
     /// This method retrieves an inventory item by the product ID, warehouse ID and expiration date.
@@ -40,17 +40,17 @@ public interface IProductRepository : IBaseRepository<Product>
     /// <returns>
     /// The Inventory and its Product object if found, or null if not found.
     /// </returns>
-    Task<Inventory?> FindByProductIdAndWarehouseIdAndExpirationDateAsync(string productId, string warehouseId, DateTime expirationDate);
+    Task<Product?> FindByProductIdAndWarehouseIdAndExpirationDateAsync(string productId, string warehouseId, DateTime expirationDate);
     
     /// <summary>
     /// This method retrieves all inventory items that match the specified full name and warehouse ID.
     /// </summary>
-    Task<IEnumerable<Inventory>> FindByFullNameAndWarehouseId(string brandName, string liquorType, string? additionalName, string warehouseId);
+    Task<IEnumerable<Product>> FindByFullNameAndWarehouseId(string brandName, string liquorType, string? additionalName, string warehouseId);
 
     /// <summary>
     /// Method to retrieve all products associated with a specific profile ID.
     /// </summary>
-    Task<IEnumerable<Inventory>> FindProductsByProfileIdAsync(ProfileId profileId);
+    Task<IEnumerable<Product>> FindProductsByProfileIdAsync(ProfileId profileId);
     
     /// <summary>
     /// This method checks if a product with the specified ID exists in the database.

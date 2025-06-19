@@ -35,7 +35,7 @@ public class ProductQueryService(IProductRepository productRepository) : IProduc
     /// <returns>
     /// The list of products associated with the specified warehouse ID.
     /// </returns>
-    public async Task<IEnumerable<Inventory>> Handle(GetAllProductsByWarehouseIdQuery query)
+    public async Task<IEnumerable<Product>> Handle(GetAllProductsByWarehouseIdQuery query)
     {
         return await productRepository.FindByWarehouseIdAsync(query.WarehouseId); 
     }
@@ -63,7 +63,7 @@ public class ProductQueryService(IProductRepository productRepository) : IProduc
     /// <returns>
     /// A list of inventory items that match the specified full name and warehouse ID.
     /// </returns>
-    public async Task<IEnumerable<Inventory>> Handle(GetProductsByFullNameAndWarehouseIdQuery query)
+    public async Task<IEnumerable<Product>> Handle(GetProductsByFullNameAndWarehouseIdQuery query)
     {
         return await productRepository.FindByFullNameAndWarehouseId(query.BrandName, query.LiquorType,
             query.AdditionalName, query.WarehouseId);
@@ -78,7 +78,7 @@ public class ProductQueryService(IProductRepository productRepository) : IProduc
     /// <returns>
     /// A list of inventory items associated with the specified profile ID.
     /// </returns>
-    public async Task<IEnumerable<Inventory>> Handle(GetAllProductsByProfileIdQuery query)
+    public async Task<IEnumerable<Product>> Handle(GetAllProductsByProfileIdQuery query)
     {
         return await productRepository.FindProductsByProfileIdAsync(query.ProfileId);
     }
@@ -88,7 +88,7 @@ public class ProductQueryService(IProductRepository productRepository) : IProduc
     /// </summary>
     /// <param name="query"></param>
     /// <returns></returns>
-    public async Task<Inventory?> Handle(GetProductByIdAndWarehouseIdAndExpirationDateQuery query)
+    public async Task<Product?> Handle(GetProductByIdAndWarehouseIdAndExpirationDateQuery query)
     {
         return await productRepository.FindByProductIdAndWarehouseIdAndExpirationDateAsync(query.ProductId,
             query.WarehouseId, query.ExpirationDate);

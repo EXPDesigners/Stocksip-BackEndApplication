@@ -1,4 +1,5 @@
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.Shared.Domain.Model.ValueObjects;
 using DateTime = System.DateTime;
@@ -49,7 +50,12 @@ public partial class Product
     /// The unique identifier of the provider associated with the product, if any.
     /// </summary>
     public ProviderId? ProviderId { get; private set; }
-
+    
+    /// <summary>
+    /// The collection of inventories associated with the product, represented as a list of Inventory entities.
+    /// </summary>
+    public ICollection<Inventory> Inventories { get; private set; }
+    
     /// <summary>
     /// Default constructor for the Product class.
     /// </summary>
@@ -153,5 +159,42 @@ public partial class Product
         SetMinimumStock(updatedMinimumStock);
         ImageUrl = new ImageUrl(updatedImageUrl);
         UnitPrice = new Money(updatedPrice, UnitPrice.Currency);
+    }
+
+    /// <summary>
+    /// Verifies if the product has an inventory relation with the specified inventory.
+    /// </summary>
+    /// <param name="inventory">
+    /// The inventory to check for a relation with the product.
+    /// </param>
+    /// <returns>
+    /// True if the product has a relation with the specified inventory; otherwise, false.
+    /// </returns>
+    private bool ExistsInventoryRelation(Inventory inventory)
+    {
+        return Inventories.Any(i => i == inventory);
+    }
+    
+    /// <summary>
+    /// This method adds an inventory relation to the product.
+    /// </summary>
+    /// <param name="inventory">
+    /// The inventory to be added to the product's inventory relations.
+    /// </param>
+    public void AddInventoryRelation(Inventory inventory)
+    {
+        if (ExistsInventoryRelation(inventory)) return;
+        Inventories.Add(inventory);
+    }
+
+    /// <summary>
+    /// This method removes an inventory relation from the product.
+    /// </summary>
+    /// <param name="inventory">
+    /// The inventory to be removed from the product's inventory relations.
+    /// </param>
+    public void RemoveInventoryRelation(Inventory inventory)
+    {
+        Inventories.Remove(inventory);
     }
 }
