@@ -8,7 +8,7 @@ public record ProductName()
     /// <summary>
     /// The full name of the product.
     /// </summary>
-    public string? FullName { get; }
+    public string? FullName { get; set; }
 
     /// <summary>
     /// Default constructor that initializes a new ProductName instance.

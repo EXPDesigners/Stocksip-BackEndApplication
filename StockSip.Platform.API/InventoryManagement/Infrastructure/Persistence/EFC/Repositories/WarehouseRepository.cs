@@ -52,7 +52,7 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
     /// This method checks if a warehouse with the specified name, profile ID, and a different warehouse ID exists in the database.
     /// </summary>
     /// <returns>True if a warehouse exists with the specified name, profile ID, and a different warehouse ID; otherwise, false.</returns>
-    public async Task<bool> ExistsByNameIgnoreCaseAndProfileIdAndWarehouseIdIsNotAsync(string name, int profileId, int warehouseId)
+    public async Task<bool> ExistsByNameIgnoreCaseAndProfileIdAndWarehouseIdIsNotAsync(string name, int profileId, string warehouseId)
     {
         return await Context.Set<Warehouse>()
             .AnyAsync(w =>
@@ -66,7 +66,7 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
     /// </summary>
     /// <returns>True if a warehouse exists with the specified address, city, postal code, profile ID, and a different warehouse ID; otherwise, false.</returns>
     public async Task<bool> ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAndProfileIdIsNotAsync(
-            string street, string city, string postalCode, int profileId, int warehouseId)
+            string street, string city, string postalCode, int profileId, string warehouseId)
     {
         return await Context.Set<Warehouse>()
             .AnyAsync(w =>

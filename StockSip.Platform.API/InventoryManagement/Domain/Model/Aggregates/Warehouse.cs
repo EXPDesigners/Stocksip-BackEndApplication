@@ -9,7 +9,7 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 /// </summary>
 public class Warehouse
 {
-    public string WarehouseId { get; internal set; }
+    public string WarehouseId { get; internal set; } = Guid.NewGuid().ToString();
     public string? Name { get; private set; }
     public WarehouseAddress? Address { get; internal set; }
     public Temperature? Temperature { get; internal set; }

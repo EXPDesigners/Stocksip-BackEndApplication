@@ -3,7 +3,7 @@
 /// <summary>
 /// This record defines the warehouse resource.
 /// </summary>
-public record WarehouseResource(int WarehouseId,
+public record WarehouseResource(string WarehouseId,
                                 string Name,
                                 string Street,
                                 string City,
