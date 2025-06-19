@@ -41,6 +41,11 @@ public partial class ProductExit
     public int ProductQuantity { get; private set; }
     
     /// <summary>
+    /// The expiration date of the product associated with the exit, represented as a ProductExpirationDate value object.
+    /// </summary>
+    public ProductExpirationDate ProductExpirationDate { get; private set; }
+    
+    /// <summary>
     /// The date and time when the product exit occurred.
     /// </summary>
     public DateTime ExitDate { get; } = DateTime.Now;
@@ -60,12 +65,13 @@ public partial class ProductExit
     /// <param name="productQuantity">
     /// The quantity of the product being exited from the inventory.
     /// </param>
-    public ProductExit(string productId, string warehouseId, string exitReason, int productQuantity)
+    public ProductExit(string productId, string warehouseId, string exitReason, int productQuantity, DateTime productExpirationDate)
     {
         ProductId = productId;
         WarehouseId = warehouseId;
         ExitReason = Enum.Parse<EProductExitReasons>(exitReason);
         ProductQuantity = productQuantity;
+        ProductExpirationDate = new ProductExpirationDate(productExpirationDate);
     }
 
     /// <summary>
@@ -77,6 +83,7 @@ public partial class ProductExit
         WarehouseId = command.WarehouseId;
         ExitReason = Enum.Parse<EProductExitReasons>(command.ExitReason);
         ProductQuantity = command.QuantityExited;
+        ProductExpirationDate = new ProductExpirationDate(command.ExpirationDate);
     }
 
     /// <summary>

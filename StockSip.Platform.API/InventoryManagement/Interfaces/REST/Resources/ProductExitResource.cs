@@ -3,4 +3,10 @@
 /// <summary>
 /// This record defines the product exit resource.
 /// </summary>
-public record ProductExitResource(string Id, string ProductId, string WarehouseId, string Quantity, DateTime ProductExpirationDate, DateTime ExitDate);
+public record ProductExitResource(string Id, 
+    string ProductId, 
+    string WarehouseId, 
+    int Quantity, 
+    DateTime ProductExpirationDate, 
+    DateTime ExitDate, 
+    string ExitReason);
