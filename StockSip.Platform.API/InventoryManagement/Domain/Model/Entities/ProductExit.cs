@@ -10,7 +10,7 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 public partial class ProductExit
 {
     /// <summary>
-    /// The inventory of the product associated with the exit, represented as a Inventory entity.
+    /// The inventory of the product associated with the exit, represented as an Inventory entity.
     /// </summary>
     public Inventory Inventory { get; internal set; }
     
