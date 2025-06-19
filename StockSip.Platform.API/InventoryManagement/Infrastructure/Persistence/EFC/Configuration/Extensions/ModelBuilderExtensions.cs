@@ -59,7 +59,7 @@ public static class ModelBuilderExtensions
         builder.Entity<Product>().OwnsOne(p => p.ProductName, pn =>
         {
             pn.WithOwner();
-            pn.Property(pn => pn.FullName).IsRequired().HasMaxLength(100);
+            pn.Property(fn => fn.FullName).IsRequired().HasMaxLength(100);
         });
         
         builder.Entity<Product>().OwnsOne(p => p.UnitPrice, up =>
@@ -80,7 +80,7 @@ public static class ModelBuilderExtensions
         builder.Entity<Product>().OwnsOne(p => p.MinimumStock, ms =>
         {
             ms.WithOwner();
-            ms.Property(ms => ms.MinimumStock).IsRequired();
+            ms.Property(msk => msk.MinimumStock).IsRequired();
         });
         
         builder.Entity<Product>().OwnsOne(w => w.ImageUrl, i =>
