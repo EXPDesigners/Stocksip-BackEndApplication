@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
@@ -13,6 +14,32 @@ namespace StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.E
 /// <param name="context"></param>
 public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehouse>(context), IWarehouseRepository
 {
+    /// <summary>
+    /// This method retrieves a list of product exits associated with a specific warehouse ID.
+    /// </summary>
+    /// <returns>
+    /// A list of ProductExit entities that match the specified warehouse ID.
+    /// </returns>
+    public async Task<IEnumerable<ProductExit>> FindAllProductExitsByWarehouseIdAsync(string warehouseId)
+    {
+        return await Context.Set<ProductExit>()
+            .Where(exit => exit.WarehouseId == warehouseId)
+            .ToListAsync();
+    }
+
+    /// <summary>
+    /// This method retrieves all product exits for a specific product in a specific warehouse.
+    /// </summary>
+    /// <returns>
+    /// A list of ProductExit entities that match the specified product ID and warehouse ID.
+    /// </returns>
+    public async Task<IEnumerable<ProductExit>> FindAllProductExitsByProductIdAndWarehouseIdAsync(string productId, string warehouseId)
+    {
+        return await Context.Set<ProductExit>()
+            .Where(exit => exit.ProductId == productId && exit.WarehouseId == warehouseId)
+            .ToListAsync();
+    }
+
     /// <summary>
     /// This method checks if a warehouse with the specified name and profile ID exists in the database.
     /// </summary>

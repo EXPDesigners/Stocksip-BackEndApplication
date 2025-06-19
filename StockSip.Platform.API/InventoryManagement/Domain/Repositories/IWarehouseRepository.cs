@@ -1,4 +1,5 @@
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 
@@ -9,6 +10,18 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 /// </summary>
 public interface IWarehouseRepository : IBaseRepository<Warehouse>
 {
+    /// <summary>
+    /// This method retrieves all product exits associated with a specific warehouse ID.
+    /// </summary>
+    /// <returns> A list of product exit objects related to a specific warehouse ID. </returns>
+    Task<IEnumerable<ProductExit>> FindAllProductExitsByWarehouseIdAsync(string warehouseId);
+    
+    /// <summary>
+    /// This method retrieves all product exits associated with a specific product ID and warehouse ID.
+    /// </summary>
+    /// <returns> A list of product exit objects related to a specific product ID and warehouse ID. </returns>
+    Task<IEnumerable<ProductExit>> FindAllProductExitsByProductIdAndWarehouseIdAsync(string productId, string warehouseId);
+    
     /// <summary>
     /// This method checks if a warehouse with the specified name and profile ID exists in the database.
     /// </summary>
