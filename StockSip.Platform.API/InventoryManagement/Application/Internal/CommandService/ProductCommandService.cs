@@ -70,7 +70,7 @@ public class ProductCommandService (
     /// <returns>  </returns>
     /// <exception cref="ArgumentException"> Thrown when the product to be deleted or the warehouse
     /// where we try to delete the product or the inventory of the product in the warehouse does not exist. </exception>
-    public async Task<Inventory?> Handle(DeleteProductFromWarehouseCommand command)
+    public async Task<Product?> Handle(DeleteProductFromWarehouseCommand command)
     {
         // Validate if the product to be deleted exists.
         var product = await productRepository.FindByIdAsync(command.ProductId)
@@ -83,9 +83,6 @@ public class ProductCommandService (
         // Retrieves the inventory of the product in the warehouse if it exists.
         var inventory = await productRepository.FindInventoryByProductIdAndWarehouseIdAndExpirationDateAsync(command.ProductId, command.WarehouseId, command.ExpirationDate)
                         ?? throw new ArgumentException($"Inventory with Product ID {command.ProductId}, Warehouse ID {command.WarehouseId} and Expiration Date {command.ExpirationDate} does not exist.");
-
-        // If the retrieved inventory exists, it removes the relation between the product and the inventory.
-        product.RemoveInventoryRelation(inventory);
         
         // If the current stock of the product in the warehouse is zero, it sets the product ID to an empty string to indicate that the product has been deleted from the warehouse.
         if (inventory.ProductStock.GetCurrentStock() == 0)
@@ -99,11 +96,14 @@ public class ProductCommandService (
             throw new ArgumentException("Cannot delete product from warehouse because the stock is not zero.");
         }
         
+        // If the retrieved inventory exists, it removes the relation between the product and the inventory.
+        product.RemoveInventoryRelation(inventory);
+        
         // Completes the current inventory update by saving the changes to the database.
         await unitOfWork.CompleteAsync();
         
-        // Returns the inventory entry after deletion, which may be a new or updated inventory.
-        return inventory;
+        // Returns the product entry after deletion.
+        return product;
     }
 
     /// <summary>
@@ -114,7 +114,7 @@ public class ProductCommandService (
     /// <returns> The new inventory which is a result of the relation between Product and Warehouse. </returns>
     /// <exception cref="ArgumentException"> Thrown when the product to be added or the warehouse
     /// where we try to add the product stock does not exist. </exception>
-    public async Task<Inventory?> Handle(AddProductsToWarehouseCommand command)
+    public async Task<Product?> Handle(AddProductsToWarehouseCommand command)
     {
         // Validate if the product to be added exists.
         var product = await productRepository.FindByIdAsync(command.ProductId)
@@ -137,8 +137,8 @@ public class ProductCommandService (
         // Completes the inventory creation by saving the changes to the database.
         await unitOfWork.CompleteAsync();
         
-        // Returns the new inventory entry, which may be a new or updated inventory.
-        return inventory;
+        // Returns the new product entry, which may be a new or updated inventory.
+        return product;
     }
     
     /// <summary>
@@ -217,7 +217,7 @@ public class ProductCommandService (
     /// <returns> The updated or new inventory of the product in the new warehouse. </returns>
     /// <exception cref="ArgumentException"> Thrown when the product stock to be moved or the warehouse
     /// where we try to send the product stock does not exist. </exception>
-    public async Task<Inventory?> Handle(MoveProductsToAnotherWarehouseCommand command)
+    public async Task<Product?> Handle(MoveProductsToAnotherWarehouseCommand command)
     {
         // Validate if the product to be moved exists.
         var movedProduct = await productRepository.FindByIdAsync(command.ProductId)
@@ -259,6 +259,6 @@ public class ProductCommandService (
         await unitOfWork.CompleteAsync();
         
         // Returns the new inventory entry, which may be a new or updated inventory.
-        return newInventory;
+        return movedProduct;
     }
 }

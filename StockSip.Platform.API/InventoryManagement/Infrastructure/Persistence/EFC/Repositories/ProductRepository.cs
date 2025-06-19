@@ -14,18 +14,23 @@ namespace StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.E
 public class ProductRepository(AppDbContext context) : BaseRepository<Product>(context), IProductRepository
 {
     /// <summary>
-    /// This async method retrieves all products associated with a specific provider ID.
+    /// This async method retrieves all products associated with a specific provider and warehouse ID.
     /// </summary>
     /// <param name="providerId">
-    /// The ID of the provider whose products are to be retrieved.
+    /// The ID of the provider whose products in a specific warehouse are to be retrieved.
+    /// </param>
+    /// <param name="warehouseId">
+    /// The ID of the warehouse whose products are to be retrieved.
     /// </param>
     /// <returns>
-    /// A list of products that belong to the specified provider.
+    /// A list of products that belong to the specified provider and warehouse ID.
     /// </returns>
-    public async Task<IEnumerable<Product>> FindByProviderIdAsync(ProviderId providerId)
+    public async Task<IEnumerable<Product>> FindByProviderIdAndWarehouseIdAsync(ProviderId providerId, string warehouseId)
     {
         return await Context.Set<Product>()
-            .Where(product => product.ProviderId == providerId)
+            .Where(product => product.ProviderId == providerId && 
+                              product.Inventories.Any(inventory => inventory.WarehouseId == warehouseId))
+            .Include(product => product.Inventories.Any(inventory => inventory.WarehouseId == warehouseId))
             .ToListAsync();
     }
 

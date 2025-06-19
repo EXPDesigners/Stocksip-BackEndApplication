@@ -13,17 +13,17 @@ namespace StockSip.Platform.API.InventoryManagement.Application.Internal.QuerySe
 public class ProductQueryService(IProductRepository productRepository) : IProductQueryService
 {
     /// <summary>
-    /// This method retrieves all products associated with a specific provider ID.
+    /// This method retrieves all products associated with a specific provider ID and a warehouse ID.
     /// </summary>
     /// <param name="query">
     /// The query containing the provider ID for which products are to be retrieved.
     /// </param>
     /// <returns>
-    /// A list of products associated with the specified provider ID.
+    /// A list of products associated with the specified provider ID and warehouse ID.
     /// </returns>
-    public async Task<IEnumerable<Product>> Handle(GetAllProductsByProviderIdQuery query)
+    public async Task<IEnumerable<Product>> Handle(GetAllProductsByProviderIdAndWarehouseIdQuery query)
     {
-        return await productRepository.FindByProviderIdAsync(query.ProviderId);
+        return await productRepository.FindByProviderIdAndWarehouseIdAsync(query.ProviderId, query.WarehouseId);
     }
 
     /// <summary>

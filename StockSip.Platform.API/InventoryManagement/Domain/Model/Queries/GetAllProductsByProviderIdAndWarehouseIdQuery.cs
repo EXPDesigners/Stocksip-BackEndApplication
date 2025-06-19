@@ -8,4 +8,7 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
 /// <param name="ProviderId">
 /// The unique identifier of the provider whose products are to be retrieved.
 /// </param>
-public record GetAllProductsByProviderIdQuery(ProviderId ProviderId);
+/// <param name="WarehouseId">
+/// The unique identifier of the warehouse whose products are to be retrieved.
+/// </param>
+public record GetAllProductsByProviderIdAndWarehouseIdQuery(ProviderId ProviderId, string WarehouseId);

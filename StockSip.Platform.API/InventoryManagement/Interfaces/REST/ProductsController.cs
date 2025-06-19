@@ -1,6 +1,7 @@
 ﻿using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
 using StockSip.Platform.API.InventoryManagement.Interfaces.REST.Resources;
 using StockSip.Platform.API.InventoryManagement.Interfaces.REST.Transform;
@@ -69,7 +70,7 @@ public class ProductsController(
         OperationId = "CreateProduct")]
     [SwaggerResponse(StatusCodes.Status201Created, "Product created successfully!", typeof(ProductResource))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Product could not be created...")]
-    public async Task<IActionResult> CreateProductResource([FromBody] CreateProductResource resource)
+    public async Task<IActionResult> CreateProduct([FromBody] CreateProductResource resource)
     {
         var createProductCommand = CreateProductCommandFromResourceAssembler.ToCommandFromResource(resource);
         var product = await productCommandService.Handle(createProductCommand);
@@ -97,10 +98,10 @@ public class ProductsController(
     [SwaggerOperation(
         Summary = "Update an Existing Product",
         Description = "Updates an existing product by its unique identifier and returns the updated product resource.",
-        OperationId = "UpdateProduct")]
+        OperationId = "UpdateProductInformation")]
     [SwaggerResponse(StatusCodes.Status201Created, "Product updated successfully!", typeof(ProductResource))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Product could not be updated...")]
-    public async Task<IActionResult> UpdateProductResource([FromBody] UpdateProductResource resource, [FromRoute] string productId)
+    public async Task<IActionResult> UpdateProductInformation([FromBody] UpdateProductResource resource, [FromRoute] string productId)
     {
         var updateProductCommand = UpdateProductCommandFromResourceAssembler.ToCommandFromResource(resource, productId);
         var updatedProduct = await productCommandService.Handle(updateProductCommand);
@@ -110,5 +111,35 @@ public class ProductsController(
         }
         var updatedResource = ProductResourceFromEntityAssembler.ToResourceFromEntity(updatedProduct);
         return CreatedAtAction(nameof(GetProductById), new { productId = updatedResource.Id }, updatedResource);
+    }
+
+    /// <summary>
+    /// This endpoint retrieves all products associated with a specific profile ID.
+    /// </summary>
+    /// <param name="profileId">
+    /// The unique identifier of the profile for which products are to be retrieved.
+    /// </param>
+    /// <returns>
+    /// An IActionResult containing a list of product resources if found, or a NotFound result if no products are found for the specified profile ID.
+    /// </returns>
+    [HttpGet]
+    [SwaggerOperation(
+        Summary = "Get all products by profile ID",
+        Description = "Retrieves all products associated with a specific profile ID.",
+        OperationId = "GetAllProductsByProfileId")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Products found!", typeof(IEnumerable<ProductResource>))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "No products found for the specified profile ID...")]
+    public async Task<IActionResult> GetAllProductsByProfileId(string profileId)
+    {
+        var targetProfileId = new ProfileId(profileId);
+        var getAllProductsByProfileIdQuery = new GetAllProductsByProfileIdQuery(targetProfileId);
+        var products = await productQueryService.Handle(getAllProductsByProfileIdQuery);
+        var productsEnumerable = products.ToList();
+        if (productsEnumerable.Count == 0)
+        {
+            return NotFound($"No products found for profile with ID {profileId}.");
+        }
+        var productResources = productsEnumerable.Select(ProductResourceFromEntityAssembler.ToResourceFromEntity);
+        return Ok(productResources);
     }
 }

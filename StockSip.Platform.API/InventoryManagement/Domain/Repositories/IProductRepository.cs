@@ -16,7 +16,7 @@ public interface IProductRepository : IBaseRepository<Product>
     /// <returns>
     /// An enumerable collection of Product aggregates that belong to the specified provider.
     /// </returns>
-    Task<IEnumerable<Product>> FindByProviderIdAsync(ProviderId providerId);
+    Task<IEnumerable<Product>> FindByProviderIdAndWarehouseIdAsync(ProviderId providerId, string warehouseId);
         
     /// <summary>
     /// This method retrieves all products associated with a specific warehouse ID.
