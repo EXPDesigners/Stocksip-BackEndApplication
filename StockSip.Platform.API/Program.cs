@@ -1,13 +1,11 @@
-using Cortex.Mediator.Behaviors;
-using Cortex.Mediator.Commands;
-using Cortex.Mediator.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.QueryService;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Repositories;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Services;
+using StockSip.Platform.API.InventoryManagement.Infrastructure.Repositories;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 using StockSip.Platform.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;

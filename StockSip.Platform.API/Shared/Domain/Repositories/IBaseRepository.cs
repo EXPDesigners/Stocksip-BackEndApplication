@@ -32,7 +32,7 @@ public interface IBaseRepository<TEntity>
     /// <summary>
     ///     Remove and entity
     /// </summary>
-    /// <param name="entity">The entity object to remove</param>
+    /// <param name="entity">The entity objects to remove</param>
     void Remove(TEntity entity);
 
     /// <summary>

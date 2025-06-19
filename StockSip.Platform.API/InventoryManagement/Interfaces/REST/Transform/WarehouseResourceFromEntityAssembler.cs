@@ -16,12 +16,22 @@ public static class WarehouseResourceFromEntityAssembler
     public static WarehouseResource ToResourceFromEntity(Warehouse entity)
     {
         return new WarehouseResource(
+            entity.WarehouseId,
             entity.Name,
-            entity.Address.GetFullAddress(),
+            entity.Address.Street,
+            entity.Address.City,
+            entity.Address.District,
+            entity.Address.PostalCode,
+            entity.Address.Country,
             entity.Temperature.MaxTemperature,
             entity.Temperature.MinTemperature,
             entity.Capacity.TotalCapacity,
             entity.ImageUrl.ToString()
         );
+    }
+    
+    public static IEnumerable<WarehouseResource> ToResourcesFromEntities(IEnumerable<Warehouse> entities)
+    {
+        return entities.Select(ToResourceFromEntity);
     }
 }

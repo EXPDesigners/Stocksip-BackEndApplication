@@ -1,8 +1,7 @@
 ﻿using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
-using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Services;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
-using StockSip.Platform.API.InventoryManagement.Domain.Services;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 
 namespace StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
@@ -22,13 +21,13 @@ public class WarehouseCommandService(IWarehouseRepository warehouseRepository, I
     /// <exception cref="ArgumentException"> Thrown when a warehouse with the same name or address already exists.</exception>
     public async Task<Warehouse?> Handle(CreateWarehouseCommand command)
     {
-        if (await warehouseRepository.ExistByNameIgnoreCaseAndProfileIdAsync(command.Name, new ProfileId(command.ProfileId)))
+        if (await warehouseRepository.ExistByNameIgnoreCaseAndProfileIdAsync(command.Name, command.ProfileId))
         {
             throw new ArgumentException($"Warehouse with name {command.Name} already exists.");
         }
 
         if (await warehouseRepository.ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAsync(
-                command.Street, command.City, command.PostalCode, new ProfileId(command.ProfileId)))
+                command.Street, command.City, command.PostalCode, command.ProfileId))
         {
             throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.PostalCode} already exists.");
         }
@@ -77,5 +76,14 @@ public class WarehouseCommandService(IWarehouseRepository warehouseRepository, I
         warehouseRepository.Update(warehouseToUpdate);
         await unitOfWork.CompleteAsync();
         return warehouseToUpdate;
+    }
+
+    public async Task Handle(DeleteWarehouseCommand command)
+    {
+        var warehouseToDelete = await warehouseRepository.FindByIdAsync(command.WarehouseId)
+                                ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
+        
+        warehouseRepository.Remove(warehouseToDelete);
+        await unitOfWork.CompleteAsync();
     }
 }

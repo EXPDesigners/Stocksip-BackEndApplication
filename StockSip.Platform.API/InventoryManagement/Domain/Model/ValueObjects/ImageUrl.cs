@@ -9,7 +9,7 @@ public record ImageUrl()
     /// <summary>
     /// The default image URL used when no specific image URL is provided.
     /// </summary>
-    private static readonly Uri DefaultImageUrl = new ("https://res.cloudinary.com/deuy1pr9e/image/upload/v1747454213/g24tiltaf9nughb8km93.avif");
+    private static readonly Uri DefaultImageUrl = new ("https://res.cloudinary.com/deuy1pr9e/image/upload/v1749934502/warehouses/ed50b16b-91b8-4027-a23d-71aaa158bc8b.jpg");
     
     /// <summary>
     /// The image URL for the product or warehouse.

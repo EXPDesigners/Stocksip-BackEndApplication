@@ -1,5 +1,4 @@
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
-using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 
 namespace StockSip.Platform.API.InventoryManagement.Domain.Repositories;

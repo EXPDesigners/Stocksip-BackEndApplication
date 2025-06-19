@@ -20,4 +20,9 @@ public class WarehouseQueryService(IWarehouseRepository warehouseRepository) : I
     {
         return await warehouseRepository.FindByIdAsync(query.WarehouseId);
     }
+
+    public async Task<IEnumerable<Warehouse>> Handle(GetAllWarehousesQuery query)
+    {
+        return await warehouseRepository.ListAsync();
+    }
 }
