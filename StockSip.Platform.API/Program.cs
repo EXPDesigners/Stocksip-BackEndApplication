@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.QueryService;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
@@ -45,7 +46,25 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 // Add Swagger/OpenAPI support
-builder.Services.AddSwaggerGen(options => {
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "StockSip.Platform.API",
+        Version = "v1",
+        Description = "StockSip Platform API for Inventory Management",
+        TermsOfService = new Uri("https://stocksip.com/tos"),
+        Contact = new OpenApiContact
+        {
+            Name = "StockSip",
+            Email = "contact@stocksip.com"
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Apache 2.0",
+            Url = new Uri("https://www.apache.org/licenses/LICENSE-2.0.html")
+        },
+    });
     options.EnableAnnotations();
 });
 
