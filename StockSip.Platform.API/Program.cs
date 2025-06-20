@@ -3,6 +3,11 @@ using Cortex.Mediator.Commands;
 using Cortex.Mediator.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using StockSip.Platform.API.AlertsAndNotifications.Application.Internal.CommandServices;
+using StockSip.Platform.API.AlertsAndNotifications.Application.Internal.QueryServices;
+using StockSip.Platform.API.AlertsAndNotifications.Domain.Repositories;
+using StockSip.Platform.API.AlertsAndNotifications.Domain.Services;
+using StockSip.Platform.API.AlertsAndNotifications.Infrastructure.Persistence.EFC.Repositories;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.QueryService;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
@@ -83,6 +88,11 @@ builder.Services.AddScoped<IWarehouseQueryService, WarehouseQueryService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductCommandService, ProductCommandService>();
 builder.Services.AddScoped<IProductQueryService, ProductQueryService>();
+
+// Alerts And Notifications Bounded Context
+builder.Services.AddScoped<IAlertRepository, AlertRepository>();
+builder.Services.AddScoped<IAlertCommandService, AlertCommandService>();
+builder.Services.AddScoped<IAlertQueryService, AlertQueryService>();
 
 builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
 
