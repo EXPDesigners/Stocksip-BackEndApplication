@@ -1,5 +1,6 @@
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Events;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 
 namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
@@ -177,7 +178,16 @@ public class Inventory
         // Checks if the product is below minimum stock after removal. If so, it should trigger a domain event to generate an alert.
         if (Product.MinimumStock.GetMinimumStock() >= ProductStock.GetCurrentStock() - removedStock)
         {
-            //TODO: Implement a domain event to notify that the product is below minimum stock
+            // Create a domain event to notify about the product problem by creating an alert in the alerts and notifications context.
+            var productProblemEvent = new ProductProblemDetectedEvent(
+                "Product Stock Alert",
+                $"The stock of product {ProductId} in warehouse {WarehouseId} is below the minimum threshold.",
+                "Warning",
+                "ProductLowStock",
+                Warehouse.ProfileId.Id,
+                ProductId,
+                WarehouseId
+            );
         }
         
         // Decrease the stock of the product
