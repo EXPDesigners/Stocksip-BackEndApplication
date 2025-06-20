@@ -14,4 +14,4 @@ public record CreateWarehouseCommand(string Name,
                                      double MaxTemperature,
                                      double MinTemperature,
                                      double Capacity,
-                                     int ProfileId);
+                                     string ProfileId);

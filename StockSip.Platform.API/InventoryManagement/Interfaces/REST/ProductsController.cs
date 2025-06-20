@@ -129,7 +129,7 @@ public class ProductsController(
         OperationId = "GetAllProductsByProfileId")]
     [SwaggerResponse(StatusCodes.Status200OK, "Products found!", typeof(IEnumerable<ProductResource>))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "No products found for the specified profile ID...")]
-    public async Task<IActionResult> GetAllProductsByProfileId(int profileId)
+    public async Task<IActionResult> GetAllProductsByProfileId(string profileId)
     {
         var targetProfileId = new ProfileId(profileId);
         var getAllProductsByProfileIdQuery = new GetAllProductsByProfileIdQuery(targetProfileId);

@@ -32,6 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="AlertsAndNotifications\Domain\Model\Aggregates\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\Commands\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\Queries\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\ValueObjects\" />

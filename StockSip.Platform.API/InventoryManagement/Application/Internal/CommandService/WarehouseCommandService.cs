@@ -55,13 +55,13 @@ public class WarehouseCommandService(
             ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
 
         if (await warehouseRepository.ExistsByNameIgnoreCaseAndProfileIdAndWarehouseIdIsNotAsync(
-                command.Name, command.ProfileId, command.WarehouseId))
+                command.Name, new ProfileId(command.ProfileId), command.WarehouseId))
         {
             throw new ArgumentException($"Warehouse with name {command.Name} already exists.");
         }
         
         if (await warehouseRepository.ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAndProfileIdIsNotAsync(
-                command.Street, command.City, command.PostalCode, command.ProfileId, command.WarehouseId))
+                command.Street, command.City, command.PostalCode, new ProfileId(command.ProfileId), command.WarehouseId))
         {
             throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.PostalCode} already exists.");
         }
