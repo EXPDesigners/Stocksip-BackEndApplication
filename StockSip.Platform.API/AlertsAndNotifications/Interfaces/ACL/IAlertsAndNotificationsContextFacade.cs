@@ -15,7 +15,7 @@ public interface IAlertsAndNotificationsContextFacade
         string message,
         string severity,
         string type,
-        ProfileId profileId,
-        ProductId productId,
-        WarehouseId warehouseId);
+        string profileId,
+        string productId,
+        string warehouseId);
 }

@@ -14,7 +14,7 @@ namespace StockSip.Platform.API.AlertsAndNotifications.Application.ACL;
 /// <param name="alertQueryService">
 /// The query service for retrieving alert information.
 /// </param>
-public class AlertsAndNotificationsContextFacade(
+public abstract class AlertsAndNotificationsContextFacade(
     IAlertCommandService alertCommandService,
     IAlertQueryService alertQueryService
     ) : IAlertsAndNotificationsContextFacade
@@ -26,17 +26,21 @@ public class AlertsAndNotificationsContextFacade(
     /// <returns>
     /// The ID of the created alert, or an empty string if the alert could not be created.
     /// </returns>
-    public async Task<string> CreateAlert(string title, string message, string severity, string type, ProfileId profileId, ProductId productId,
-        WarehouseId warehouseId)
+    public async Task<string> CreateAlert(string title, string message, string severity, string type, string profileId, string productId,
+        string warehouseId)
     {
+        var targetProductId = new ProductId(productId);
+        var targetWarehouseId = new WarehouseId(warehouseId);
+        var targetProfileId = new ProfileId(profileId);
+        
         var createAlertCommand = new CreateAlertCommand(
             title,
             message,
             severity,
             type,
-            profileId,
-            productId,
-            warehouseId
+            targetProfileId,
+            targetProductId,
+            targetWarehouseId
         );
         var alert = await alertCommandService.Handle(createAlertCommand);
         return alert?.Id ?? "";
