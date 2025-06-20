@@ -11,4 +11,5 @@ namespace StockSip.Platform.API.Shared.Domain.Model.Events;
 /// </remarks> 
 public interface IEvent : INotification
 {
+    
 }

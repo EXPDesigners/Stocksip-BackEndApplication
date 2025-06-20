@@ -14,7 +14,7 @@ namespace StockSip.Platform.API.AlertsAndNotifications.Application.ACL;
 /// <param name="alertQueryService">
 /// The query service for retrieving alert information.
 /// </param>
-public abstract class AlertsAndNotificationsContextFacade(
+public class AlertsAndNotificationsContextFacade(
     IAlertCommandService alertCommandService,
     IAlertQueryService alertQueryService
     ) : IAlertsAndNotificationsContextFacade

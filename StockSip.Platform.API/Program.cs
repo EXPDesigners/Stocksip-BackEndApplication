@@ -3,16 +3,22 @@ using Cortex.Mediator.Commands;
 using Cortex.Mediator.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using StockSip.Platform.API.AlertsAndNotifications.Application.ACL;
 using StockSip.Platform.API.AlertsAndNotifications.Application.Internal.CommandServices;
 using StockSip.Platform.API.AlertsAndNotifications.Application.Internal.QueryServices;
 using StockSip.Platform.API.AlertsAndNotifications.Domain.Repositories;
 using StockSip.Platform.API.AlertsAndNotifications.Domain.Services;
 using StockSip.Platform.API.AlertsAndNotifications.Infrastructure.Persistence.EFC.Repositories;
+using StockSip.Platform.API.AlertsAndNotifications.Interfaces.ACL;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
+using StockSip.Platform.API.InventoryManagement.Application.Internal.EventHandlers;
+using StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices.ACL;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.QueryService;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Events;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Repositories;
+using StockSip.Platform.API.Shared.Application.Internal.EventHandlers;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 using StockSip.Platform.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
@@ -81,6 +87,12 @@ builder.Services.AddSwaggerGen(options =>
 // Shared Bounded Context
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+// Alerts And Notifications Bounded Context
+builder.Services.AddScoped<IAlertRepository, AlertRepository>();
+builder.Services.AddScoped<IAlertCommandService, AlertCommandService>();
+builder.Services.AddScoped<IAlertQueryService, AlertQueryService>();
+builder.Services.AddScoped<IAlertsAndNotificationsContextFacade, AlertsAndNotificationsContextFacade>();
+
 // Inventory Management Bounded Context
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<IWarehouseCommandService, WarehouseCommandService>();
@@ -88,11 +100,9 @@ builder.Services.AddScoped<IWarehouseQueryService, WarehouseQueryService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductCommandService, ProductCommandService>();
 builder.Services.AddScoped<IProductQueryService, ProductQueryService>();
+builder.Services.AddScoped<ExternalAlertsAndNotificationsService>();
 
-// Alerts And Notifications Bounded Context
-builder.Services.AddScoped<IAlertRepository, AlertRepository>();
-builder.Services.AddScoped<IAlertCommandService, AlertCommandService>();
-builder.Services.AddScoped<IAlertQueryService, AlertQueryService>();
+builder.Services.AddScoped<IEventHandler<ProductProblemDetectedEvent>, ProductProblemDetectedEventHandler>();
 
 builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
 

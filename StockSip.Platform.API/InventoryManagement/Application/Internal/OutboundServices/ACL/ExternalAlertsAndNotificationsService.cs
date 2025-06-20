@@ -1,4 +1,4 @@
-﻿using StockSip.Platform.API.AlertsAndNotifications.Application.ACL;
+﻿using StockSip.Platform.API.AlertsAndNotifications.Interfaces.ACL;
 
 namespace StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices.ACL;
 
@@ -9,7 +9,7 @@ namespace StockSip.Platform.API.InventoryManagement.Application.Internal.Outboun
 /// <param name="alertsAndNotificationsContextFacade">
 /// The facade for the Alerts and Notifications context.
 /// </param>
-public class ExternalAlertsAndNotificationsService(AlertsAndNotificationsContextFacade alertsAndNotificationsContextFacade)
+public class ExternalAlertsAndNotificationsService(IAlertsAndNotificationsContextFacade alertsAndNotificationsContextFacade)
 {
     /// <summary>
     /// The method is used to create an alert in the Alerts and Notifications context.

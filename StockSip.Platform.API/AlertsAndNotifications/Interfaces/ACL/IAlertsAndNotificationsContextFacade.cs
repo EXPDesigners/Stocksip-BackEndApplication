@@ -1,6 +1,4 @@
-﻿using StockSip.Platform.API.AlertsAndNotifications.Domain.Model.ValueObjects;
-
-namespace StockSip.Platform.API.AlertsAndNotifications.Interfaces.ACL;
+﻿namespace StockSip.Platform.API.AlertsAndNotifications.Interfaces.ACL;
 
 /// <summary>
 /// This interface defines the contract for the Alerts and Notifications Context Facade.
