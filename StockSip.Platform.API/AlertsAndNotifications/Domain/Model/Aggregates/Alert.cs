@@ -101,14 +101,6 @@ public class Alert(
         this(command.Title, command.Message, command.Severity, command.Type, 
             command.ProfileId, command.ProductId, command.WarehouseId)
     { }
-
-    /// <summary>
-    /// This method marks the alert as read, changing its state to Read.
-    /// </summary>
-    public void Read()
-    {
-        State = EAlertState.Read;
-    }
     
     /// <summary>
     /// This method resolves the alert, changing its state to Resolved and setting the resolved time to the current UTC time.
