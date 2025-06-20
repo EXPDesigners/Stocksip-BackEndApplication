@@ -39,7 +39,7 @@ public record ProductMinimumStock()
     /// </returns>
     private static bool IsMinimumStockValidate(int minimumStock)
     {
-        return !(minimumStock < 0);
+        return (minimumStock < 0);
     }
 
     /// <summary>

@@ -54,12 +54,12 @@ public static class ModelBuilderExtensions
         
         // Product ORM Mapping Rules
         builder.Entity<Product>().HasKey(p => p.ProductId);
-        builder.Entity<Product>().Property(p => p.ProductId).IsRequired().ValueGeneratedNever();
-
+        builder.Entity<Product>().Property(p => p.ProductId).IsRequired().ValueGeneratedOnAdd();
+        
         builder.Entity<Product>().OwnsOne(p => p.ProductName, pn =>
         {
             pn.WithOwner();
-            pn.Property(fn => fn.FullName).IsRequired().HasMaxLength(100);
+            pn.Property(p => p.Name).HasMaxLength(100);
         });
         
         builder.Entity<Product>().OwnsOne(p => p.UnitPrice, up =>

@@ -123,14 +123,21 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     public async Task<IEnumerable<Product>> FindByFullNameAndWarehouseId(string brandName, string liquorType,
         string? additionalName, string warehouseId)
     {
-        var targetProductName = new ProductName(brandName, Enum.Parse<ELiquorType>(liquorType, true), additionalName);
-
+        if (!Enum.TryParse<ELiquorType>(liquorType, true, out var parsedLiquorType))
+        {
+            return Enumerable.Empty<Product>();
+        }
+        
         return await Context.Set<Product>()
-            .Where(product => product.ProductName == targetProductName &&
-                              product.Inventories.Any(inventory => inventory.WarehouseId == warehouseId))
-            .Include(product => product.Inventories
-                .Where(inventory => inventory.WarehouseId == warehouseId))
+            .Where(p =>
+                (additionalName == null || p.ProductName.Name.ToLower() == additionalName.ToLower()) &&
+                p.Brand.ToLower() == brandName.ToLower() &&
+                p.LiquorType == parsedLiquorType &&
+                p.Inventories.Any(i => i.WarehouseId == warehouseId))
+            .Include(p => p.Inventories
+                .Where(i => i.WarehouseId == warehouseId))
             .ToListAsync();
+
     }
 
     /// <summary>
@@ -190,9 +197,16 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// <returns></returns>
     public async Task<bool> ExistsByFullNameIgnoreCase(string brandName, string liquorType, string? additionalName)
     {
-        return await Context.Set<Product>().AnyAsync(product =>
-            product.ProductName ==
-            new ProductName(brandName, Enum.Parse<ELiquorType>(liquorType, true), additionalName));
+        if (!Enum.TryParse<ELiquorType>(liquorType, true, out var parsedLiquorType))
+        {
+            return false;
+        }
+
+        return await Context.Set<Product>()
+            .AnyAsync(p =>
+                p.ProductName.Name.ToLower() == additionalName.ToLower() &&
+                    p.Brand.ToLower() == brandName.ToLower() &&
+                    p.LiquorType == parsedLiquorType); 
     }
     
     

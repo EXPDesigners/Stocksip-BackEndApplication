@@ -14,7 +14,7 @@ public partial class Product
     /// <summary>
     /// The unique identifier of the product.
     /// </summary>
-    public string ProductId { get; } = Guid.NewGuid().ToString();
+    public string ProductId { get; private set; } = Guid.NewGuid().ToString();
     
     /// <summary>
     /// The name of the product, which includes the brand name, liquor type, and additional name.
@@ -93,27 +93,23 @@ public partial class Product
                     int minimumStock,
                     string? providerId = null)
     {
-        ProductName = new ProductName(brandName, 
-            Enum.Parse<ELiquorType>(liquorType, true), 
-                        additionalName);
+        ProductName = new ProductName(additionalName);
         LiquorType = Enum.Parse<ELiquorType>(liquorType, true); ;
         Brand = brandName;
         UnitPrice = new Money(unitPriceAmount, "PEN");
         MinimumStock = new ProductMinimumStock(minimumStock);
-        ImageUrl = new ImageUrl(imageUrl);
+        ImageUrl = new ImageUrl(null);
         if (providerId != null) ProviderId = new ProviderId(providerId);
     }
 
     public Product(CreateProductCommand command)
     {
-        ProductName = new ProductName(command.BrandName,
-                Enum.Parse<ELiquorType>(command.LiquorType, true),
-                            command.AdditionalName);
+        ProductName = new ProductName(command.AdditionalName);
         LiquorType = Enum.Parse<ELiquorType>(command.LiquorType, true);
         Brand = command.BrandName;
         UnitPrice = new Money(command.UnitPriceAmount, "PEN");
         MinimumStock = new ProductMinimumStock(command.MinimumStock);
-        ImageUrl = new ImageUrl(command.ImageUrl);
+        ImageUrl = new ImageUrl(null);
         if (command.ProviderId != null) ProviderId = new ProviderId(command.ProviderId);
     }
 

@@ -23,7 +23,7 @@ public static class ProductResourceFromEntityAssembler
         return new ProductResource(
             entity.ProductId,
             entity.ImageUrl.ToString(), 
-            entity.ProductName.GetFullName(),
+            entity.ProductName.Name,
             entity.Brand,
             entity.LiquorType.GetDisplayName(),
             entity.UnitPrice.Amount,
