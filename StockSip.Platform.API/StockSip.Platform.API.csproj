@@ -32,6 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="AlertsAndNotifications\Infrastructure\Persistence\EFC\Repositories\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\Commands\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\Queries\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\ValueObjects\" />
