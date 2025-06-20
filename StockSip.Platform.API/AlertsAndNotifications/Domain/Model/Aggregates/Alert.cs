@@ -103,11 +103,10 @@ public class Alert(
     { }
     
     /// <summary>
-    /// This method resolves the alert, changing its state to Resolved and setting the resolved time to the current UTC time.
+    /// This method resolves the alert, changing its state to Read.
     /// </summary>
-    public void Resolve()
+    public void Read()
     {
-        State = EAlertState.Resolved;
-        ResolvedAt = DateTime.UtcNow;
+        State = EAlertState.Read;
     }
 }

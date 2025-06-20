@@ -38,7 +38,7 @@ public class AlertCommandService(
     }
 
     /// <summary>
-    /// This async method handles the marking of an alert as resolved based on the provided command.
+    /// This async method handles the marking of an alert as read based on the provided command.
     /// </summary>
     /// <param name="command">
     /// The command containing the ID of the alert to be marked as resolved.
@@ -49,12 +49,12 @@ public class AlertCommandService(
     /// <exception cref="ArgumentException">
     /// Thrown when the alert with the specified ID does not exist in the repository.
     /// </exception>
-    public async Task<Alert?> Handle(MarkAlertAsResolvedCommand command)
+    public async Task<Alert?> Handle(MarkAlertAsReadCommand command)
     {
         var alertToMark = await alertRepository.FindByIdAsync(command.AlertId)
                           ?? throw new ArgumentException($"Alert with ID {command.AlertId} does not exist.");
         
-        alertToMark.Resolve();
+        alertToMark.Read();
         alertRepository.Update(alertToMark);
         await unitOfWork.CompleteAsync();
         return alertToMark;

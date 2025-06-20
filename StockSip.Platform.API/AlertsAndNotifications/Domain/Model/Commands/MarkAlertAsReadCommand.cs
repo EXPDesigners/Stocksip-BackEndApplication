@@ -6,4 +6,4 @@
 /// <param name="AlertId">
 /// The unique identifier of the alert to be marked as resolved.
 /// </param>
-public record MarkAlertAsResolvedCommand(string AlertId);
+public record MarkAlertAsReadCommand(string AlertId);
