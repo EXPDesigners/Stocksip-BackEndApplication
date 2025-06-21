@@ -130,7 +130,7 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
         
         return await Context.Set<Product>()
             .Where(p =>
-                (additionalName == null || p.ProductName.Name.ToLower() == additionalName.ToLower()) &&
+                (additionalName == null || p.ProductName.Name.Equals(additionalName, StringComparison.CurrentCultureIgnoreCase)) &&
                 p.Brand.ToLower() == brandName.ToLower() &&
                 p.LiquorType == parsedLiquorType &&
                 p.Inventories.Any(i => i.WarehouseId == warehouseId))
@@ -204,9 +204,10 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
 
         return await Context.Set<Product>()
             .AnyAsync(p =>
-                p.ProductName.Name.ToLower() == additionalName.ToLower() &&
-                    p.Brand.ToLower() == brandName.ToLower() &&
-                    p.LiquorType == parsedLiquorType); 
+                additionalName != null &&
+                p.ProductName.Name.Equals(additionalName, StringComparison.CurrentCultureIgnoreCase) &&
+                p.Brand.Equals(brandName, StringComparison.CurrentCultureIgnoreCase) &&
+                p.LiquorType == parsedLiquorType); 
     }
     
     
