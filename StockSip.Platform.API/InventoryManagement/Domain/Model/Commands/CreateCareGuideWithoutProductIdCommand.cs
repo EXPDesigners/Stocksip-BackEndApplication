@@ -3,13 +3,10 @@ using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 
 /// <summary>
-/// Command used to create a new care guide assigning it to a product.
+/// Command used to create a new care guide without assigning it to a product.
 /// </summary>
 /// <param name="AccountId">
 /// The unique identifier for the owner of the care guide.
-/// </param>
-/// <param name="ProductId">
-/// The unique identifier of the product care guide
 /// </param>
 /// <param name="Title">
 /// The title of the document.
@@ -29,9 +26,8 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 /// <param name="Recommendation">
 /// A general recommendation about the product.
 /// </param>
-public record CreateCareGuideCommand(
+public record CreateCareGuideWithoutProductIdCommand(
     ProfileId AccountId,
-    string ProductId, 
     string Title, 
     string Summary, 
     double MinTemp, 
