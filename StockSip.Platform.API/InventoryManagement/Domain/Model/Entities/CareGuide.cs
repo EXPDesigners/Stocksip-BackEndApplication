@@ -1,4 +1,6 @@
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 
 namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 
@@ -7,6 +9,16 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 /// </summary>
 public class CareGuide
 {
+    /// <summary>
+    /// Unique identifier for the care guide.
+    /// </summary>
+    public string Id { get; } = Guid.NewGuid().ToString();
+    
+    /// <summary>
+    /// The unique identifier of the account that owns this care guide.
+    /// </summary>
+    public ProfileId AccountId { get; } 
+    
     /// <summary>
     /// The Product associated with the inventory, represented as a Product entity.
     /// </summary>
@@ -72,6 +84,7 @@ public class CareGuide
     /// A general recommendation about the product.
     /// </param>
     public CareGuide(
+        ProfileId accountId,
         string productId, 
         string title, 
         string summary, 
@@ -80,6 +93,7 @@ public class CareGuide
         string placeStorage, 
         string recommendation)
     {
+        AccountId = accountId;
         ProductId = productId;
         Title = title;
         Summary = summary;
@@ -90,14 +104,18 @@ public class CareGuide
     }
 
     /// <summary>
+    /// Default constructor for handling commands
+    /// </summary>
+    /// <param name="command">
+    /// The command containing the details for creating a new care guide.
+    /// </param>
+    public CareGuide(CreateCareGuideCommand command) : this(command.AccountId, command.ProductId, command.Title, command.Summary, command.MinTemp, command.MaxTemp, command.PlaceStorage, command.Recommendation)
+    {
+    }
+
+    /// <summary>
     /// This method is used to update the recommendations of the care guide.
     /// </summary>
-    /// <param name="newTitle"></param>
-    /// <param name="newSummary"></param>
-    /// <param name="newMinTemp"></param>
-    /// <param name="newMaxTemp"></param>
-    /// <param name="newPlaceStorage"></param>
-    /// <param name="newRecommendation"></param>
     public void UpdateRecommendations(
         string newTitle, 
         string newSummary, 
@@ -112,5 +130,31 @@ public class CareGuide
         RecommendedMaxTemperature = newMaxTemp;
         RecommendedPlaceStorage = newPlaceStorage;
         GeneralRecommendation = newRecommendation;
+    }
+    
+    /// <summary>
+    /// This method is used to unassign the care guide of the current product.
+    /// </summary>
+    public void UnassignCareGuide()
+    {
+        ProductId = "";
+        Product = null!;
+    }
+    
+    /// <summary>
+    /// Method for assigning this care guide to another product.
+    /// </summary>
+    /// <param name="newProductId"></param>
+    /// <exception cref="ArgumentException"></exception>
+    public void AssignCareGuideToAnotherProduct(string newProductId)
+    {
+        if (newProductId == ProductId)
+        {
+            throw new ArgumentException("Cannot assign a care guide to the same product.");
+        }
+        else
+        {
+            ProductId = newProductId;
+        }
     }
 }
