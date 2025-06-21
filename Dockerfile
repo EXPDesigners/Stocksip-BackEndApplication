@@ -1,4 +1,4 @@
-﻿# Dockerfile for StockSip.Platform.API
+# Dockerfile for StockSip.Platform.API
 # Summary: 
 # This Dockerfile builds and runs the StocksIP.Platform.API application using .NET 9.0
 # Description:
