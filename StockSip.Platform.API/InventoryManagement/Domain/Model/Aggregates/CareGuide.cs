@@ -27,7 +27,7 @@ public class CareGuide
     /// <summary>
     /// The unique identifier of the product in the inventory.
     /// </summary>
-    public string ProductId { get; private set; }
+    public string? ProductId { get; private set; }
     
     /// <summary>
     /// The title of the document.
@@ -60,7 +60,7 @@ public class CareGuide
     public string GeneralRecommendation { get; private set; }
 
     /// <summary>
-    /// Default constructor for the care guide entity.
+    /// Default constructor for the care guide entity assigning the product id.
     /// </summary>
     /// <param name="accountId">
     /// The identifier of the account owner of the care guide.
@@ -98,6 +98,34 @@ public class CareGuide
     {
         AccountId = accountId;
         ProductId = productId;
+        Title = title;
+        Summary = summary;
+        RecommendedMinTemperature = minTemp;
+        RecommendedMaxTemperature = maxTemp;
+        RecommendedPlaceStorage = placeStorage;
+        GeneralRecommendation = recommendation;
+    }
+    
+    /// <summary>
+    /// Default constructor for the care guide entity without assigning the product id.
+    /// </summary>
+    /// <param name="accountId"></param>
+    /// <param name="title"></param>
+    /// <param name="summary"></param>
+    /// <param name="minTemp"></param>
+    /// <param name="maxTemp"></param>
+    /// <param name="placeStorage"></param>
+    /// <param name="recommendation"></param>
+    public CareGuide(
+        AccountId accountId,
+        string title, 
+        string summary, 
+        double minTemp, 
+        double maxTemp,
+        string placeStorage, 
+        string recommendation)
+    {
+        AccountId = accountId;
         Title = title;
         Summary = summary;
         RecommendedMinTemperature = minTemp;
