@@ -133,7 +133,7 @@ public class InventoryCommandService (
     /// <returns>  </returns>
     /// <exception cref="ArgumentException"> Thrown when the product to be deleted or the warehouse
     /// where we try to delete the product or the inventory of the product in the warehouse does not exist. </exception>
-    public async Task Handle(DeleteProductFromWarehouseCommand command)
+    public async Task<Inventory?> Handle(DeleteProductFromWarehouseCommand command)
     {
         // Validate if the product to be deleted exists.
         var product = await productRepository.FindByIdAsync(command.ProductId)
@@ -164,7 +164,8 @@ public class InventoryCommandService (
         
         // Completes the current inventory update by saving the changes to the database.
         await unitOfWork.CompleteAsync();
-        return;
+        
+        return inventory;
     }
 
     /// <summary>
@@ -175,7 +176,7 @@ public class InventoryCommandService (
     /// <returns> The updated or new inventory of the product in the new warehouse. </returns>
     /// <exception cref="ArgumentException"> Thrown when the product stock to be moved or the warehouse
     /// where we try to send the product stock does not exist. </exception>
-    public async Task Handle(MoveProductsToAnotherWarehouseCommand command)
+    public async Task<Inventory?> Handle(MoveProductsToAnotherWarehouseCommand command)
     {
         // Validate if the product to be moved exists.
         var movedProduct = await productRepository.FindByIdAsync(command.ProductId)
@@ -223,6 +224,6 @@ public class InventoryCommandService (
         await unitOfWork.CompleteAsync();
         
         // Returns the new inventory entry, which may be a new or updated inventory.
-        return;
+        return newInventory;
     }
 }

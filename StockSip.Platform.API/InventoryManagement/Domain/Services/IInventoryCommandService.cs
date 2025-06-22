@@ -9,6 +9,6 @@ public interface IInventoryCommandService
     Task<Inventory?> Handle(AddStockToProductCommand command);
     Task<Inventory?> Handle(AddProductsToWarehouseCommand command);
     
-    Task Handle(DeleteProductFromWarehouseCommand command);
-    Task Handle(MoveProductsToAnotherWarehouseCommand command);
+    Task<Inventory?> Handle(DeleteProductFromWarehouseCommand command);
+    Task<Inventory?> Handle(MoveProductsToAnotherWarehouseCommand command);
 }
