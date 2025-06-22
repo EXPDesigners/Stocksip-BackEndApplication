@@ -89,7 +89,7 @@ public class Inventory
     {
         WarehouseId = command.WarehouseId;
         ProductId = command.ProductId;
-        BestBeforeDate = new ProductBestBeforeDate(command.ExpirationDate);
+        BestBeforeDate = new ProductBestBeforeDate(command.BestBeforeDate);
         ProductStock = new ProductStock(command.Quantity);
     }
 
