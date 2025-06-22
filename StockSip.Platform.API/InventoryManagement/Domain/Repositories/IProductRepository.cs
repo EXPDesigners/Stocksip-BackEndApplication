@@ -19,11 +19,6 @@ public interface IProductRepository : IBaseRepository<Product>
     /// This method retrieves all products associated with a specific warehouse ID.
     /// </summary>
     Task<IEnumerable<Product>> FindByWarehouseIdAsync(string warehouseId);
-    
-    /// <summary>
-    /// This method retrieves an inventory item by the product ID, warehouse ID and expiration date.
-    /// </summary>
-    Task<Inventory?> FindInventoryByProductIdAndWarehouseIdAndExpirationDateAsync(string productId, string warehouseId, DateTime expirationDate);
 
     /// <summary>
     /// This method retrieves a product by its ID, warehouse ID, and expiration date.
@@ -38,7 +33,7 @@ public interface IProductRepository : IBaseRepository<Product>
     /// <summary>
     /// Method to retrieve all products associated with a specific profile ID.
     /// </summary>
-    Task<IEnumerable<Product>> FindProductsByProfileIdAsync(AccountId accountId);
+    Task<IEnumerable<Product>> FindProductsByAccountIdAsync(AccountId accountId);
 
     /// <summary>
     /// Method to retrieve all product exits associated with a specific product ID.

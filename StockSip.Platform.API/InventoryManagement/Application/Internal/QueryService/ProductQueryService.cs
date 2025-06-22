@@ -80,7 +80,7 @@ public class ProductQueryService(IProductRepository productRepository) : IProduc
     /// </returns>
     public async Task<IEnumerable<Product>> Handle(GetAllProductsByAccountIdQuery query)
     {
-        return await productRepository.FindProductsByProfileIdAsync(query.AccountId);
+        return await productRepository.FindProductsByAccountIdAsync(query.AccountId);
     }
 
     /// <summary>

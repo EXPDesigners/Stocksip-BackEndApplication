@@ -43,7 +43,7 @@ public partial class ProductExit
     /// <summary>
     /// The expiration date of the product associated with the exit, represented as a ProductExpirationDate value object.
     /// </summary>
-    public ProductExpirationDate ProductExpirationDate { get; private set; }
+    public ProductBestBeforeDate ProductBestBeforeDate { get; private set; }
     
     /// <summary>
     /// The date and time when the product exit occurred.
@@ -71,7 +71,7 @@ public partial class ProductExit
         WarehouseId = warehouseId;
         ExitReason = Enum.Parse<EProductExitReasons>(exitReason);
         ProductQuantity = productQuantity;
-        ProductExpirationDate = new ProductExpirationDate(productExpirationDate);
+        ProductBestBeforeDate = new ProductBestBeforeDate(productExpirationDate);
     }
 
     /// <summary>
@@ -83,7 +83,7 @@ public partial class ProductExit
         WarehouseId = command.WarehouseId;
         ExitReason = Enum.Parse<EProductExitReasons>(command.ExitReason);
         ProductQuantity = command.QuantityExited;
-        ProductExpirationDate = new ProductExpirationDate(command.ExpirationDate);
+        ProductBestBeforeDate = new ProductBestBeforeDate(command.ExpirationDate);
     }
 
     /// <summary>

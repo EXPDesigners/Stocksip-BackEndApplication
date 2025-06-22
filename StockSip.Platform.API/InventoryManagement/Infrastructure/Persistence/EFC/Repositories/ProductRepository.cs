@@ -72,7 +72,7 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
         return await Context.Set<Inventory>()
             .FirstOrDefaultAsync(inventory => inventory.ProductId == productId
                                               && inventory.WarehouseId == warehouseId 
-                                              && inventory.ExpirationDate == new ProductExpirationDate(expirationDate));
+                                              && inventory.BestBeforeDate == new ProductBestBeforeDate(expirationDate));
     }
 
     /// <summary>
@@ -98,7 +98,7 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
             .Include(product => product.Inventories
                 .Where(inventory =>
                     inventory.WarehouseId == warehouseId &&
-                    inventory.ExpirationDate == new ProductExpirationDate(expirationDate)))
+                    inventory.BestBeforeDate == new ProductBestBeforeDate(expirationDate)))
             .FirstOrDefaultAsync();
     }
 
@@ -149,7 +149,7 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// <returns>
     /// The list of products associated with the specified profile ID.
     /// </returns>
-    public async Task<IEnumerable<Product>> FindProductsByProfileIdAsync(AccountId accountId)
+    public async Task<IEnumerable<Product>> FindProductsByAccountIdAsync(AccountId accountId)
     {
         return await Context.Set<Product>()
             .Where(product => product.Inventories.Any(inventory => inventory.Warehouse.AccountId == accountId))
