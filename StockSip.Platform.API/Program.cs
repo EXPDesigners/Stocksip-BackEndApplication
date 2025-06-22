@@ -127,7 +127,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Use Swagger for API documentation if in development mode
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
