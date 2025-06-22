@@ -10,7 +10,9 @@ namespace StockSip.Platform.API.InventoryManagement.Application.Internal.QuerySe
 /// This class implements the IProductQueryService interface to handle queries related to products.
 /// </summary>
 /// <param name="productRepository"> The repository for accessing to product data. </param>
-public class ProductQueryService(IProductRepository productRepository) : IProductQueryService
+public class ProductQueryService(
+    IProductRepository productRepository
+    ) : IProductQueryService
 {
     /// <summary>
     /// This method retrieves all products associated with a specific provider ID and a warehouse ID.
@@ -81,21 +83,6 @@ public class ProductQueryService(IProductRepository productRepository) : IProduc
     public async Task<IEnumerable<Product>> Handle(GetAllProductsByAccountIdQuery query)
     {
         return await productRepository.FindProductsByAccountIdAsync(query.AccountId);
-    }
-
-    /// <summary>
-    /// This async method retrieves an inventory item by its product ID, warehouse ID, and expiration date.
-    /// </summary>
-    /// <param name="query">
-    /// The query containing the product ID, warehouse ID, and expiration date for which the inventory item is to be retrieved.
-    /// </param>
-    /// <returns>
-    /// A task that returns the product item if found, or null if not found.
-    /// </returns>
-    public async Task<Product?> Handle(GetProductByIdAndWarehouseIdAndExpirationDateQuery query)
-    {
-        return await productRepository.FindByProductIdAndWarehouseIdAndExpirationDateAsync(query.ProductId,
-            query.WarehouseId, query.ExpirationDate);
     }
 
     /// <summary>

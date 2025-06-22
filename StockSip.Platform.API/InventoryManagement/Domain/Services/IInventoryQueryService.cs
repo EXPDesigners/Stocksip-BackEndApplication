@@ -7,4 +7,5 @@ public interface IInventoryQueryService
 {
     Task<Inventory?> Handle(GetInventoryByIdQuery query);
     Task<Inventory?> Handle(GetInventoriesByProductIdAndWarehouseIdQuery query);
+    Task<Inventory?> Handle(GetInventoryByProductIdAndWarehouseIdAndBestBeforeDateQuery query);
 }

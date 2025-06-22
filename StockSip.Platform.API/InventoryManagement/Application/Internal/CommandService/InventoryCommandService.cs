@@ -7,6 +7,9 @@ using StockSip.Platform.API.Shared.Domain.Repositories;
 
 namespace StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
 
+/// <summary>
+/// This class implements the IInventoryCommandService interface.
+/// </summary>
 public class InventoryCommandService (
     IProductRepository productRepository,
     IWarehouseRepository warehouseRepository,
