@@ -103,6 +103,9 @@ builder.Services.AddScoped<IProductQueryService, ProductQueryService>();
 builder.Services.AddScoped<ICareGuideRepository, CareGuideRepository>();
 builder.Services.AddScoped<ICareGuideCommandService, CareGuideCommandService>();
 builder.Services.AddScoped<ICareGuideQueryService, CareGuideQueryService>();
+builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
+builder.Services.AddScoped<IInventoryCommandService, InventoryCommandService>();
+builder.Services.AddScoped<IInventoryQueryService, InventoryQueryService>();
 builder.Services.AddScoped<ExternalAlertsAndNotificationsService>();
 
 builder.Services.AddScoped<IEventHandler<ProductProblemDetectedEvent>, ProductProblemDetectedEventHandler>();

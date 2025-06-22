@@ -79,7 +79,7 @@ public class AccountCareGuidesController (
         return CreatedAtAction(nameof(GetCareGuideById), new { careGuideId = createdCareGuide.Id }, createdCareGuide);
     }
     
-    [HttpPost("/product/{productId}")]
+    [HttpPost("product/{productId}")]
     [SwaggerOperation(
         Summary = "Create a Care Guide.",
         Description = "Create a Care Guide And Assign it to a specific product.",

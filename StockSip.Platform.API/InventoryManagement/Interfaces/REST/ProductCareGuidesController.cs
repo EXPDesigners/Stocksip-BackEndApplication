@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net.Mime;
+using Microsoft.AspNetCore.Mvc;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
 using StockSip.Platform.API.InventoryManagement.Interfaces.REST.Resources;
@@ -9,6 +10,8 @@ namespace StockSip.Platform.API.InventoryManagement.Interfaces.REST;
 
 [ApiController]
 [Route("api/v1/products/{productId}/care-guide")]
+[Produces(MediaTypeNames.Application.Json)]
+[Tags("Products")]
 public class ProductCareGuidesController (
     ICareGuideQueryService careGuideQueryService
     ) : ControllerBase

@@ -56,7 +56,7 @@ public class CareGuidesController(
         return Ok(updatedCareGuideResource);
     }
 
-    [HttpDelete]
+    [HttpDelete("{careGuideId}")]
     [SwaggerOperation(
         Summary = "Delete a Care Guide",
         Description = "Delete a Specific Care Guide.",
