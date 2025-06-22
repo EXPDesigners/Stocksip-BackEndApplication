@@ -38,7 +38,7 @@ public interface IProductRepository : IBaseRepository<Product>
     /// <summary>
     /// Method to retrieve all products associated with a specific profile ID.
     /// </summary>
-    Task<IEnumerable<Product>> FindProductsByProfileIdAsync(ProfileId profileId);
+    Task<IEnumerable<Product>> FindProductsByProfileIdAsync(AccountId accountId);
 
     /// <summary>
     /// Method to retrieve all product exits associated with a specific product ID.

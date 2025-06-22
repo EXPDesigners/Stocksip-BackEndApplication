@@ -184,7 +184,7 @@ public class Inventory
                 $"The stock of product {ProductId} in warehouse {WarehouseId} is below the minimum threshold.",
                 "Warning",
                 "ProductLowStock",
-                Warehouse.ProfileId.Id,
+                Warehouse.AccountId.Id,
                 ProductId,
                 WarehouseId
             );

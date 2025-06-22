@@ -26,13 +26,13 @@ public class WarehouseCommandService(
     /// <exception cref="ArgumentException"> Thrown when a warehouse with the same name or address already exists.</exception>
     public async Task<Warehouse?> Handle(CreateWarehouseCommand command)
     {
-        if (await warehouseRepository.ExistByNameIgnoreCaseAndProfileIdAsync(command.Name, new ProfileId(command.ProfileId)))
+        if (await warehouseRepository.ExistByNameIgnoreCaseAndProfileIdAsync(command.Name, new AccountId(command.ProfileId)))
         {
             throw new ArgumentException($"Warehouse with name {command.Name} already exists.");
         }
 
         if (await warehouseRepository.ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAsync(
-                command.Street, command.City, command.PostalCode, new ProfileId(command.ProfileId)))
+                command.Street, command.City, command.PostalCode, new AccountId(command.ProfileId)))
         {
             throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.PostalCode} already exists.");
         }
@@ -55,13 +55,13 @@ public class WarehouseCommandService(
             ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
 
         if (await warehouseRepository.ExistsByNameIgnoreCaseAndProfileIdAndWarehouseIdIsNotAsync(
-                command.Name, new ProfileId(command.ProfileId), command.WarehouseId))
+                command.Name, new AccountId(command.ProfileId), command.WarehouseId))
         {
             throw new ArgumentException($"Warehouse with name {command.Name} already exists.");
         }
         
         if (await warehouseRepository.ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAndProfileIdIsNotAsync(
-                command.Street, command.City, command.PostalCode, new ProfileId(command.ProfileId), command.WarehouseId))
+                command.Street, command.City, command.PostalCode, new AccountId(command.ProfileId), command.WarehouseId))
         {
             throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.PostalCode} already exists.");
         }

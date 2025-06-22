@@ -17,7 +17,7 @@ public class Warehouse
     
     public ImageUrl? ImageUrl { get; internal set;  }
     
-    public ProfileId ProfileId { get; internal set; }
+    public AccountId AccountId { get; internal set; }
     
     /// <summary>
     /// Default constructor for Entity Framework Core.
@@ -32,16 +32,16 @@ public class Warehouse
     /// <param name="temperature">The address of the warehouse</param>
     /// <param name="capacity">The capacity of the warehouse</param>
     /// <param name="imageUrl">The image of the warehouse</param>
-    /// <param name="profileId">The profile to which the warehouse belongs</param>
+    /// <param name="accountId">The profile to which the warehouse belongs</param>
     public Warehouse(string name, WarehouseAddress address, Temperature temperature, Capacity capacity,
-        ImageUrl imageUrl, ProfileId profileId)
+        ImageUrl imageUrl, AccountId accountId)
     {
         Name = ValidateName(name);
         Address = address;
         Temperature = temperature;
         Capacity = capacity;
         ImageUrl = imageUrl;
-        ProfileId = profileId;
+        AccountId = accountId;
     }
     
     /// <summary>
@@ -54,7 +54,7 @@ public class Warehouse
         new Temperature(command.MinTemperature, command.MaxTemperature),
         new Capacity(command.Capacity),
         new ImageUrl(null),
-        new ProfileId(command.ProfileId)) 
+        new AccountId(command.ProfileId)) 
     {}
 
     /// <summary>

@@ -101,7 +101,7 @@ public partial class Product
         ImageUrl = new ImageUrl(null);
         if (providerId != null) ProviderId = new ProviderId(providerId);
     }
-
+    
     public Product(CreateProductCommand command)
     {
         ProductName = new ProductName(command.AdditionalName);

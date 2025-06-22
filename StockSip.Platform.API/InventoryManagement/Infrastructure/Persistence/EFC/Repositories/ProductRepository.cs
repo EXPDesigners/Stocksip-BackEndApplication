@@ -143,18 +143,18 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// <summary>
     /// Async method to retrieve all products associated with a specific profile ID.
     /// </summary>
-    /// <param name="profileId">
+    /// <param name="accountId">
     /// The ID of the profile whose products are to be retrieved.
     /// </param>
     /// <returns>
     /// The list of products associated with the specified profile ID.
     /// </returns>
-    public async Task<IEnumerable<Product>> FindProductsByProfileIdAsync(ProfileId profileId)
+    public async Task<IEnumerable<Product>> FindProductsByProfileIdAsync(AccountId accountId)
     {
         return await Context.Set<Product>()
-            .Where(product => product.Inventories.Any(inventory => inventory.Warehouse.ProfileId == profileId))
+            .Where(product => product.Inventories.Any(inventory => inventory.Warehouse.AccountId == accountId))
             .Include(product => product.Inventories
-                .Where(inventory => inventory.Warehouse.ProfileId == profileId))
+                .Where(inventory => inventory.Warehouse.AccountId == accountId))
             .ToListAsync();
     }
 

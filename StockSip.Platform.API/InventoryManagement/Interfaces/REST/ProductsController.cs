@@ -131,7 +131,7 @@ public class ProductsController(
     [SwaggerResponse(StatusCodes.Status404NotFound, "No products found for the specified profile ID...")]
     public async Task<IActionResult> GetAllProductsByProfileId(string profileId)
     {
-        var targetProfileId = new ProfileId(profileId);
+        var targetProfileId = new AccountId(profileId);
         var getAllProductsByProfileIdQuery = new GetAllProductsByProfileIdQuery(targetProfileId);
         var products = await productQueryService.Handle(getAllProductsByProfileIdQuery);
         var productsEnumerable = products.ToList();
