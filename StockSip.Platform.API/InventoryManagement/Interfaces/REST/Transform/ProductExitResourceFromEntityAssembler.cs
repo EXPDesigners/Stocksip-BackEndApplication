@@ -25,7 +25,7 @@ public static class ProductExitResourceFromEntityAssembler
             entity.ProductId,
             entity.WarehouseId,
             entity.ProductQuantity,
-            entity.ProductExpirationDate.GetExpirationDate(),
+            entity.ProductBestBeforeDate.GetBestBeforeDate(),
             entity.ExitDate,
             entity.ExitReason.GetDisplayName()
         );

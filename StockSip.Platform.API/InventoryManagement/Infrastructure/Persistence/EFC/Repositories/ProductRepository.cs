@@ -52,57 +52,6 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     }
 
     /// <summary>
-    /// This async method retrieves an inventory item by its product ID and warehouse ID.
-    /// </summary>
-    /// <param name="productId">
-    /// The ID of the product whose inventory is to be retrieved.
-    /// </param>
-    /// <param name="warehouseId">
-    /// The ID of the warehouse where the product's inventory is located.
-    /// </param>
-    /// <param name="expirationDate">
-    /// The expiration date of the product's inventory.
-    /// </param>
-    /// <returns>
-    /// A task that returns an Inventory object if found, or null if not found.
-    /// </returns>
-    public async Task<Inventory?> FindInventoryByProductIdAndWarehouseIdAndExpirationDateAsync(string productId, string warehouseId,
-        DateTime expirationDate)
-    {
-        return await Context.Set<Inventory>()
-            .FirstOrDefaultAsync(inventory => inventory.ProductId == productId
-                                              && inventory.WarehouseId == warehouseId 
-                                              && inventory.BestBeforeDate == new ProductBestBeforeDate(expirationDate));
-    }
-
-    /// <summary>
-    /// This async method retrieves a product by its ID, warehouse ID, and expiration date.
-    /// </summary>
-    /// <param name="productId">
-    /// The ID of the product to be retrieved.
-    /// </param>
-    /// <param name="warehouseId">
-    /// The ID of the warehouse where the product is located.
-    /// </param>
-    /// <param name="expirationDate">
-    /// The expiration date of the product's inventory.
-    /// </param>
-    /// <returns>
-    /// The Product and its Inventory object if found, or null if not found.
-    /// </returns>
-    public async Task<Product?> FindByProductIdAndWarehouseIdAndExpirationDateAsync(string productId,
-        string warehouseId, DateTime expirationDate)
-    {
-        return await Context.Set<Product>()
-            .Where(product => product.ProductId == productId)
-            .Include(product => product.Inventories
-                .Where(inventory =>
-                    inventory.WarehouseId == warehouseId &&
-                    inventory.BestBeforeDate == new ProductBestBeforeDate(expirationDate)))
-            .FirstOrDefaultAsync();
-    }
-
-    /// <summary>
     /// This async method retrieves all product items that match the specified full name and warehouse ID.
     /// </summary>
     /// <param name="brandName">

@@ -19,11 +19,6 @@ public interface IProductRepository : IBaseRepository<Product>
     /// This method retrieves all products associated with a specific warehouse ID.
     /// </summary>
     Task<IEnumerable<Product>> FindByWarehouseIdAsync(string warehouseId);
-
-    /// <summary>
-    /// This method retrieves a product by its ID, warehouse ID, and expiration date.
-    /// </summary>
-    Task<Product?> FindByProductIdAndWarehouseIdAndExpirationDateAsync(string productId, string warehouseId, DateTime expirationDate);
     
     /// <summary>
     /// This method retrieves all inventory items that match the specified full name and warehouse ID.

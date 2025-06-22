@@ -11,7 +11,7 @@ public interface IInventoryRepository : IBaseRepository<Inventory>
     /// <summary>
     /// This method retrieves an inventory item by the product and warehouse ID.
     /// </summary>
-    Task<Inventory> FindByProductIdAndWarehouseIdAsync(string productId, string warehouseId);
+    Task<Inventory?> FindByProductIdAndWarehouseIdAsync(string productId, string warehouseId);
     
     /// <summary>
     /// This method retrieves an inventory item by the product ID, warehouse ID and expiration date.
@@ -21,5 +21,5 @@ public interface IInventoryRepository : IBaseRepository<Inventory>
     /// <summary>
     /// This method checks if an inventory exists by the given product and warehouse ID.
     /// </summary>
-    bool ExistsByProductIdAndWarehouseIdAsync(string productId, string warehouseId);
+    Task<bool> ExistsByProductIdAndWarehouseIdAsync(string productId, string warehouseId);
 }
