@@ -6,7 +6,7 @@
 public record CareGuideResource(
     string Id,
     string AccountId,
-    string ProductId, 
+    string? ProductId, 
     string Title, 
     string Summary, 
     double MinTemp, 
