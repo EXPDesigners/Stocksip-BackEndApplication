@@ -5,12 +5,17 @@ using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 
 /// <summary>
-/// This class represents an Inventory entity in the domain model.
+/// This class represents an Inventory aggregate in the domain model.
 /// It encapsulates the details of a product's stock in a specific warehouse.
 /// This entity is generated from the relationship between the Product and Warehouse aggregates.
 /// </summary>
 public class Inventory
 {
+    /// <summary>
+    /// The unique identifier of the inventory.
+    /// </summary>
+    public string Id { get; } = Guid.NewGuid().ToString();
+
     /// <summary>
     /// The Product associated with the inventory, represented as a Product entity.
     /// </summary>
@@ -44,7 +49,7 @@ public class Inventory
     /// <summary>
     /// The expiration date of the product, represented as a value object.
     /// </summary>
-    public ProductExpirationDate ExpirationDate { get; }
+    public ProductBestBeforeDate BestBeforeDate { get; }
     
     /// <summary>
     /// Default constructor for Entity Framework Core.
@@ -70,7 +75,7 @@ public class Inventory
     {
         WarehouseId = warehouseId;
         ProductId = productId;
-        ExpirationDate = new ProductExpirationDate(expirationDate);
+        BestBeforeDate = new ProductBestBeforeDate(expirationDate);
         ProductStock = new ProductStock(stock);
     }
 
@@ -84,7 +89,7 @@ public class Inventory
     {
         WarehouseId = command.WarehouseId;
         ProductId = command.ProductId;
-        ExpirationDate = new ProductExpirationDate(command.ExpirationDate);
+        BestBeforeDate = new ProductBestBeforeDate(command.ExpirationDate);
         ProductStock = new ProductStock(command.Quantity);
     }
 
