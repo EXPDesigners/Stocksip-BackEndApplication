@@ -12,19 +12,19 @@ namespace StockSip.Platform.API.AlertsAndNotifications.Interfaces.REST;
 [ApiController]
 [Route("api/v1/accounts/{accountId}/alerts")]
 [Produces(MediaTypeNames.Application.Json)]
-[Tags("Profiles")]
+[Tags("Accounts")]
 public class AccountAlertsController(
     IAlertQueryService alertQueryService
     ) : ControllerBase
 {
     [HttpGet]
     [SwaggerOperation(
-        Summary = "Get all alerts by profile ID",
-        Description = "Retrieves all alerts associated with a specific profile ID.",
-        OperationId = "GetAlertsByProfileId")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Returns all alerts by profile ID.", typeof(AlertResource))]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "No alerts found for the specified profile.")]
-    public async Task<IActionResult> GetAlertsByProfileId([FromRoute] string accountId)
+        Summary = "Get all alerts by account ID",
+        Description = "Retrieves all alerts associated with a specific account ID.",
+        OperationId = "GetAlertsByAccountId")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns all alerts by account ID.", typeof(AlertResource))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "No alerts found for the specified account.")]
+    public async Task<IActionResult> GetAlertsByAccountId([FromRoute] string accountId)
     {
         var targetAccountId = new AccountId(accountId);
         var getAllAlertsByAccountIdQuery = new GetAllAlertsByAccountIdQuery(targetAccountId);
