@@ -23,6 +23,16 @@ public class WarehouseQueryService(IWarehouseRepository warehouseRepository) : I
     }
 
     /// <summary>
+    /// This method retrieves all warehouses by a specific account ID.
+    /// </summary>
+    /// <param name="query"> The query containing the account ID. </param>
+    /// <returns>The list of warehouses with the specified ID, or null if not found.</returns>
+    public async Task<IEnumerable<Warehouse>> Handle(GetAllWarehousesByAccountIdQuery query)
+    {
+        return await warehouseRepository.FindAllByAccountIdAsync(query.AccountId);
+    }
+
+    /// <summary>
     /// This method retrieves all warehouses.
     /// </summary>
     /// <param name="query">

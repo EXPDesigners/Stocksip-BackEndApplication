@@ -11,6 +11,12 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 public interface IWarehouseRepository : IBaseRepository<Warehouse>
 {
     /// <summary>
+    /// This method retrieves all the warehouses associated with a specific account ID.
+    /// </summary>
+    /// <returns> A list of warehouse objects </returns>
+    Task<IEnumerable<Warehouse>> FindAllByAccountIdAsync(AccountId accountId);
+    
+    /// <summary>
     /// This method retrieves all product exits associated with a specific warehouse ID.
     /// </summary>
     /// <returns> A list of product exit objects related to a specific warehouse ID. </returns>

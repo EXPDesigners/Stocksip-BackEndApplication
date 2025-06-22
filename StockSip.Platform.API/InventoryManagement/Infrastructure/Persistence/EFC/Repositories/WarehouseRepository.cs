@@ -15,6 +15,16 @@ namespace StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.E
 public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehouse>(context), IWarehouseRepository
 {
     /// <summary>
+    /// This method retrieves all the warehouses associated with a specific account ID.
+    /// </summary>
+    /// <param name="accountId"> The unique identifier of the account owner of the warehouses.</param>
+    /// <returns> A list of warehouse objects. </returns>
+    public async Task<IEnumerable<Warehouse>> FindAllByAccountIdAsync(AccountId accountId)
+    {
+        return await Context.Set<Warehouse>().Where(w => w.AccountId == accountId).ToListAsync();
+    }
+
+    /// <summary>
     /// This method retrieves a list of product exits associated with a specific warehouse ID.
     /// </summary>
     /// <returns>
