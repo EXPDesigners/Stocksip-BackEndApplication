@@ -78,7 +78,7 @@ public class ProductQueryService(IProductRepository productRepository) : IProduc
     /// <returns>
     /// A list of inventory items associated with the specified profile ID.
     /// </returns>
-    public async Task<IEnumerable<Product>> Handle(GetAllProductsByProfileIdQuery query)
+    public async Task<IEnumerable<Product>> Handle(GetAllProductsByAccountIdQuery query)
     {
         return await productRepository.FindProductsByProfileIdAsync(query.AccountId);
     }

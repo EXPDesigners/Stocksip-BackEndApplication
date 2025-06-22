@@ -10,7 +10,7 @@ public interface IProductQueryService
     Task<IEnumerable<Product>> Handle(GetAllProductsByWarehouseIdQuery query);
     Task<Product?> Handle(GetProductByIdQuery query);
     Task<IEnumerable<Product>> Handle(GetProductsByFullNameAndWarehouseIdQuery query);
-    Task<IEnumerable<Product>> Handle(GetAllProductsByProfileIdQuery query);
+    Task<IEnumerable<Product>> Handle(GetAllProductsByAccountIdQuery query);
     Task<Product?> Handle(GetProductByIdAndWarehouseIdAndExpirationDateQuery query);
     Task<IEnumerable<ProductExit>> Handle(GetAllProductExitsByProductIdQuery query);
 }

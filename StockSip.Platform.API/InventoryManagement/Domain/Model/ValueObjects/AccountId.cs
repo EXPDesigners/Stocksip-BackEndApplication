@@ -4,7 +4,7 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 /// <summary>
 /// This record defines the identifier of a profile that will receive alerts and notifications.
 /// </summary>
-public record ProfileId()
+public record AccountId()
 {
     /// <summary>
     /// The unique identifier for the profile.
@@ -12,15 +12,15 @@ public record ProfileId()
     public string Id { get; }
     
     /// <summary>
-    /// The default constructor for the ProfileId record.
+    /// The default constructor for the AccountId record.
     /// </summary>
-    /// <param name="id">The unique identifier for the profile</param>
-    /// <exception cref="ArgumentException">Profile Id must be non-negative integer</exception>
-    public ProfileId(string id) : this()
+    /// <param name="id">The unique identifier for the account. </param>
+    /// <exception cref="ArgumentException"> Account Id must be non-negative integer</exception>
+    public AccountId(string id) : this()
     {
         if (id == null || id.Trim().Length == 0)
         {
-            throw new ArgumentException("Profile ID must be a non-empty string.");
+            throw new ArgumentException("Account ID must be a non-empty string.");
         }
         Id = id;
     }

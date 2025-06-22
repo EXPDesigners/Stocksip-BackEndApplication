@@ -132,7 +132,7 @@ public class ProductsController(
     public async Task<IActionResult> GetAllProductsByProfileId(string profileId)
     {
         var targetProfileId = new AccountId(profileId);
-        var getAllProductsByProfileIdQuery = new GetAllProductsByProfileIdQuery(targetProfileId);
+        var getAllProductsByProfileIdQuery = new GetAllProductsByAccountIdQuery(targetProfileId);
         var products = await productQueryService.Handle(getAllProductsByProfileIdQuery);
         var productsEnumerable = products.ToList();
         if (productsEnumerable.Count == 0)

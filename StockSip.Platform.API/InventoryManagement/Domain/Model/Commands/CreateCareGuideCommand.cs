@@ -30,7 +30,7 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 /// A general recommendation about the product.
 /// </param>
 public record CreateCareGuideCommand(
-    ProfileId AccountId,
+    AccountId AccountId,
     string ProductId, 
     string Title, 
     string Summary, 

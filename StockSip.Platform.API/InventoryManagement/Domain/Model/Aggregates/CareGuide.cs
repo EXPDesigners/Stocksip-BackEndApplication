@@ -17,12 +17,12 @@ public class CareGuide
     /// <summary>
     /// The unique identifier of the account that owns this care guide.
     /// </summary>
-    public ProfileId AccountId { get; } 
+    public AccountId AccountId { get; } 
     
     /// <summary>
     /// The Product associated with the inventory, represented as a Product entity.
     /// </summary>
-    public Product Product { get; internal set; }
+    public Product? Product { get; internal set; }
     
     /// <summary>
     /// The unique identifier of the product in the inventory.
@@ -62,6 +62,9 @@ public class CareGuide
     /// <summary>
     /// Default constructor for the care guide entity.
     /// </summary>
+    /// <param name="accountId">
+    /// The identifier of the account owner of the care guide.
+    /// </param> 
     /// <param name="productId">
     /// The identifier of the product associated with this care guide.
     /// </param>
@@ -84,7 +87,7 @@ public class CareGuide
     /// A general recommendation about the product.
     /// </param>
     public CareGuide(
-        ProfileId accountId,
+        AccountId accountId,
         string productId, 
         string title, 
         string summary, 
@@ -138,7 +141,7 @@ public class CareGuide
     public void UnassignCareGuide()
     {
         ProductId = "";
-        Product = null!;
+        Product = null;
     }
     
     /// <summary>
