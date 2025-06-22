@@ -13,10 +13,10 @@ public static class AssignCareGuideToProductCommandFromResource
     /// <returns>
     /// The transformed AssignCareGuideToProductCommand.
     /// </returns>
-    public static AssignCareGuideToProductCommand ToCommandFromResource(string accountId, string productId)
+    public static AssignCareGuideToProductCommand ToCommandFromResource(string careGuideId, string productId)
     {
         return new AssignCareGuideToProductCommand(
-            accountId,
+            careGuideId,
             productId);
     }
 }
