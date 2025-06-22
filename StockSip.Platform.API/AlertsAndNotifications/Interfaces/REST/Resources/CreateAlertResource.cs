@@ -10,6 +10,6 @@ public record CreateAlertResource(
     string Message,
     string Severity,
     string Type,
-    ProfileId ProfileId,
+    AccountId AccountId,
     ProductId ProductId,
     WarehouseId WarehouseId);

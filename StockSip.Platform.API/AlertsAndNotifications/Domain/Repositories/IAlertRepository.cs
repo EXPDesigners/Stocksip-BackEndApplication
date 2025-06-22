@@ -17,7 +17,7 @@ public interface IAlertRepository : IBaseRepository<Alert>
     /// <summary>
     /// This method retrieves all alerts associated with a specific profile ID.
     /// </summary>
-    Task<IEnumerable<Alert>> FindByProfileIdAsync(ProfileId profileId);
+    Task<IEnumerable<Alert>> FindByProfileIdAsync(AccountId accountId);
     
     /// <summary>
     /// This method retrieves all alerts associated with a specific warehouse ID.

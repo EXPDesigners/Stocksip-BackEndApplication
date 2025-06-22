@@ -9,6 +9,6 @@ public interface IAlertQueryService
     Task<Alert?> Handle(GetAlertByIdQuery query);
     
     Task<IEnumerable<Alert>> Handle(GetAllAlertsByProductIdQuery query);
-    Task<IEnumerable<Alert>> Handle(GetAllAlertsByProfileIdQuery query);
+    Task<IEnumerable<Alert>> Handle(GetAllAlertsByAccountIdQuery query);
     Task<IEnumerable<Alert>> Handle(GetAllAlertsByWarehouseIdQuery query);
 }

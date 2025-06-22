@@ -50,9 +50,9 @@ public class AlertQueryService(IAlertRepository alertRepository) : IAlertQuerySe
     /// <returns>
     /// A list of alerts associated with the specified profile ID.
     /// </returns>
-    public async Task<IEnumerable<Alert>> Handle(GetAllAlertsByProfileIdQuery query)
+    public async Task<IEnumerable<Alert>> Handle(GetAllAlertsByAccountIdQuery query)
     {
-        return await alertRepository.FindByProfileIdAsync(query.ProfileId);
+        return await alertRepository.FindByProfileIdAsync(query.AccountId);
     }
 
     /// <summary>

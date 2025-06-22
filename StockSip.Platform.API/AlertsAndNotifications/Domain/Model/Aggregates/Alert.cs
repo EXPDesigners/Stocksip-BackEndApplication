@@ -18,7 +18,7 @@ namespace StockSip.Platform.API.AlertsAndNotifications.Domain.Model.Aggregates;
 /// <param name="type">
 /// The type of the alert, categorizing it into a specific type.
 /// </param>
-/// <param name="profileId">
+/// <param name="accountId">
 /// The unique identifier of the profile associated with the alert.
 /// </param>
 /// <param name="productId">
@@ -32,7 +32,7 @@ public class Alert(
     string message,
     string severity,
     string type,
-    ProfileId profileId,
+    AccountId accountId,
     ProductId productId,
     WarehouseId warehouseId)
 {
@@ -79,7 +79,7 @@ public class Alert(
     /// <summary>
     /// The unique identifier of the profile associated with the alert.
     /// </summary>
-    public ProfileId ProfileId { get; private set; } = profileId;
+    public AccountId AccountId { get; private set; } = accountId;
     
     /// <summary>
     /// The unique identifier of the product associated with the alert.
@@ -99,7 +99,7 @@ public class Alert(
     /// </param>
     public Alert(CreateAlertCommand command) : 
         this(command.Title, command.Message, command.Severity, command.Type, 
-            command.ProfileId, command.ProductId, command.WarehouseId)
+            command.AccountId, command.ProductId, command.WarehouseId)
     { }
     
     /// <summary>

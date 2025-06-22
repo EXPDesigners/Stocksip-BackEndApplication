@@ -31,16 +31,16 @@ public class AlertRepository(AppDbContext context) : BaseRepository<Alert>(conte
     /// <summary>
     /// This async method retrieves all alerts associated with a specific profile ID.
     /// </summary>
-    /// <param name="profileId">
+    /// <param name="accountId">
     /// The ID of the profile whose alerts are to be retrieved.
     /// </param>
     /// <returns>
     /// The list of alerts that belong to the specified profile ID.
     /// </returns>
-    public async Task<IEnumerable<Alert>> FindByProfileIdAsync(ProfileId profileId)
+    public async Task<IEnumerable<Alert>> FindByProfileIdAsync(AccountId accountId)
     {
         return await Context.Set<Alert>()
-            .Where(alert => alert.ProfileId == profileId)
+            .Where(alert => alert.AccountId == accountId)
             .ToListAsync();
     }
 

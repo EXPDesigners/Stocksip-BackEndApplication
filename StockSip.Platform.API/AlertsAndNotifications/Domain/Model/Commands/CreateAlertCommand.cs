@@ -17,7 +17,7 @@ namespace StockSip.Platform.API.AlertsAndNotifications.Domain.Model.Commands;
 /// <param name="Type">
 /// The type of the alert, categorizing it into a specific type.
 /// </param>
-/// <param name="ProfileId">
+/// <param name="AccountId">
 /// The unique identifier of the profile associated with the alert.
 /// </param>
 /// <param name="ProductId">
@@ -31,6 +31,6 @@ public record CreateAlertCommand(
     string Message,
     string Severity,
     string Type,
-    ProfileId ProfileId,
+    AccountId AccountId,
     ProductId ProductId,
     WarehouseId WarehouseId);

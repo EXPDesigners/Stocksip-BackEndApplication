@@ -31,7 +31,7 @@ public class AlertsAndNotificationsContextFacade(
     {
         var targetProductId = new ProductId(productId);
         var targetWarehouseId = new WarehouseId(warehouseId);
-        var targetProfileId = new ProfileId(profileId);
+        var targetProfileId = new AccountId(profileId);
         
         var createAlertCommand = new CreateAlertCommand(
             title,

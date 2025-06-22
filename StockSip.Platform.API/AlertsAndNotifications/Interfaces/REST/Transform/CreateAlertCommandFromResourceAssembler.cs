@@ -24,7 +24,7 @@ public static class CreateAlertCommandFromResourceAssembler
             resource.Message,
             resource.Severity,
             resource.Type,
-            resource.ProfileId,
+            resource.AccountId,
             resource.ProductId,
             resource.WarehouseId);
     }
