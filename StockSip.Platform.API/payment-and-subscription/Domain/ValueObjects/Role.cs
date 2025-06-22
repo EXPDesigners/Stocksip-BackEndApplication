@@ -1,15 +1,7 @@
-namespace StockSip.Platform.API.payment_and_subscription.domain.ValueObjects;
+﻿namespace StockSip.Platform.API.payment_and_subscription.domain.ValueObjects;
 
-/// <summary>
-/// This record represents the type of role assigned in an account.
-/// It can be: Liquor Store Owner | Provider 
-/// </summary>
-public record Role()
+public record Role(string Type)
 {
-    public string RoleType { get; private set; }
-    
-    public Role(string roleType) : this()
-    {
-        RoleType = roleType;
-    }
+    public static Role LiquorStoreOwner => new("LiquorStoreOwner");
+    public static Role Provider => new("Provider");
 }
