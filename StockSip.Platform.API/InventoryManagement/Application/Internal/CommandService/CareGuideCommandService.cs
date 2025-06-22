@@ -1,5 +1,5 @@
 ﻿using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
-using StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
 using StockSip.Platform.API.Shared.Domain.Repositories;
@@ -122,5 +122,23 @@ public class CareGuideCommandService(
         careGuideRepository.Update(careGuideToAssign);
         await unitOfWork.CompleteAsync();
         return careGuideToAssign;
+    }
+
+    /// <summary>
+    /// This async method is used to delete a careguide.
+    /// </summary>
+    /// <param name="command">
+    /// The command containing the details to delete a care guide.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when a care guide with the specific id does not exist. 
+    /// </exception>
+    public async Task Handle(DeleteCareGuideCommand command)
+    {
+        var careGuideToDelete = await careGuideRepository.FindByIdAsync(command.CareGuideId)
+                                ?? throw new ArgumentException("Care Guide with give id does not exists.");
+        
+        careGuideRepository.Remove(careGuideToDelete);
+        await unitOfWork.CompleteAsync();
     }
 }

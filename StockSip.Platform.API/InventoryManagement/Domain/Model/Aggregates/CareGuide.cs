@@ -2,7 +2,7 @@ using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 
-namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
+namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 
 /// <summary>
 /// This class represents a Product Care Guide in the domain model.

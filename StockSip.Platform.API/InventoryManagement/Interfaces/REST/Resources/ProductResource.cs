@@ -12,4 +12,4 @@ public record ProductResource(string Id,
                                 string LiquorType, 
                                 double UnitPriceAmount,
                                 int MinimumStock,
-                                string? ProviderId = null);
+                                string ProviderId);
