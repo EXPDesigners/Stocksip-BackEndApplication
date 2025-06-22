@@ -100,6 +100,9 @@ builder.Services.AddScoped<IWarehouseQueryService, WarehouseQueryService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductCommandService, ProductCommandService>();
 builder.Services.AddScoped<IProductQueryService, ProductQueryService>();
+builder.Services.AddScoped<ICareGuideRepository, CareGuideRepository>();
+builder.Services.AddScoped<ICareGuideCommandService, CareGuideCommandService>();
+builder.Services.AddScoped<ICareGuideQueryService, CareGuideQueryService>();
 builder.Services.AddScoped<ExternalAlertsAndNotificationsService>();
 
 builder.Services.AddScoped<IEventHandler<ProductProblemDetectedEvent>, ProductProblemDetectedEventHandler>();
