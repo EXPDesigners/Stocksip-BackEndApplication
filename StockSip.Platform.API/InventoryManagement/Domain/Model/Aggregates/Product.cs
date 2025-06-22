@@ -119,7 +119,7 @@ public partial class Product
     /// <param name="newMinimumStock">
     /// The new minimum stock level to be set, represented as an integer.
     /// </param>
-    private void SetMinimumStock(int newMinimumStock)
+    public void SetMinimumStock(int newMinimumStock)
     {
         MinimumStock = MinimumStock.UpdateMinimumStock(newMinimumStock);
     }

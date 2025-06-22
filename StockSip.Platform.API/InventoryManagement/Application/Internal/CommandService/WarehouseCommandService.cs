@@ -16,6 +16,7 @@ namespace StockSip.Platform.API.InventoryManagement.Application.Internal.Command
 public class WarehouseCommandService(
     IWarehouseRepository warehouseRepository,
     IProductRepository productRepository,
+    IInventoryRepository inventoryRepository,
     IUnitOfWork unitOfWork) : IWarehouseCommandService
 {
     /// <summary>
@@ -101,7 +102,7 @@ public class WarehouseCommandService(
                         ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
         var product = await productRepository.FindByIdAsync(command.ProductId)
                         ?? throw new ArgumentException($"Product with ID {command.ProductId} does not exist.");
-        var inventory = await productRepository.FindInventoryByProductIdAndWarehouseIdAndExpirationDateAsync(command.ProductId, command.WarehouseId, command.ExpirationDate)
+        var inventory = await inventoryRepository.FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(command.ProductId, command.WarehouseId, command.ExpirationDate)
                         ?? throw new ArgumentException($"Inventory for product {command.ProductId} in warehouse {command.WarehouseId} does not exist.");
         
         var productExit = new ProductExit(command)

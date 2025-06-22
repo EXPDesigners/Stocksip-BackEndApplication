@@ -43,7 +43,7 @@ public class InventoryRepository(AppDbContext context) : BaseRepository<Inventor
     /// <returns>
     /// A task that returns an Inventory object if found, or null if not found.
     /// </returns>
-    public async Task<Inventory?> FindByProductIdAndWarehouseIdAndExpirationDateAsync(string productId, string warehouseId, DateTime expirationDate)
+    public async Task<Inventory?> FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(string productId, string warehouseId, DateTime expirationDate)
     {
         return await Context.Set<Inventory>()
             .FirstOrDefaultAsync(inventory => inventory.ProductId == productId

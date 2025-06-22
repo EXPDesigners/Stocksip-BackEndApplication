@@ -127,14 +127,14 @@ public static class ModelBuilderExtensions
             });
         
         builder.Entity<Inventory>()
-            .OwnsOne(i => i.ExpirationDate, ed =>
+            .OwnsOne(i => i.BestBeforeDate, ed =>
             {
                 ed.WithOwner()
                     .HasForeignKey("ProductId", "WarehouseId");
 
                 ed.HasKey("ProductId", "WarehouseId");
 
-                ed.Property(e => e.ExpirationDate)
+                ed.Property(e => e.BestBeforeDate)
                     .IsRequired();
             });
 
