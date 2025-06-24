@@ -1,5 +1,8 @@
-﻿namespace StockSip.Platform.API.payment_and_subscription.domain.ValueObjects;
+﻿namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Model.ValueObjects;
 
+/// <summary>
+/// The unique identifier for a user account.
+/// </summary>
 public record UserId()
 {
     public string Id { get; }
