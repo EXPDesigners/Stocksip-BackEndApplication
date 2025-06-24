@@ -15,8 +15,6 @@ public class Plan
     
     public string Description { get; private set; }
     
-    public TimeSpan Duration { get; private set; }
-    
     public EPaymentFrequency EPaymentFrequency { get; internal set; }
     
     public Money Price { get; internal set; }
@@ -28,14 +26,5 @@ public class Plan
     /// <summary>
     /// Default constructor for EF Core.
     /// </summary>
-    public Plan() {}
-
-    public Plan (string name, TimeSpan duration, int maxWarehouses, int maxProducts, Money price)
-    {
-        PlanId = Guid.NewGuid().ToString();
-        Duration = duration;
-        MaxWarehouses = maxWarehouses;
-        MaxProducts = maxProducts;
-        Price = price;
-    }
+    protected Plan() {}
 }

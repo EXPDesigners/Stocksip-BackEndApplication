@@ -18,12 +18,11 @@ public class Subscription
     
     public DateTime CreatedDate { get; internal set; }
     public DateTime ExpiredDate { get; internal set; }
-    public bool IsActive => ExpiredDate > DateTime.UtcNow;
     
     /// <summary>
     /// Default constructor for EF Core.
     /// </summary>
-    public Subscription() {}
+    protected Subscription() {}
     
     public Subscription(string accountId, Plan plan, DateTime expiredDate)
     {
