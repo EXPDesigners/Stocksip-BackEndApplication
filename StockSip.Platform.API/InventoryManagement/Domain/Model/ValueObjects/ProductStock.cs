@@ -8,7 +8,7 @@ public record ProductStock()
     /// <summary>
     /// The stock of the product.
     /// </summary>
-    private int Stock { get; }
+    public int Stock { get; }
     
     /// <summary>
     /// Default constructor for the ProductStock value object.
@@ -80,7 +80,7 @@ public record ProductStock()
     /// Throws this exception if the quantity is not a positive integer number.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Throws this exception if the stock is insufficient to decrease by the specified quantity.
+    /// Throws this exception if the stock is not enough to decrease by the specified quantity.
     /// </exception>
     public ProductStock DecreaseStock(int quantity)
     {
@@ -95,5 +95,10 @@ public record ProductStock()
         }
 
         return new ProductStock(Stock - quantity);
+    }
+    
+    public int GetCurrentStock()
+    {
+        return Stock;
     }
 }

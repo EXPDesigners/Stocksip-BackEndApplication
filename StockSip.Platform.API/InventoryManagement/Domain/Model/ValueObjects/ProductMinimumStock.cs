@@ -8,7 +8,7 @@ public record ProductMinimumStock()
     /// <summary>
     /// The minimum stock of the product.
     /// </summary>
-    private int MinimumStock { get; }
+    public int MinimumStock { get; }
 
     /// <summary>
     /// Default constructor for the ProductMinimumStock value object.
@@ -39,7 +39,18 @@ public record ProductMinimumStock()
     /// </returns>
     private static bool IsMinimumStockValidate(int minimumStock)
     {
-        return !(minimumStock < 0);
+        return (minimumStock < 0);
+    }
+
+    /// <summary>
+    /// Retrieves the minimum stock of the product.
+    /// </summary>
+    /// <returns>
+    /// Returns the minimum stock of the product as an integer.
+    /// </returns>
+    public int GetMinimumStock()
+    {
+        return MinimumStock;
     }
     
     /// <summary>

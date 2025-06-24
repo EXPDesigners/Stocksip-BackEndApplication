@@ -1,0 +1,60 @@
+namespace StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
+
+/// This value object represents the profile ID of a warehouse.
+/// <summary>
+/// This record defines the address of a warehouse.
+/// </summary>
+public record WarehouseAddress()
+{
+    public string? Street { get; }
+    public string? City { get; }
+    public string? District { get; }
+    public string? PostalCode { get; }
+    public string? Country { get; }
+
+    /// <summary>
+    /// The default constructor for the WarehouseAddress record.
+    /// </summary>
+    /// <param name="street">The street for the warehouse</param>
+    /// <param name="city">The city for the warehouse</param>
+    /// <param name="district">The district for the warehouse</param>
+    /// <param name="postalCode">The postal code for the warehouse</param>
+    /// <param name="country">The country for the warehouse</param>
+    /// <exception cref="ArgumentException">The warehouse address cannot be null or empty</exception>
+    public WarehouseAddress(string street, string city, string district, string postalCode, string country) : this()
+    {
+        if (!IsValidAddress(street, city, district, postalCode, country))
+        {
+            throw new ArgumentException("The warehouse address cannot be null or empty.");
+        }
+
+        Street = street;
+        City = city;
+        District = district;
+        PostalCode = postalCode;
+        Country = country;
+    }
+    
+    /// <summary>
+    /// This method validates the warehouse address.
+    /// </summary>
+    /// <param name="street">The street for the warehouse</param>
+    /// <param name="city">The city for the warehouse</param>
+    /// <param name="district">The district for the warehouse</param>
+    /// <param name="postalCode">The postal code for the warehouse</param>
+    /// <param name="country">The country for the warehouse</param>
+    /// <returns></returns>
+    private static bool IsValidAddress(string street, string city, string district, string postalCode, string country)
+    {
+        return !string.IsNullOrWhiteSpace(street) &&
+               !string.IsNullOrWhiteSpace(city) &&
+               !string.IsNullOrWhiteSpace(district) &&
+               !string.IsNullOrWhiteSpace(postalCode) &&
+               !string.IsNullOrWhiteSpace(country);
+    }
+    
+    public string GetFullAddress()
+    {
+        return $"{Street}, {City}, {District}, {PostalCode}, {Country}";
+    }
+}

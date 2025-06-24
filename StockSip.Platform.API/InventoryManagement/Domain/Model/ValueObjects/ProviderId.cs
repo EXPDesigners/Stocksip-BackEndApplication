@@ -6,4 +6,4 @@
 /// <param name="Id">
 /// The unique identifier for the provider.
 /// </param>
-public record ProviderId(int Id);
+public record ProviderId(string Id);

@@ -28,16 +28,13 @@
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.11.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.5"/>
         <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.11.0"/>
-
+        <PackageReference Include="Cortex.Mediator" Version="1.6.1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="InventoryManagement\Domain\Model\Commands\" />
-      <Folder Include="InventoryManagement\Domain\Model\Entities\" />
-      <Folder Include="InventoryManagement\Domain\Model\Queries\" />
-      <Folder Include="orderOperationAndMonitoring\Domain\Model\Commands\" />
-      <Folder Include="orderOperationAndMonitoring\Domain\Model\Entities\" />
-      <Folder Include="orderOperationAndMonitoring\Domain\Model\Queries\" />
+      <Folder Include="OrderOperationAndMonitoring\Domain\Model\Commands\" />
+      <Folder Include="OrderOperationAndMonitoring\Domain\Model\Queries\" />
+      <Folder Include="OrderOperationAndMonitoring\Domain\Model\ValueObjects\" />
     </ItemGroup>
 
 </Project>

@@ -1,4 +1,24 @@
+using Cortex.Mediator.Behaviors;
+using Cortex.Mediator.Commands;
+using Cortex.Mediator.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using StockSip.Platform.API.AlertsAndNotifications.Application.ACL;
+using StockSip.Platform.API.AlertsAndNotifications.Application.Internal.CommandServices;
+using StockSip.Platform.API.AlertsAndNotifications.Application.Internal.QueryServices;
+using StockSip.Platform.API.AlertsAndNotifications.Domain.Repositories;
+using StockSip.Platform.API.AlertsAndNotifications.Domain.Services;
+using StockSip.Platform.API.AlertsAndNotifications.Infrastructure.Persistence.EFC.Repositories;
+using StockSip.Platform.API.AlertsAndNotifications.Interfaces.ACL;
+using StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
+using StockSip.Platform.API.InventoryManagement.Application.Internal.EventHandlers;
+using StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices.ACL;
+using StockSip.Platform.API.InventoryManagement.Application.Internal.QueryService;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Events;
+using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
+using StockSip.Platform.API.InventoryManagement.Domain.Services;
+using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Repositories;
+using StockSip.Platform.API.Shared.Application.Internal.EventHandlers;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 using StockSip.Platform.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
@@ -40,7 +60,25 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 // Add Swagger/OpenAPI support
-builder.Services.AddSwaggerGen(options => {
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "StockSip.Platform.API",
+        Version = "v1",
+        Description = "StockSip Platform API for Inventory Management",
+        TermsOfService = new Uri("https://stocksip.com/tos"),
+        Contact = new OpenApiContact
+        {
+            Name = "StockSip",
+            Email = "contact@stocksip.com"
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Apache 2.0",
+            Url = new Uri("https://www.apache.org/licenses/LICENSE-2.0.html")
+        },
+    });
     options.EnableAnnotations();
 });
 
@@ -48,6 +86,40 @@ builder.Services.AddSwaggerGen(options => {
 
 // Shared Bounded Context
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Alerts And Notifications Bounded Context
+builder.Services.AddScoped<IAlertRepository, AlertRepository>();
+builder.Services.AddScoped<IAlertCommandService, AlertCommandService>();
+builder.Services.AddScoped<IAlertQueryService, AlertQueryService>();
+builder.Services.AddScoped<IAlertsAndNotificationsContextFacade, AlertsAndNotificationsContextFacade>();
+
+// Inventory Management Bounded Context
+builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+builder.Services.AddScoped<IWarehouseCommandService, WarehouseCommandService>();
+builder.Services.AddScoped<IWarehouseQueryService, WarehouseQueryService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductCommandService, ProductCommandService>();
+builder.Services.AddScoped<IProductQueryService, ProductQueryService>();
+builder.Services.AddScoped<ICareGuideRepository, CareGuideRepository>();
+builder.Services.AddScoped<ICareGuideCommandService, CareGuideCommandService>();
+builder.Services.AddScoped<ICareGuideQueryService, CareGuideQueryService>();
+builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
+builder.Services.AddScoped<IInventoryCommandService, InventoryCommandService>();
+builder.Services.AddScoped<IInventoryQueryService, InventoryQueryService>();
+builder.Services.AddScoped<ExternalAlertsAndNotificationsService>();
+
+builder.Services.AddScoped<IEventHandler<ProductProblemDetectedEvent>, ProductProblemDetectedEventHandler>();
+
+builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
+
+// Add Mediator for CQRS
+builder.Services.AddCortexMediator(
+    configuration: builder.Configuration,
+    handlerAssemblyMarkerTypes: new[] { typeof(Program) }, configure: options =>
+    {
+        options.AddOpenCommandPipelineBehavior(typeof(LoggingCommandBehavior<>));
+        //options.AddDefaultBehaviors();
+    });
 
 var app = builder.Build();
 
@@ -61,7 +133,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Use Swagger for API documentation if in development mode
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

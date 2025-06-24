@@ -5,29 +5,20 @@
 /// </summary>
 public record ProductName()
 {
-    /// <summary>
-    /// The full name of the product.
-    /// </summary>
-    public string? FullName { get; }
+    public string Name { get; }
 
     /// <summary>
-    /// Default constructor that initializes a new ProductName instance.
+    /// Constructor for the ProductName value object.
     /// </summary>
-    /// <param name="brandName">
-    /// The brand name of the product.
-    /// </param>
-    /// <param name="productType">
-    /// The liquor type of the product.
-    /// </param>
-    /// <param name="name">
-    /// The additional name of the product. It can be null.
-    /// </param>
-    public ProductName(EBrandName brandName, ELiquorType productType, string? name) : this()
+    /// <param name="name">The name of the product</param>
+    /// <exception cref="ArgumentNullException">The name cannot be null or empty.</exception>
+    public ProductName(string name) : this()
     {
-        FullName = string.Join(" ", 
-            brandName.ToString(),
-            productType.ToString(),
-            string.IsNullOrWhiteSpace(name) ? null : name.Trim()
-            ).Trim();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentNullException(nameof(name), "The product name cannot be null or empty.");
+        }
+
+        Name = name.Trim();
     }
 }
