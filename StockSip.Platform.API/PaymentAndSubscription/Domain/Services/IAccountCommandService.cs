@@ -8,5 +8,8 @@ namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Services;
 /// </summary>
 public interface IAccountCommandService
 {
+    /// <summary>
+    /// This method handles the creation of an account based on the provided command.
+    /// </summary>
     Task<Account?> Handle(CreateAccountCommand command);
 }

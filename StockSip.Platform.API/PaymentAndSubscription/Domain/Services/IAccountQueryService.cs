@@ -8,5 +8,8 @@ namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Services;
 /// </summary>
 public interface IAccountQueryService
 {
+    /// <summary>
+    /// This method retrieves an account based on the provided query.
+    /// </summary>
     Task<IEnumerable<Account>> Handle(GetAccountByIdQuery query);
 }
