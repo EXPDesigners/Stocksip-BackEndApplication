@@ -35,7 +35,7 @@
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\Commands\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\Queries\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\ValueObjects\" />
-      <Folder Include="payment-and-subscription\Domain\Entities\" />
+      <Folder Include="PaymentAndSubscription\Interfaces\Rest\Transform\" />
     </ItemGroup>
 
 </Project>
