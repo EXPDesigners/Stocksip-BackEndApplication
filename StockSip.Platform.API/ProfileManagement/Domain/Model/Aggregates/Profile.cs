@@ -1,3 +1,4 @@
+using StockSip.Platform.API.ProfileManagement.Domain.Model.Commands;
 using StockSip.Platform.API.ProfileManagement.Domain.Model.ValueObjects;
 
 namespace StockSip.Platform.API.ProfileManagement.Domain.Model.Aggregates;
@@ -50,10 +51,19 @@ public class Profile
     /// <param name="firstName"></param>
     /// <param name="lastName"></param>
     /// <param name="userId"></param>
-    public Profile(string firstName, string lastName, string phoneNumber, string userId)
+    public Profile(string firstName, string lastName, string phoneNumber, UserId userId)
     {
         Name = new PersonName(firstName, lastName);
         PersonContactNumber = new PersonContactNumber(phoneNumber);
-        UserId = new UserId(userId);
+        UserId = userId;
     }
+
+    /// <summary>
+    /// Command handler constructor for creating a profile from a command.
+    /// </summary>
+    /// <param name="command">
+    /// The command containing the necessary data to create a profile.
+    /// </param>
+    public Profile(CreateProfileCommand command) : this(command.FirstName, command.LastName, command.ContactNumber,
+        command.UserId) { }
 }
