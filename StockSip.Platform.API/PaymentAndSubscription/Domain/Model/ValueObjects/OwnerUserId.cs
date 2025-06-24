@@ -1,13 +1,13 @@
 ﻿namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Model.ValueObjects;
 
 /// <summary>
-/// The unique identifier for a user account.
+/// The unique identifier for the user owner.
 /// </summary>
-public record UserId()
+public record OwnerUserId()
 {
     public string Id { get; }
     
-    public UserId(string id) : this()
+    public OwnerUserId(string id) : this()
     {
         if (id == null || id.Trim().Length == 0)
         {

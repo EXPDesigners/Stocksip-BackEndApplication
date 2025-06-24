@@ -1,5 +1,4 @@
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Commands;
-using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Entities;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.ValueObjects;
 
 namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Aggregates;
@@ -12,41 +11,41 @@ public class Account
 {
     public string AccountId { get; private set; }
     
-    public AccountStatus AccountStatus { get; internal set; }
+    public BusinessName BusinessName { get; internal set; }
     
-    public Role Role { get; internal set; }
+    public EAccountStatus Status { get; set; }
     
-    public List<Subscription> Subscriptions { get; set; } = new();
+    public AccountRole AccountRole { get; internal set; }
+    
+    public StreetAddress StreetAddress { get; internal set; }
     
     public DateTime CreatedDate { get; internal set; }
     
-    public UserId UserId { get; internal set; }
+    public OwnerUserId OwnerUserId { get; internal set; }
     
     /// <summary>
     /// Default constructor for EF Core.
     /// </summary>
-    private Account() {}
+    protected Account() {}
 
-    public Account(CreateAccountCommand command)
+    /// <summary>
+    /// Constructor to create a new account with the specified owner user ID, account role, and address.
+    /// </summary>
+    public Account(string ownerUserId, string accountRole, string address)
     {
         AccountId = Guid.NewGuid().ToString();
-        UserId = new UserId(command.UserId);
-        Role = new Role(command.Role);
+        OwnerUserId = new OwnerUserId(ownerUserId);
+        AccountRole = new AccountRole(accountRole);
+        StreetAddress = new StreetAddress(address);
         CreatedDate = DateTime.UtcNow;
-        AccountStatus = AccountStatus.INACTIVE;
+        Status = EAccountStatus.INACTIVE;
     }
-    
-    public void Subscribe(Subscription subscription)
+
+    /// <summary>
+    /// This method is used to activate the account, changing its status to ACTIVE.
+    /// </summary>
+    public void ActiveAccount()
     {
-        if (AccountStatus == AccountStatus.ACTIVE)
-            throw new InvalidOperationException("Account is already active.");
-
-        if (Subscriptions.Any(s => s.IsActive))
-            throw new InvalidOperationException("There is already an active subscription.");
-
-        Subscriptions.Add(subscription);
-        AccountStatus = AccountStatus.ACTIVE;
+        Status = EAccountStatus.ACTIVE;
     }
-
-
 }

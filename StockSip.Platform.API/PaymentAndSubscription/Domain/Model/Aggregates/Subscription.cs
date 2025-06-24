@@ -1,7 +1,6 @@
-﻿using StockSip.Platform.API.payment_and_subscription.Domain.Model.Entities;
-using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Aggregates;
+﻿using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Entities;
 
-namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Entities;
+namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Aggregates;
 
 /// This entity represents a subscription in the payment and subscription domain.
 /// <summary>
@@ -9,13 +8,13 @@ namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Entities;
 /// </summary>
 public class Subscription
 {
-    public string SubscriptionId { get; private set; } = Guid.NewGuid().ToString();
+    public string SubscriptionId { get; private set; }
     
     public Account Account { get; internal set; }
     public string AccountId { get; private set; }
-    public SubscriptionPlan SubscriptionPlan { get; internal set; }
+    public Plan Plan { get; internal set; }
     
-    public string SubscriptionPlanId { get; private set; }
+    public string PlanId { get; private set; }
     
     public DateTime CreatedDate { get; internal set; }
     public DateTime ExpiredDate { get; internal set; }
@@ -26,10 +25,11 @@ public class Subscription
     /// </summary>
     public Subscription() {}
     
-    public Subscription(string accountId, SubscriptionPlan subscriptionPlan, DateTime expiredDate)
+    public Subscription(string accountId, Plan plan, DateTime expiredDate)
     {
+        SubscriptionId = Guid.NewGuid().ToString();
         AccountId = accountId;
-        SubscriptionPlan = subscriptionPlan;
+        Plan = plan;
         ExpiredDate = expiredDate;
     }
 }
