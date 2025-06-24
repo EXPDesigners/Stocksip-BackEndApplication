@@ -5,7 +5,7 @@ namespace StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST.Resources
 /// </summary>
 public record AccountResource(string AccountId, 
                               string BusinessName, 
-                              string Status, 
+                              string Status,
                               string AccountRole,
                               string StreetAddress,
                               string CreatedTime);
