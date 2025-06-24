@@ -35,7 +35,6 @@
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\Commands\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\Queries\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\ValueObjects\" />
-      <Folder Include="ProfileManagement\Domain\Model\Aggregates\" />
     </ItemGroup>
 
 </Project>
