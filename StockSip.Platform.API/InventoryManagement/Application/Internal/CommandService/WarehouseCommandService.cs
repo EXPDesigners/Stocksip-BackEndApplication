@@ -52,17 +52,20 @@ public class WarehouseCommandService(
     /// <exception cref="ArgumentException">Thrown when a warehouse with the same name or address already exists, or if the warehouse to update does not exist.</exception>
     public async Task<Warehouse?> Handle(UpdateWarehouseCommand command)
     {
+        
+        var accountId = await warehouseRepository.GetAccountIdByWarehouseIdAsync(command.WarehouseId);
+        
         var warehouseToUpdate = await warehouseRepository.FindByIdAsync(command.WarehouseId)
             ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
 
         if (await warehouseRepository.ExistsByNameIgnoreCaseAndProfileIdAndWarehouseIdIsNotAsync(
-                command.Name, new AccountId(command.ProfileId), command.WarehouseId))
+                command.Name, new AccountId(accountId), command.WarehouseId))
         {
             throw new ArgumentException($"Warehouse with name {command.Name} already exists.");
         }
         
         if (await warehouseRepository.ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAndProfileIdIsNotAsync(
-                command.Street, command.City, command.PostalCode, new AccountId(command.ProfileId), command.WarehouseId))
+                command.Street, command.City, command.PostalCode, new AccountId(accountId), command.WarehouseId))
         {
             throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.PostalCode} already exists.");
         }

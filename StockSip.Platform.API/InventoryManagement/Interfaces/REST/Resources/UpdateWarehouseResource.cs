@@ -11,5 +11,4 @@ public record UpdateWarehouseResource(string Name,
                                       string Country,
                                       double MaxTemperature,
                                       double MinTemperature,
-                                      double Capacity,
-                                      string ProfileId);
+                                      double Capacity);
