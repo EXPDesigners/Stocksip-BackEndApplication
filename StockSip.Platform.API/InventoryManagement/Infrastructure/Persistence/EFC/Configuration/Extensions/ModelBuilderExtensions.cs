@@ -50,7 +50,7 @@ public static class ModelBuilderExtensions
                 .HasColumnName("image_url");
         });
         
-        builder.Entity<Warehouse>().Property(w => w.AccountId).HasConversion(v => v.Id, v => new AccountId(v)).IsRequired().HasColumnName("profile_id");
+        builder.Entity<Warehouse>().Property(w => w.AccountId).HasConversion(v => v.Id, v => new AccountId(v)).IsRequired().HasColumnName("account_id");
         
         // Product ORM Mapping Rules
         builder.Entity<Product>().HasKey(p => p.ProductId);
