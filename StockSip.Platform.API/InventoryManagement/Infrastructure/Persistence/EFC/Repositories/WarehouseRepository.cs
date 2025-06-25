@@ -114,4 +114,14 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
                 w.AccountId == accountId &&
                 w.WarehouseId != warehouseId);
     }
+
+    public async Task<string> GetAccountIdByWarehouseIdAsync(string warehouseId)
+    {
+        var accountId = await Context.Set<Warehouse>()
+            .Where(w => w.WarehouseId == warehouseId)
+            .Select(w => w.AccountId.Id)
+            .FirstOrDefaultAsync();
+        
+        return accountId ?? throw new InvalidOperationException("Warehouse not found");
+    }
 }
