@@ -7,9 +7,9 @@ namespace StockSip.Platform.API.IdentityAndAccessManagement.Domain.Model.Aggrega
 public partial class User()
 {
     /// <summary>
-    /// The unique identifier for the user. It is generated as a new GUID string.
+    /// The unique identifier for the user. It is generated as a new GUID hash code.
     /// </summary>
-    public string Id { get; } = Guid.NewGuid().ToString();
+    public int Id { get; } = Guid.NewGuid().GetHashCode();
     
     private UserName Email { get; set; }
 
