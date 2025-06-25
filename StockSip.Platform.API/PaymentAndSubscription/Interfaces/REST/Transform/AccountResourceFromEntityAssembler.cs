@@ -13,7 +13,7 @@ public class AccountResourceFromEntityAssembler
             entity.Status.ToString(),
             entity.AccountRole.ToString(),
             entity.StreetAddress.Street, 
-            entity.CreatedDate.ToString("o")
+            entity.GetCreationDate()
         );
     }
 }
