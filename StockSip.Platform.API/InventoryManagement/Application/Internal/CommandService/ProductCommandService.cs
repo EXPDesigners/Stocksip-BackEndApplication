@@ -60,7 +60,16 @@ public class ProductCommandService (
         return productToUpdate;
     }
 
-    public async Task<Product?> Handle(UpdateProductMinimumStockCommand command)
+    /// <summary>
+    /// Method to delete a product from a warehouse if the current stock is zero.
+    /// </summary>
+    /// <param name="command">
+    /// The command containing the details for deleting a product from a warehouse.
+    /// </param> The inventory entry after deletion, which may be a new or updated inventory.
+    /// <returns>  </returns>
+    /// <exception cref="ArgumentException"> Thrown when the product to be deleted or the warehouse
+    /// where we try to delete the product or the inventory of the product in the warehouse does not exist. </exception>
+    public async Task<Product?> Handle(DeleteProductFromWarehouseCommand command)
     {
         var productToUpdate = await productRepository.FindByIdAsync(command.ProductId)
             ?? throw new ArgumentException($"Product with ID {command.ProductId} does not exist.");
