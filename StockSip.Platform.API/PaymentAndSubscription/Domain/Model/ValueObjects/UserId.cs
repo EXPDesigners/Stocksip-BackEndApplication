@@ -3,16 +3,16 @@
 /// <summary>
 /// The unique identifier for the user owner.
 /// </summary>
-public record OwnerUserId()
+public record UserId()
 {
-    public string Id { get; }
+    public string OwnerUserId { get; }
     
-    public OwnerUserId(string id) : this()
+    public UserId(string ownerUserId) : this()
     {
-        if (id == null || id.Trim().Length == 0)
+        if (ownerUserId == null || ownerUserId.Trim().Length == 0)
         {
             throw new ArgumentException("Profile ID must be a non-empty string.");
         }
-        Id = id;
+        OwnerUserId = ownerUserId;
     }
 }

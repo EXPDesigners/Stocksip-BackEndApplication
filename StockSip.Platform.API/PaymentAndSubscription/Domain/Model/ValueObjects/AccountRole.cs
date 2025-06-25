@@ -2,16 +2,16 @@
 
 public record AccountRole()
 {
-    public string Type { get; init; }
+    public string Role { get; init; }
     public static AccountRole LiquorStoreOwner => new("Liquor Store Owner");
     public static AccountRole Provider => new("Provider");
     
-    public AccountRole(string type) : this()
+    public AccountRole(string role) : this()
     {
-        if (type != LiquorStoreOwner.Type && type != Provider.Type)
+        if (role != LiquorStoreOwner.Role && role != Provider.Role)
         {
             throw new ArgumentException("Invalid role type");
         }
-        Type = type;
+        Role = role;
     }
 }
