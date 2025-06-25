@@ -18,6 +18,11 @@ using StockSip.Platform.API.InventoryManagement.Domain.Model.Events;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Repositories;
+using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.CommandService;
+using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.QueryService;
+using StockSip.Platform.API.PaymentAndSubscription.Domain.Repositories;
+using StockSip.Platform.API.PaymentAndSubscription.Domain.Services;
+using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Repositories;
 using StockSip.Platform.API.Shared.Application.Internal.EventHandlers;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 using StockSip.Platform.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
@@ -87,13 +92,13 @@ builder.Services.AddSwaggerGen(options =>
 // Shared Bounded Context
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-// Alerts And Notifications Bounded Context
+// Alerts And Notifications - Bounded Context
 builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 builder.Services.AddScoped<IAlertCommandService, AlertCommandService>();
 builder.Services.AddScoped<IAlertQueryService, AlertQueryService>();
 builder.Services.AddScoped<IAlertsAndNotificationsContextFacade, AlertsAndNotificationsContextFacade>();
 
-// Inventory Management Bounded Context
+// Inventory Management - Bounded Context
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<IWarehouseCommandService, WarehouseCommandService>();
 builder.Services.AddScoped<IWarehouseQueryService, WarehouseQueryService>();
@@ -103,6 +108,11 @@ builder.Services.AddScoped<IProductQueryService, ProductQueryService>();
 builder.Services.AddScoped<ExternalAlertsAndNotificationsService>();
 
 builder.Services.AddScoped<IEventHandler<ProductProblemDetectedEvent>, ProductProblemDetectedEventHandler>();
+
+// Payment and Subscription - Bounded Context
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAccountQueryService, AccountQueryService>();
+builder.Services.AddScoped<IAccountCommandService, AccountCommandService>();
 
 builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
 
