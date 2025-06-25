@@ -11,6 +11,4 @@ public record CreateWarehouseResource(string Name,
                                       string Country,
                                       double MaxTemperature,
                                       double MinTemperature,
-                                      double Capacity,
-                                      string ProfileId
-                                      );
+                                      double Capacity);

@@ -14,9 +14,33 @@ namespace StockSip.Platform.API.InventoryManagement.Interfaces.REST;
 [Produces(MediaTypeNames.Application.Json)]
 [Tags("Accounts")]
 public class AccountWarehousesController (
-    IWarehouseQueryService warehouseQueryService
+    IWarehouseQueryService warehouseQueryService,
+    IWarehouseCommandService warehouseCommandService
     ) : ControllerBase
 {
+    
+    /// <summary>
+    /// This endpoint creates a new warehouse.
+    /// </summary>
+    /// <param name="resource">The resource containing the warehouse details to be created.</param>
+    /// <returns>An IActionResult indicating the result of the creation operation.</returns>
+    [HttpPost]
+    [SwaggerOperation( 
+        Summary = "Create a New Warehouse by Account ID",
+        Description = "Creates a new warehouse associated with a specific Account ID.",
+        OperationId = "CreateWarehouse")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Warehouse created successfully", typeof(WarehouseResource))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Warehouse could not be created")]    
+    public async Task<IActionResult> CreateWarehouse([FromBody] CreateWarehouseResource resource, [FromRoute] string accountId)
+    {
+        var createWarehouseCommand = CreateWarehouseCommandFromResourceAssembler.ToCommandFromResource(resource, accountId);
+        var warehouse = await warehouseCommandService.Handle(createWarehouseCommand);
+        if (warehouse is null) return BadRequest("Failed to create warehouse. Please check the provided data.");
+        var warehouseResource = WarehouseResourceFromEntityAssembler.ToResourceFromEntity(warehouse);
+        return Ok(warehouseResource);
+    }
+    
+    
     [HttpGet]
     [SwaggerOperation(
         Summary = "Get All Warehouses by Account ID",
