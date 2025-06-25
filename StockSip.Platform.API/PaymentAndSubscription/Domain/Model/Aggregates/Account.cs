@@ -21,7 +21,7 @@ public class Account
     
     public DateTime CreatedDate { get; internal set; }
     
-    public OwnerUserId OwnerUserId { get; internal set; }
+    public UserId OwnerUserId { get; internal set; }
     
     /// <summary>
     /// Default constructor for EF Core.
@@ -34,7 +34,7 @@ public class Account
     public Account(string ownerUserId, string accountRole, string address)
     {
         AccountId = Guid.NewGuid().ToString();
-        OwnerUserId = new OwnerUserId(ownerUserId);
+        OwnerUserId = new UserId(ownerUserId);
         AccountRole = new AccountRole(accountRole);
         StreetAddress = new StreetAddress(address);
         CreatedDate = DateTime.UtcNow;
@@ -47,5 +47,10 @@ public class Account
     public void ActiveAccount()
     {
         Status = EAccountStatus.ACTIVE;
+    }
+    
+    public string GetCreationDate()
+    {
+        return CreatedDate.ToString("yyyy-M-d");
     }
 }
