@@ -10,13 +10,16 @@ using StockSip.Platform.API.AlertsAndNotifications.Domain.Repositories;
 using StockSip.Platform.API.AlertsAndNotifications.Domain.Services;
 using StockSip.Platform.API.AlertsAndNotifications.Infrastructure.Persistence.EFC.Repositories;
 using StockSip.Platform.API.AlertsAndNotifications.Interfaces.ACL;
+using StockSip.Platform.API.InventoryManagement.Application.ACL;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.EventHandlers;
-using StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices.ACL;
+using StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.QueryService;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Events;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
+using StockSip.Platform.API.InventoryManagement.Infrastructure.FileStorage.Cloudinary.Configuration;
+using StockSip.Platform.API.InventoryManagement.Infrastructure.FileStorage.Cloudinary.Services;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Repositories;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.CommandService;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.QueryService;
@@ -112,6 +115,10 @@ builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<IInventoryCommandService, InventoryCommandService>();
 builder.Services.AddScoped<IInventoryQueryService, InventoryQueryService>();
 builder.Services.AddScoped<ExternalAlertsAndNotificationsService>();
+
+// Cloudinary Configuration
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
 builder.Services.AddScoped<IEventHandler<ProductProblemDetectedEvent>, ProductProblemDetectedEventHandler>();
 
