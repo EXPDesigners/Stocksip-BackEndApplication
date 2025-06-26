@@ -49,15 +49,16 @@ public class CloudinaryService : ICloudinaryService
         var uri = new Uri(imageUrl);
         var parts = uri.AbsolutePath.Split('/');
 
-        if (parts.Length < 2)
+        if (parts.Length < 3)
             throw new ArgumentException("Invalid Cloudinary URL format.");
 
+        var folder = parts[^2];
         var fileName = Path.GetFileNameWithoutExtension(parts[^1]);
         
         if (fileName.Equals("default-warehouse_whqolq", StringComparison.OrdinalIgnoreCase))
             return false;
 
-        var publicId = fileName;
+        var publicId = $"{folder}/{fileName}";
 
         var deletionParams = new DeletionParams(publicId);
         var result = _cloudinary.Destroy(deletionParams);
