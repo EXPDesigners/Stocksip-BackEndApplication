@@ -21,4 +21,5 @@ public record UpdateWarehouseCommand(string WarehouseId,
                                      string Country,
                                      double MaxTemperature,
                                      double MinTemperature,
-                                     double Capacity);
+                                     double Capacity,
+                                     IFormFile? Image);

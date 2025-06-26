@@ -74,6 +74,16 @@ public class WarehouseCommandService(
             throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.PostalCode} already exists.");
         }
         
+        var currentImageUrl = await warehouseRepository.GetImageUrlByWarehouseIdAsync(command.WarehouseId);
+        string imageUrl = currentImageUrl;
+
+        if (command.Image != null)
+        {
+            cloudinaryService.DeleteImage(currentImageUrl);
+            
+            imageUrl = cloudinaryService.UploadImage(command.Image);
+        }
+        
         warehouseToUpdate.UpdateWarehouse(
             command.Name,
             command.Street,
@@ -83,7 +93,8 @@ public class WarehouseCommandService(
             command.Country,
             command.MaxTemperature,
             command.MinTemperature,
-            command.Capacity
+            command.Capacity,
+            imageUrl
         );
         
         warehouseRepository.Update(warehouseToUpdate);

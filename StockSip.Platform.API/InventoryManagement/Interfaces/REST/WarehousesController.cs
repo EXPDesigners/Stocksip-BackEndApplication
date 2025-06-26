@@ -28,7 +28,7 @@ public class WarehousesController(IWarehouseCommandService warehouseCommandServi
         OperationId = "UpdateWarehouse")]
     [SwaggerResponse(StatusCodes.Status201Created, "Warehouse updated successfully", typeof(WarehouseResource))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Warehouse could not be updated")]
-    public async Task<IActionResult> UpdateWarehouse([FromRoute] string warehouseId, [FromBody] UpdateWarehouseResource resource)
+    public async Task<IActionResult> UpdateWarehouse([FromRoute] string warehouseId, [FromForm] UpdateWarehouseResource resource)
     {
         var createWarehouseCommand = UpdateWarehouseCommandFromResourceAssembler.ToCommandFromResource(resource, warehouseId);
         var warehouse = await warehouseCommandService.Handle(createWarehouseCommand);

@@ -26,7 +26,8 @@ public static class UpdateWarehouseCommandFromResourceAssembler
             resource.Country,
             resource.MaxTemperature,
             resource.MinTemperature,
-            resource.Capacity
+            resource.Capacity,
+            resource.Image
         );
     }
 }
