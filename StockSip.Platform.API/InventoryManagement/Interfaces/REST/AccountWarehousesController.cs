@@ -20,10 +20,11 @@ public class AccountWarehousesController (
 {
     
     /// <summary>
-    /// This endpoint creates a new warehouse.
+    /// This method creates a new warehouse associated with a specific Account ID.
     /// </summary>
-    /// <param name="resource">The resource containing the warehouse details to be created.</param>
-    /// <returns>An IActionResult indicating the result of the creation operation.</returns>
+    /// <param name="resource">The resource containing the warehouse details.</param>
+    /// <param name="accountId">The unique identifier for the account with which the warehouse will be associated.</param>
+    /// <returns>An IActionResult indicating the result of the operation.</returns>
     [HttpPost]
     [SwaggerOperation( 
         Summary = "Create a New Warehouse by Account ID",
@@ -31,7 +32,7 @@ public class AccountWarehousesController (
         OperationId = "CreateWarehouse")]
     [SwaggerResponse(StatusCodes.Status201Created, "Warehouse created successfully", typeof(WarehouseResource))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Warehouse could not be created")]    
-    public async Task<IActionResult> CreateWarehouse([FromBody] CreateWarehouseResource resource, [FromRoute] string accountId)
+    public async Task<IActionResult> CreateWarehouse([FromForm] CreateWarehouseResource resource, [FromRoute] string accountId)
     {
         var createWarehouseCommand = CreateWarehouseCommandFromResourceAssembler.ToCommandFromResource(resource, accountId);
         var warehouse = await warehouseCommandService.Handle(createWarehouseCommand);
@@ -39,7 +40,6 @@ public class AccountWarehousesController (
         var warehouseResource = WarehouseResourceFromEntityAssembler.ToResourceFromEntity(warehouse);
         return Ok(warehouseResource);
     }
-    
     
     [HttpGet]
     [SwaggerOperation(

@@ -48,12 +48,12 @@ public class Warehouse
     /// Constructs a new instance of the Warehouse class using a CreateWarehouseCommand.
     /// </summary>
     /// <param name="command">The command to create a warehouse</param>
-    public Warehouse(CreateWarehouseCommand command) : this(
+    public Warehouse(CreateWarehouseCommand command, string imageUrl) : this(
         command.Name,
         new WarehouseAddress(command.Street, command.City, command.District, command.PostalCode, command.Country),
         new Temperature(command.MinTemperature, command.MaxTemperature),
         new Capacity(command.Capacity),
-        new ImageUrl(null),
+        new ImageUrl(imageUrl),
         new AccountId(command.ProfileId)) 
     {}
 

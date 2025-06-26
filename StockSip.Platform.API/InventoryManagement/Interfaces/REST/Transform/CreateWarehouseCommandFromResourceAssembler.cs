@@ -26,7 +26,8 @@ public static class CreateWarehouseCommandFromResourceAssembler
             resource.MaxTemperature,
             resource.MinTemperature,
             resource.Capacity,
-            accountId
+            accountId,
+            resource.Image
         );
     }
 }

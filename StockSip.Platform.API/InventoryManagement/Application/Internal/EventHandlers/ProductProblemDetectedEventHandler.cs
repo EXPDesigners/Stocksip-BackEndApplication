@@ -1,4 +1,4 @@
-﻿using StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices.ACL;
+﻿using StockSip.Platform.API.InventoryManagement.Application.ACL;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Events;
 using StockSip.Platform.API.Shared.Application.Internal.EventHandlers;
 
@@ -10,7 +10,7 @@ namespace StockSip.Platform.API.InventoryManagement.Application.Internal.EventHa
 /// <param name="alertsAndNotificationsService">
 /// The service responsible for creating alerts and notifications on another contexts.
 /// </param>
-public class ProductProblemDetectedEventHandler(
+internal class ProductProblemDetectedEventHandler(
     ExternalAlertsAndNotificationsService alertsAndNotificationsService
     ) : IEventHandler<ProductProblemDetectedEvent>
 {

@@ -124,4 +124,14 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
         
         return accountId ?? throw new InvalidOperationException("Warehouse not found");
     }
+
+    public async Task<string> GetImageUrlByWarehouseIdAsync(string warehouseId)
+    {
+        var imageUrl = await Context.Set<Warehouse>()
+            .Where(w => w.WarehouseId == warehouseId)
+            .Select(w => w.ImageUrl!.ImageUri.ToString())
+            .FirstOrDefaultAsync();
+
+        return imageUrl ?? throw new InvalidOperationException("Warehouse not found or image URL is null");
+    }
 }

@@ -1,6 +1,6 @@
 ﻿using StockSip.Platform.API.AlertsAndNotifications.Interfaces.ACL;
 
-namespace StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices.ACL;
+namespace StockSip.Platform.API.InventoryManagement.Application.ACL;
 
 /// <summary>
 /// This service is used to create alerts and notifications in the Alerts and Notifications context.
