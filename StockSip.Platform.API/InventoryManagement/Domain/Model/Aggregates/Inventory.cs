@@ -14,7 +14,7 @@ public class Inventory
     /// <summary>
     /// The unique identifier of the inventory.
     /// </summary>
-    public string Id { get; } = Guid.NewGuid().ToString();
+    public string InventoryId { get; } = Guid.NewGuid().ToString();
 
     /// <summary>
     /// The Product associated with the inventory, represented as a Product entity.

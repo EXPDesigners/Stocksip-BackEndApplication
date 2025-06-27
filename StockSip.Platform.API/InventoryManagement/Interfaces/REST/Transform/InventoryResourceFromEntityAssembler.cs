@@ -21,7 +21,7 @@ public static class InventoryResourceFromEntityAssembler
     public static InventoryResource ToResourceFromEntity(Inventory entity)
     {
         return new InventoryResource(
-            entity.Id,
+            entity.InventoryId,
             entity.ProductId,
             entity.WarehouseId,
             entity.BestBeforeDate.BestBeforeDate,

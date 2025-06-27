@@ -15,7 +15,7 @@ public static class CreateProductCommandFromResourceAssembler
     /// <returns> The CreateProductCommand created from the resource. </returns>
     public static CreateProductCommand ToCommandFromResource(CreateProductResource resource)
     {
-        return new CreateProductCommand(resource.AdditionalName,
+        return new CreateProductCommand(resource.Name,
             resource.LiquorType,
             resource.BrandName,
             resource.UnitPriceAmount,

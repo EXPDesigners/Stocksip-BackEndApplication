@@ -132,7 +132,7 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// <returns>
     /// True if a product with the specified ID exists; otherwise, false.
     /// </returns>
-    public async Task<bool> ExistsByIdAsync(string productId)
+    public async Task<bool> ExistsByProductIdAsync(string productId)
     {
         return await Context.Set<Product>().AnyAsync(product => product.ProductId == productId);
     }

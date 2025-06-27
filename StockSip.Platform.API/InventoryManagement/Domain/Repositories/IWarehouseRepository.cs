@@ -57,13 +57,13 @@ public interface IWarehouseRepository : IBaseRepository<Warehouse>
     /// </summary>
     /// <param name="warehouseId">The unique identifier of the warehouse.</param>
     /// <returns>The account ID associated with the warehouse.</returns>
-    Task<string> GetAccountIdByWarehouseIdAsync(string warehouseId);
+    Task<string> FindAccountIdByWarehouseIdAsync(string warehouseId);
     
     /// <summary>
     /// Get the image URL associated with a specific warehouse ID.
     /// </summary>
     /// <param name="warehouseId">The unique identifier of the warehouse.</param>
     /// <returns>The image URL associated with the warehouse.</returns>
-    Task<string> GetImageUrlByWarehouseIdAsync(string warehouseId);
+    Task<string> FindImageUrlByWarehouseIdAsync(string warehouseId);
     
 }

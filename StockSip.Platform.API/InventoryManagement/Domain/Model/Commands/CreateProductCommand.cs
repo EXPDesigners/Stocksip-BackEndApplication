@@ -5,7 +5,7 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 /// <summary>
 /// This command represents the creation of a new product.
 /// </summary>
-/// <param name="AdditionalName">
+/// <param name="Name">
 /// This is an optional field that can be used to provide additional information about the product.
 /// </param>
 /// <param name="LiquorType">
@@ -26,7 +26,7 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 /// <param name="ProviderId">
 /// This field specifies the ID of the provider for the product. It can be null if the product does not have a provider.
 /// </param>
-public record CreateProductCommand(string? AdditionalName, 
+public record CreateProductCommand(string? Name, 
                                     string LiquorType, 
                                     string BrandName, 
                                     double UnitPriceAmount,

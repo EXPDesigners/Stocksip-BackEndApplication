@@ -102,7 +102,7 @@ public partial class Product
     
     public Product(CreateProductCommand command)
     {
-        ProductName = new ProductName(command.AdditionalName);
+        ProductName = new ProductName(command.Name);
         LiquorType = Enum.Parse<ELiquorType>(command.LiquorType, true);
         Brand = command.BrandName;
         UnitPrice = new Money(command.UnitPriceAmount, "PEN");

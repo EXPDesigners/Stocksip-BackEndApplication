@@ -115,7 +115,7 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
                 w.WarehouseId != warehouseId);
     }
 
-    public async Task<string> GetAccountIdByWarehouseIdAsync(string warehouseId)
+    public async Task<string> FindAccountIdByWarehouseIdAsync(string warehouseId)
     {
         var accountId = await Context.Set<Warehouse>()
             .Where(w => w.WarehouseId == warehouseId)
@@ -125,7 +125,7 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
         return accountId ?? throw new InvalidOperationException("Warehouse not found");
     }
 
-    public async Task<string> GetImageUrlByWarehouseIdAsync(string warehouseId)
+    public async Task<string> FindImageUrlByWarehouseIdAsync(string warehouseId)
     {
         var imageUrl = await Context.Set<Warehouse>()
             .Where(w => w.WarehouseId == warehouseId)

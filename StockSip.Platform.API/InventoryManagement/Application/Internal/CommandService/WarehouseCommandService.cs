@@ -57,7 +57,7 @@ public class WarehouseCommandService(
     public async Task<Warehouse?> Handle(UpdateWarehouseCommand command)
     {
         
-        var accountId = await warehouseRepository.GetAccountIdByWarehouseIdAsync(command.WarehouseId);
+        var accountId = await warehouseRepository.FindAccountIdByWarehouseIdAsync(command.WarehouseId);
         
         var warehouseToUpdate = await warehouseRepository.FindByIdAsync(command.WarehouseId)
             ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
@@ -74,7 +74,7 @@ public class WarehouseCommandService(
             throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.PostalCode} already exists.");
         }
         
-        var currentImageUrl = await warehouseRepository.GetImageUrlByWarehouseIdAsync(command.WarehouseId);
+        var currentImageUrl = await warehouseRepository.FindImageUrlByWarehouseIdAsync(command.WarehouseId);
         string imageUrl = currentImageUrl;
 
         if (command.Image != null)
@@ -146,7 +146,7 @@ public class WarehouseCommandService(
         var warehouseToDelete = await warehouseRepository.FindByIdAsync(command.WarehouseId)
                                 ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
         
-        var imageUrl = await warehouseRepository.GetImageUrlByWarehouseIdAsync(command.WarehouseId);
+        var imageUrl = await warehouseRepository.FindImageUrlByWarehouseIdAsync(command.WarehouseId);
         cloudinaryService.DeleteImage(imageUrl);
         
         warehouseRepository.Remove(warehouseToDelete);

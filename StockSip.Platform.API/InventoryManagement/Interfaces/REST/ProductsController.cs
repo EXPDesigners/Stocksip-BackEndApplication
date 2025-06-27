@@ -79,7 +79,7 @@ public class ProductsController(
             return BadRequest("Failed to create product. Please check the provided data...");
         }
         var createdResource = ProductResourceFromEntityAssembler.ToResourceFromEntity(product);
-        return CreatedAtAction(nameof(GetProductById), new { productId = createdResource.Id }, createdResource);
+        return CreatedAtAction(nameof(GetProductById), new { productId = createdResource.ProductId }, createdResource);
     }
 
     /// <summary>
@@ -110,7 +110,7 @@ public class ProductsController(
             return BadRequest($"Failed to update product with ID {productId}. Please check the provided data.");
         }
         var updatedResource = ProductResourceFromEntityAssembler.ToResourceFromEntity(updatedProduct);
-        return CreatedAtAction(nameof(GetProductById), new { productId = updatedResource.Id }, updatedResource);
+        return CreatedAtAction(nameof(GetProductById), new { productId = updatedResource.ProductId }, updatedResource);
     }
 
     /// <summary>

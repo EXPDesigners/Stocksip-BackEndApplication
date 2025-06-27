@@ -38,7 +38,7 @@ public interface IProductRepository : IBaseRepository<Product>
     /// <summary>
     /// This method checks if a product with the specified ID exists in the database.
     /// </summary>
-    Task<bool> ExistsByIdAsync(string productId);
+    Task<bool> ExistsByProductIdAsync(string productId);
 
     /// <summary>
     /// This method checks if a product with the specified full name (brand name, liquor type, and additional name) exists in the database, ignoring lower or upper case.

@@ -96,8 +96,9 @@ public static class ModelBuilderExtensions
             .IsRequired(false);
         
         // Inventory ORM Mapping Rules
-        
-        builder.Entity<Inventory>().HasKey(i => new { i.ProductId, i.WarehouseId });
+
+        builder.Entity<Inventory>().HasKey(i => i.InventoryId);
+        builder.Entity<Inventory>().Property(i => i.InventoryId).IsRequired().ValueGeneratedOnAdd();
 
         builder.Entity<Inventory>()
             .Property(i => i.ProductState)
@@ -117,11 +118,6 @@ public static class ModelBuilderExtensions
         builder.Entity<Inventory>()
             .OwnsOne(i => i.ProductStock, ps =>
             {
-                ps.WithOwner()
-                    .HasForeignKey("ProductId", "WarehouseId");
-
-                ps.HasKey("ProductId", "WarehouseId");
-
                 ps.Property(p => p.Stock)
                     .IsRequired();
             });
@@ -129,11 +125,6 @@ public static class ModelBuilderExtensions
         builder.Entity<Inventory>()
             .OwnsOne(i => i.BestBeforeDate, ed =>
             {
-                ed.WithOwner()
-                    .HasForeignKey("ProductId", "WarehouseId");
-
-                ed.HasKey("ProductId", "WarehouseId");
-
                 ed.Property(e => e.BestBeforeDate)
                     .IsRequired();
             });
