@@ -6,10 +6,17 @@ using StockSip.Platform.API.InventoryManagement.Infrastructure.FileStorage.Cloud
 
 namespace StockSip.Platform.API.InventoryManagement.Infrastructure.FileStorage.Cloudinary.Services;
 
+/// <summary>
+/// This class implements the ICloudinaryService interface, providing methods to upload and delete images using Cloudinary.
+/// </summary>
 public class CloudinaryService : ICloudinaryService
 {
     private readonly CloudinaryDotNet.Cloudinary _cloudinary;
 
+    /// <summary>
+    /// This constructor initializes the Cloudinary service with the provided Cloudinary settings.
+    /// </summary>
+    /// <param name="cloudinarySettings">The Cloudinary settings containing the cloud name, API key, and API secret.</param>
     public CloudinaryService(IOptions<CloudinarySettings> cloudinarySettings)
     {
         var settings = cloudinarySettings.Value;
@@ -17,6 +24,11 @@ public class CloudinaryService : ICloudinaryService
         _cloudinary = new CloudinaryDotNet.Cloudinary(account);
     }
 
+    /// <summary>
+    /// This method uploads an image to Cloudinary and returns the secure URL of the uploaded image.
+    /// </summary>
+    /// <param name="file">The image file to be uploaded.</param>
+    /// <returns>The secure URL of the uploaded image.</returns>
     public string UploadImage(IFormFile file)
     {
         if (file == null || file.Length == 0)
@@ -41,10 +53,21 @@ public class CloudinaryService : ICloudinaryService
         throw new Exception($"Upload failed: {uploadResult.Error?.Message}");
     }
 
+    /// <summary>
+    /// This method deletes an image from Cloudinary using its URL.
+    /// </summary>
+    /// <param name="imageUrl">The URL of the image to be deleted.</param>
+    /// <returns>A boolean indicating whether the deletion was successful.</returns>
     public bool DeleteImage(string imageUrl)
     {
         if (string.IsNullOrWhiteSpace(imageUrl))
             throw new ArgumentException("Image URL cannot be null or empty.", nameof(imageUrl));
+        
+        var protectedImages = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "default-warehouse_whqolq",
+            "default-product_lcmtsm"
+        };
 
         var uri = new Uri(imageUrl);
         var parts = uri.AbsolutePath.Split('/');
@@ -55,7 +78,7 @@ public class CloudinaryService : ICloudinaryService
         var folder = parts[^2];
         var fileName = Path.GetFileNameWithoutExtension(parts[^1]);
         
-        if (fileName.Equals("default-warehouse_whqolq", StringComparison.OrdinalIgnoreCase))
+        if (protectedImages.Contains(fileName))
             return false;
 
         var publicId = $"{folder}/{fileName}";

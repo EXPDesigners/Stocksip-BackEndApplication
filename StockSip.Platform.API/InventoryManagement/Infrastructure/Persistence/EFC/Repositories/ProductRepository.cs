@@ -144,20 +144,37 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// <param name="liquorType"> The liquor type of the product. </param>
     /// <param name="additionalName"> The additional name of the product. </param>
     /// <returns></returns>
-    public async Task<bool> ExistsByFullNameIgnoreCase(string brandName, string liquorType, string? additionalName)
+    public async Task<bool> ExistsByFullNameIgnoreCaseAsync(string brandName, string liquorType, string? additionalName)
     {
         if (!Enum.TryParse<ELiquorType>(liquorType, true, out var parsedLiquorType))
         {
             return false;
         }
 
+        brandName = brandName.ToLower();
+        additionalName = additionalName?.ToLower();
+
         return await Context.Set<Product>()
             .AnyAsync(p =>
                 additionalName != null &&
-                p.ProductName.Name.Equals(additionalName, StringComparison.CurrentCultureIgnoreCase) &&
-                p.Brand.Equals(brandName, StringComparison.CurrentCultureIgnoreCase) &&
+                p.ProductName.Name.ToLower() == additionalName &&
+                p.Brand.ToLower() == brandName &&
                 p.LiquorType == parsedLiquorType); 
     }
-    
-    
+
+    /// <summary>
+    /// This async method retrieves the image URL of a product by its product ID.
+    /// </summary>
+    /// <param name="productId">The unique identifier of the product.</param>
+    /// <returns>A string representing the image URL of the product.</returns>
+    /// <exception cref="InvalidOperationException">No image URL found for the specified product ID.</exception>
+    public async Task<string> FindImageUrlByProductIdAsync(string productId)
+    {
+        var imageUrl = await Context.Set<Product>()
+            .Where(p => p.ProductId == productId)
+            .Select(p => p.ImageUrl!.ImageUri.ToString())
+            .FirstOrDefaultAsync();
+        
+        return imageUrl ?? throw new InvalidOperationException("Image URL not found for the specified product ID.   ");
+    }
 }

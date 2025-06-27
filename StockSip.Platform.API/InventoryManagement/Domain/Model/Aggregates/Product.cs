@@ -100,14 +100,14 @@ public partial class Product
         if (providerId != null) ProviderId = new ProviderId(providerId);
     }
     
-    public Product(CreateProductCommand command)
+    public Product(CreateProductCommand command, string imageUrl)
     {
         ProductName = new ProductName(command.Name);
         LiquorType = Enum.Parse<ELiquorType>(command.LiquorType, true);
         Brand = command.BrandName;
         UnitPrice = new Money(command.UnitPriceAmount, "PEN");
         MinimumStock = new ProductMinimumStock(command.MinimumStock);
-        ImageUrl = new ImageUrl(null);
+        ImageUrl = new ImageUrl(imageUrl);
         if (command.ProviderId != null) ProviderId = new ProviderId(command.ProviderId);
     }
 
@@ -150,14 +150,9 @@ public partial class Product
     /// </exception>
     public void UpdateInformation(double updatedPrice, int updatedMinimumStock, string updatedImageUrl)
     {
-        if (updatedPrice <= 0)
-        {
-            throw new ArgumentException("Price must be greater than zero: ", nameof(updatedPrice));
-        } 
-        
         SetMinimumStock(updatedMinimumStock);
         ImageUrl = new ImageUrl(updatedImageUrl);
-        UnitPrice = new Money(updatedPrice, UnitPrice.Currency);
+        UnitPrice = new Money(updatedPrice, "PEN");
     }
 
     /// <summary>

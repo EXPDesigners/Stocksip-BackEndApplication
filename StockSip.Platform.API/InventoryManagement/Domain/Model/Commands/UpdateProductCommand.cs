@@ -15,4 +15,4 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 /// <param name="UpdatedImageUrl">
 /// The new image URL for the product.
 /// </param>
-public record UpdateProductCommand(string ProductId, double UpdatedUnitPriceAmount, int UpdatedMinimumStock, string UpdatedImageUrl);
+public record UpdateProductCommand(string ProductId, double UpdatedUnitPriceAmount, int UpdatedMinimumStock, IFormFile? UpdatedImage);

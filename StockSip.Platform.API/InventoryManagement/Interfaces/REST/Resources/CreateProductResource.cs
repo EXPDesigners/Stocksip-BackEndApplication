@@ -8,5 +8,5 @@ public record CreateProductResource(string? Name,
                                     string BrandName, 
                                     double UnitPriceAmount,
                                     int MinimumStock,
-                                    string ImageUrl,
+                                    IFormFile? Image,
                                     string? ProviderId);

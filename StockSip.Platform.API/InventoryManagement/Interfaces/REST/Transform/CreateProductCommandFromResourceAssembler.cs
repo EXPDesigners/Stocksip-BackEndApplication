@@ -20,7 +20,7 @@ public static class CreateProductCommandFromResourceAssembler
             resource.BrandName,
             resource.UnitPriceAmount,
             resource.MinimumStock,
-            resource.ImageUrl,
+            resource.Image,
             resource.ProviderId);
     }
 }

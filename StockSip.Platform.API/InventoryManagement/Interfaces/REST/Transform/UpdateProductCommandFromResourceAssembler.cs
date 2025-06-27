@@ -24,6 +24,6 @@ public static class UpdateProductCommandFromResourceAssembler
             productId, 
             resource.UpdatedUnitPriceAmount,
             resource.UpdatedMinimumStock, 
-            resource.UpdatedImageUrl);
+            resource.UpdatedImage);
     }
 }
