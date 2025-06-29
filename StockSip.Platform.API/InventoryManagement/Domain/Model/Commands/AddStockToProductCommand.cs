@@ -15,4 +15,4 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 /// <param name="AddedQuantity">
 /// The quantity of stock to be added to the product.
 /// </param>
-public record AddStockToProductCommand(string ProductId, string WarehouseId, DateTime StockExpirationDate, int AddedQuantity);
+public record AddStockToProductCommand(string ProductId, string WarehouseId, DateOnly StockExpirationDate, int AddedQuantity);

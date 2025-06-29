@@ -52,7 +52,7 @@ public partial class Product
     /// <summary>
     /// The collection of inventories associated with the product, represented as a list of Inventory entities.
     /// </summary>
-    public ICollection<Inventory> Inventories { get; private set; }
+    public ICollection<Inventory> Inventories { get; internal set; } = new List<Inventory>();
     
     /// <summary>
     /// Default constructor for Entity Framework Core.

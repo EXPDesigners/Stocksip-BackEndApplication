@@ -24,7 +24,7 @@ public static class InventoryResourceFromEntityAssembler
             entity.InventoryId,
             entity.ProductId,
             entity.WarehouseId,
-            entity.BestBeforeDate.BestBeforeDate,
+            entity.ProductBestBeforeDate.BestBeforeDate,
             entity.ProductStock.Stock,
             entity.ProductState.GetDisplayName());
     }

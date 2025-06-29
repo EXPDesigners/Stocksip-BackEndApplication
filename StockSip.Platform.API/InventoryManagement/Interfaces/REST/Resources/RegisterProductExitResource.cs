@@ -3,4 +3,4 @@
 /// <summary>
 /// This record defines the RegisterProductExit resource.
 /// </summary>
-public record RegisterProductExitResource(DateTime ExpirationDate, int QuantityExited, string ExitReason);
+public record RegisterProductExitResource(DateOnly ExpirationDate, int QuantityExited, string ExitReason);

@@ -27,11 +27,20 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// </returns>
     public async Task<IEnumerable<Product>> FindByProviderIdAndWarehouseIdAsync(ProviderId providerId, string warehouseId)
     {
-        return await Context.Set<Product>()
-            .Where(product => product.ProviderId == providerId && 
+        var products = await Context.Set<Product>()
+            .Where(product => product.ProviderId == providerId &&
                               product.Inventories.Any(inventory => inventory.WarehouseId == warehouseId))
-            .Include(product => product.Inventories.Any(inventory => inventory.WarehouseId == warehouseId))
+            .Include(product => product.Inventories)
             .ToListAsync();
+        
+        foreach (var product in products)
+        {
+            product.Inventories = product.Inventories
+                .Where(inventory => inventory.WarehouseId == warehouseId)
+                .ToList();
+        }
+
+        return products;
     }
 
     /// <summary>

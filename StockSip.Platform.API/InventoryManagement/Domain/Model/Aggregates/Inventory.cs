@@ -14,7 +14,7 @@ public class Inventory
     /// <summary>
     /// The unique identifier of the inventory.
     /// </summary>
-    public string InventoryId { get; } = Guid.NewGuid().ToString();
+    public string InventoryId { get; private set; } = Guid.NewGuid().ToString();
 
     /// <summary>
     /// The Product associated with the inventory, represented as a Product entity.
@@ -34,22 +34,22 @@ public class Inventory
     /// <summary>
     /// The unique identifier of the warehouse where the inventory is stored.
     /// </summary>
-    public string WarehouseId { get; set; }
+    public string WarehouseId { get; private set; }
     
     /// <summary>
     /// The current stock of the product, represented as a ProductStock value object.
     /// </summary>
-    public ProductStock ProductStock { get; set; }
+    public ProductStock ProductStock { get; internal set; }
 
     /// <summary>
     /// The state of the product in the inventory, represented as an enumeration of type EProductState.
     /// </summary>
-    public EProductState ProductState { get; set; } = EProductState.WithStock;
+    public EProductState ProductState { get; internal set; } = EProductState.WithStock;
     
     /// <summary>
     /// The expiration date of the product, represented as a value object.
     /// </summary>
-    public ProductBestBeforeDate BestBeforeDate { get; }
+    public ProductBestBeforeDate ProductBestBeforeDate { get; internal set; }
     
     /// <summary>
     /// Default constructor for Entity Framework Core.
@@ -71,11 +71,11 @@ public class Inventory
     /// <param name="stock">
     /// The initial stock of the product in the inventory, represented as an integer.
     /// </param>
-    public Inventory(string warehouseId, string productId, DateTime expirationDate, int stock)
+    public Inventory(string warehouseId, string productId, DateOnly expirationDate, int stock)
     {
         WarehouseId = warehouseId;
         ProductId = productId;
-        BestBeforeDate = new ProductBestBeforeDate(expirationDate);
+        ProductBestBeforeDate = new ProductBestBeforeDate(expirationDate);
         ProductStock = new ProductStock(stock);
     }
 
@@ -89,7 +89,7 @@ public class Inventory
     {
         WarehouseId = command.WarehouseId;
         ProductId = command.ProductId;
-        BestBeforeDate = new ProductBestBeforeDate(command.BestBeforeDate);
+        ProductBestBeforeDate = new ProductBestBeforeDate(command.BestBeforeDate);
         ProductStock = new ProductStock(command.Quantity);
     }
 
@@ -140,19 +140,17 @@ public class Inventory
     /// </exception>
     public void AddStockToProduct(int addedStock)
     {
-        // Validate the added stock amount
         if (addedStock <= 0)
         {
             throw new ArgumentException("Stock cannot be negative");
         }
 
-        // If the product is currently out of stock, change its state to with stock
         if (ProductStock.GetCurrentStock() == 0)
         {
             SetProductStateToWithStock();
         }
-        
-        // Increase the stock of the product
+
+        var currentStock = ProductStock.GetCurrentStock();
         ProductStock = ProductStock.IncreaseStock(addedStock);
     }
 

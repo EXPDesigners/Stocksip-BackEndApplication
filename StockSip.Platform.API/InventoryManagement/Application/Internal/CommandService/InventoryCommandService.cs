@@ -72,15 +72,18 @@ public class InventoryCommandService (
         // Retrieves the inventory of the product in the warehouse if it exists, if not, it will create a new inventory entry with the new Expiration Date.
         var updatedInventory = await inventoryRepository.FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(command.ProductId, command.WarehouseId, command.StockExpirationDate);
 
-        // If the retrieved inventory exists, it adds the stock to the current inventory.
-        updatedInventory?.AddStockToProduct(command.AddedQuantity);
-        
-        // If the retrieved inventory does not exist, it creates a new inventory entry with the specified quantity and a different expiration date, but with the same product.
-        updatedInventory ??= new Inventory(command.WarehouseId, command.ProductId, command.StockExpirationDate, command.AddedQuantity)
+        if (updatedInventory is not null)
         {
-            Product = product,
-            Warehouse = warehouse
-        };
+            updatedInventory.AddStockToProduct(command.AddedQuantity);
+        }
+        else
+        {
+            updatedInventory = new Inventory(command.WarehouseId, command.ProductId, command.StockExpirationDate, command.AddedQuantity)
+            {
+                Product = product,
+                Warehouse = warehouse
+            };
+        }
         
         // Completes the current inventory update by saving the changes to the database.
         await unitOfWork.CompleteAsync();
@@ -106,6 +109,11 @@ public class InventoryCommandService (
         // Validate if the warehouse where the product will be added exists.
         var warehouse = await warehouseRepository.FindByIdAsync(command.WarehouseId)
                         ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
+
+        if (await inventoryRepository.ExistsByProductIdAndWarehouseIdAsync(command.ProductId, command.WarehouseId))
+        {
+            throw new ArgumentException($"Product with ID {command.ProductId} already exists in warehouse with ID {command.WarehouseId}.");
+        }
         
         // Creates a new inventory entry for the product in the warehouse with the specified quantity.
         var inventory = new Inventory(command)

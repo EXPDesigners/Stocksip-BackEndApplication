@@ -43,12 +43,12 @@ public class InventoryRepository(AppDbContext context) : BaseRepository<Inventor
     /// <returns>
     /// A task that returns an Inventory object if found, or null if not found.
     /// </returns>
-    public async Task<Inventory?> FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(string productId, string warehouseId, DateTime expirationDate)
+    public async Task<Inventory?> FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(string productId, string warehouseId, DateOnly expirationDate)
     {
         return await Context.Set<Inventory>()
             .FirstOrDefaultAsync(inventory => inventory.ProductId == productId
                                               && inventory.WarehouseId == warehouseId 
-                                              && inventory.BestBeforeDate == new ProductBestBeforeDate(expirationDate));
+                                              && inventory.ProductBestBeforeDate.BestBeforeDate == expirationDate);
     }
 
     /// <summary>
@@ -66,6 +66,7 @@ public class InventoryRepository(AppDbContext context) : BaseRepository<Inventor
     public async Task<bool> ExistsByProductIdAndWarehouseIdAsync(string productId, string warehouseId)
     {
         return await Context.Set<Inventory>()
-            .AnyAsync(inventory => inventory.ProductId == productId);
+            .AnyAsync(inventory => inventory.ProductId == productId && 
+                                   inventory.WarehouseId == warehouseId);
     }
 }

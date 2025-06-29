@@ -27,7 +27,7 @@ public class WarehouseInventoriesController (
     public async Task<IActionResult> GetInventoryByProductIdAndWarehouseIdAndBestBeforeDate(
         string productId, 
         string warehouseId,
-        DateTime expirationDate)
+        DateOnly expirationDate)
     {
         var getInventoryByIdAndWarehouseIdAndExpirationDateQuery =
             new GetInventoryByProductIdAndWarehouseIdAndBestBeforeDateQuery(productId, warehouseId, expirationDate);
@@ -87,7 +87,7 @@ public class WarehouseInventoriesController (
         }
         var inventoryResource = InventoryResourceFromEntityAssembler.ToResourceFromEntity(updatedInventory);
         return CreatedAtAction(nameof(GetInventoryByProductIdAndWarehouseIdAndBestBeforeDate), 
-            new { productId, warehouseId, resource.StockExpirationDate}, 
+            new { productId = productId, warehouseId = warehouseId, expirationDate = resource.StockExpirationDate }, 
             inventoryResource);
     }
     
@@ -110,10 +110,10 @@ public class WarehouseInventoriesController (
             return NotFound($"Product with ID {productId} not found in warehouse {warehouseId} with expiration date {resource.ExpirationDate}. So stock cannot be decreased.");
         }
         
-        var inventoryResource = ProductResourceFromEntityAssembler.ToResourceFromEntity(updatedInventory.Product);
+        var inventoryResource = InventoryResourceFromEntityAssembler.ToResourceFromEntity(updatedInventory);
         
         return CreatedAtAction(nameof(GetInventoryByProductIdAndWarehouseIdAndBestBeforeDate), 
-            new { productId, warehouseId, resource.ExpirationDate}, 
+            new { productId = productId, warehouseId = warehouseId, expirationDate = resource.ExpirationDate }, 
             inventoryResource);
     }
     

@@ -98,7 +98,7 @@ public static class ModelBuilderExtensions
         // Inventory ORM Mapping Rules
 
         builder.Entity<Inventory>().HasKey(i => i.InventoryId);
-        builder.Entity<Inventory>().Property(i => i.InventoryId).IsRequired().ValueGeneratedOnAdd();
+        builder.Entity<Inventory>().Property(i => i.InventoryId).IsRequired();
 
         builder.Entity<Inventory>()
             .Property(i => i.ProductState)
@@ -114,20 +114,23 @@ public static class ModelBuilderExtensions
             .HasOne(i => i.Warehouse)
             .WithMany()
             .HasForeignKey(i => i.WarehouseId);
+
+        builder.Entity<Inventory>().OwnsOne(i => i.ProductStock, ps =>
+        {
+            ps.WithOwner();
+            ps.Property(s => s.Stock).IsRequired();
+        });
+
+        builder.Entity<Inventory>().OwnsOne(i => i.ProductBestBeforeDate, b =>
+        {
+            b.Property(p => p.BestBeforeDate)
+                .HasConversion(
+                    v => v.ToDateTime(TimeOnly.MinValue),
+                    v => DateOnly.FromDateTime(v))
+                .IsRequired();
+        });
         
-        builder.Entity<Inventory>()
-            .OwnsOne(i => i.ProductStock, ps =>
-            {
-                ps.Property(p => p.Stock)
-                    .IsRequired();
-            });
-        
-        builder.Entity<Inventory>()
-            .OwnsOne(i => i.BestBeforeDate, ed =>
-            {
-                ed.Property(e => e.BestBeforeDate)
-                    .IsRequired();
-            });
+        // ProductExit ORM Mapping Rules
 
     }
 }
