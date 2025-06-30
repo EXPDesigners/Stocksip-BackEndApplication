@@ -23,6 +23,7 @@ public static class ProductInventoryResourceFromEntityAssembler
         var product = entity.Product;
         
         return new ProductInventoryResource(
+            product.ProductId,
             product.ProductName.Name,
             product.LiquorType.GetDisplayName(),
             product.UnitPrice.Amount,

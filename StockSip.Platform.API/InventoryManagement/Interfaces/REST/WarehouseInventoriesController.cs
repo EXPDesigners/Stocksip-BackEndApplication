@@ -113,7 +113,7 @@ public class WarehouseInventoriesController (
             inventoryResource);
     }
     
-    [HttpPut("{productId}/substractions")]
+    [HttpPut("product/{productId}/substractions")]
     [SwaggerOperation(
         Summary = "Decrease stock from a product in a warehouse",
         Description = "Decreases stock from a product in a warehouse by its product ID, warehouse ID, and expiration date.",
