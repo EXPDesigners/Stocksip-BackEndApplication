@@ -41,7 +41,7 @@ public class ProductsController(
         Summary = "Get Product by ID",
         Description = "Retrieves a product by its unique identifier.",
         OperationId = "GetProductById")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Product found!", typeof(ProductResource))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Product found!", typeof(ProductInventoryResource))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Product not found...")]
     public async Task<IActionResult> GetProductById([FromRoute] string productId)
     {
@@ -68,7 +68,7 @@ public class ProductsController(
         Summary = "Create a New Product",
         Description = "Creates a new product and returns the created product resource.",
         OperationId = "CreateProduct")]
-    [SwaggerResponse(StatusCodes.Status201Created, "Product created successfully!", typeof(ProductResource))]
+    [SwaggerResponse(StatusCodes.Status201Created, "Product created successfully!", typeof(ProductInventoryResource))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Product could not be created...")]
     public async Task<IActionResult> CreateProduct([FromForm] CreateProductResource resource)
     {
@@ -99,7 +99,7 @@ public class ProductsController(
         Summary = "Update an Existing Product",
         Description = "Updates an existing product by its unique identifier and returns the updated product resource.",
         OperationId = "UpdateProductInformation")]
-    [SwaggerResponse(StatusCodes.Status201Created, "Product updated successfully!", typeof(ProductResource))]
+    [SwaggerResponse(StatusCodes.Status201Created, "Product updated successfully!", typeof(ProductInventoryResource))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Product could not be updated...")]
     public async Task<IActionResult> UpdateProductInformation([FromForm] UpdateProductResource resource, [FromRoute] string productId)
     {
@@ -127,7 +127,7 @@ public class ProductsController(
         Summary = "Get all products by profile ID",
         Description = "Retrieves all products associated with a specific profile ID.",
         OperationId = "GetAllProductsByProfileId")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Products found!", typeof(IEnumerable<ProductResource>))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Products found!", typeof(IEnumerable<ProductInventoryResource>))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "No products found for the specified profile ID...")]
     public async Task<IActionResult> GetAllProductsByProfileId(string profileId)
     {

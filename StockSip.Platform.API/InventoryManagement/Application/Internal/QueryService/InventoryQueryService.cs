@@ -55,4 +55,9 @@ public class InventoryQueryService(IInventoryRepository inventoryRepository) : I
         return await inventoryRepository.FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(query.ProductId,
             query.WarehouseId, query.BestBeforeDate);
     }
+
+    public async Task<IEnumerable<Inventory>> Handle(GetAllProductsByWarehouseIdQuery query)
+    {
+        return await inventoryRepository.FindByWarehouseIdAsync(query.WarehouseId);
+    }
 }

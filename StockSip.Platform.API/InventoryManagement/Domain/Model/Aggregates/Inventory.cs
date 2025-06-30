@@ -171,7 +171,7 @@ public class Inventory
             throw new ArgumentException("Stock cannot be negative");
         }
         
-        // Check if there is enough stock to remove
+        // Check if there are enough stocks to remove
         if (ProductStock.GetCurrentStock() < removedStock)
         {
             throw new ArgumentException("Insufficient stock to remove");

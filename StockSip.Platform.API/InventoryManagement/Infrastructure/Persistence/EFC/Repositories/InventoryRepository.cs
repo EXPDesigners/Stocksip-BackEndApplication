@@ -69,4 +69,12 @@ public class InventoryRepository(AppDbContext context) : BaseRepository<Inventor
             .AnyAsync(inventory => inventory.ProductId == productId && 
                                    inventory.WarehouseId == warehouseId);
     }
+
+    public async Task<IEnumerable<Inventory>> FindByWarehouseIdAsync(string warehouseId)
+    {
+        return await Context.Set<Inventory>()
+            .Where(inventory => inventory.WarehouseId == warehouseId)
+            .Include(inventory => inventory.Product)
+            .ToListAsync();
+    }
 }

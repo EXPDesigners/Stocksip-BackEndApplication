@@ -22,7 +22,7 @@ public class AccountProductsController (
         Summary = "Get All Products by Account ID",
         Description = "Retrieves a list of products by a specific Account ID.",
         OperationId = "GetAllProductsByAccountId")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Products found!", typeof(ProductResource))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Products found!", typeof(ProductInventoryResource))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Products not found for the give Account ID...")]
     public async Task<IActionResult> GetAllProductsByAccountId([FromRoute] string accountId)
     {

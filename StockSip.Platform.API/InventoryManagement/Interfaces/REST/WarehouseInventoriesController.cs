@@ -17,6 +17,28 @@ public class WarehouseInventoriesController (
     IInventoryQueryService inventoryQueryService
     ) : ControllerBase
 {
+    
+    [HttpGet]
+    [SwaggerOperation(
+        Summary = "Get all products by warehouse ID",
+        Description = "Retrieves all products associated with a specific warehouse ID.",
+        OperationId = "GetProductsByWarehouseId")]
+    [SwaggerResponse(StatusCodes.Status200OK, "List of products found!", typeof(IEnumerable<ProductInventoryResource>))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "No products found for the specified warehouse ID...")]
+    public async Task<IActionResult> GetProductsByWarehouseId(string warehouseId)
+    {
+        var getAllProductsByWarehouseIdQuery = new GetAllProductsByWarehouseIdQuery(warehouseId);
+        var products = await inventoryQueryService.Handle(getAllProductsByWarehouseIdQuery);
+        var enumerable = products.ToList();
+        if (enumerable.Count == 0)
+        {
+            return NotFound($"No products found for warehouse with ID {warehouseId}.");
+        }
+        var productResources = enumerable
+            .Select(ProductInventoryResourceFromEntityAssembler.ToResourceFromEntity);
+        return Ok(productResources);
+    }
+    
     [HttpGet("product/{productId}/expiration-date/{expirationDate:datetime}")]
     [SwaggerOperation(
         Summary = "Get an inventory by its product ID, warehouse ID and expiration date",

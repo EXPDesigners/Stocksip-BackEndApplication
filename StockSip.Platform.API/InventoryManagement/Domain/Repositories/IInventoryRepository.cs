@@ -22,4 +22,11 @@ public interface IInventoryRepository : IBaseRepository<Inventory>
     /// This method checks if an inventory exists by the given product and warehouse ID.
     /// </summary>
     Task<bool> ExistsByProductIdAndWarehouseIdAsync(string productId, string warehouseId);
+    
+    /// <summary>
+    /// This method retrieves all inventory items associated with a specific warehouse ID.
+    /// </summary>
+    /// <param name="warehouseId">The ID of the warehouse for which inventory items are to be retrieved.</param>
+    /// <returns>A task that returns a collection of inventory items associated with the specified warehouse ID.</returns>
+    Task<IEnumerable<Inventory>> FindByWarehouseIdAsync(string warehouseId);
 }
