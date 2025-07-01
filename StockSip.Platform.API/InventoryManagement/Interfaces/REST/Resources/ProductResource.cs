@@ -10,4 +10,4 @@ public record ProductResource(string ProductId,
                               string LiquorType, 
                               double UnitPriceAmount, 
                               int MinimumStock, 
-                              string ProviderId);
+                              string AccountId);

@@ -47,7 +47,7 @@ public partial class Product
     /// <summary>
     /// The unique identifier of the provider associated with the product, if any.
     /// </summary>
-    public ProviderId? ProviderId { get; private set; }
+    public ProviderId? AccountId { get; private set; }
     
     /// <summary>
     /// The collection of inventories associated with the product, represented as a list of Inventory entities.
@@ -97,7 +97,7 @@ public partial class Product
         UnitPrice = new Money(unitPriceAmount, "PEN");
         MinimumStock = new ProductMinimumStock(minimumStock);
         ImageUrl = new ImageUrl(null);
-        if (providerId != null) ProviderId = new ProviderId(providerId);
+        if (providerId != null) AccountId = new ProviderId(providerId);
     }
     
     public Product(CreateProductCommand command, string imageUrl)
@@ -108,7 +108,7 @@ public partial class Product
         UnitPrice = new Money(command.UnitPriceAmount, "PEN");
         MinimumStock = new ProductMinimumStock(command.MinimumStock);
         ImageUrl = new ImageUrl(imageUrl);
-        if (command.ProviderId != null) ProviderId = new ProviderId(command.ProviderId);
+        if (command.ProviderId != null) AccountId = new ProviderId(command.ProviderId);
     }
 
     /// <summary>

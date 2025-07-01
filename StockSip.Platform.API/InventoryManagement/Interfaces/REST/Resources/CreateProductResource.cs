@@ -9,4 +9,4 @@ public record CreateProductResource(string? Name,
                                     double UnitPriceAmount,
                                     int MinimumStock,
                                     IFormFile? Image,
-                                    string? ProviderId);
+                                    string? AccountId);

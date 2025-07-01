@@ -21,6 +21,6 @@ public static class CreateProductCommandFromResourceAssembler
             resource.UnitPriceAmount,
             resource.MinimumStock,
             resource.Image,
-            resource.ProviderId);
+            resource.AccountId);
     }
 }

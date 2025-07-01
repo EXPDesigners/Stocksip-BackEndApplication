@@ -29,13 +29,10 @@ public class WarehouseInventoriesController (
     {
         var getAllProductsByWarehouseIdQuery = new GetAllProductsByWarehouseIdQuery(warehouseId);
         var products = await inventoryQueryService.Handle(getAllProductsByWarehouseIdQuery);
-        var enumerable = products.ToList();
-        if (enumerable.Count == 0)
-        {
-            return NotFound($"No products found for warehouse with ID {warehouseId}.");
-        }
-        var productResources = enumerable
-            .Select(ProductInventoryResourceFromEntityAssembler.ToResourceFromEntity);
+        var productResources = products
+            .Select(ProductInventoryResourceFromEntityAssembler.ToResourceFromEntity)
+            .ToList();
+        
         return Ok(productResources);
     }
     

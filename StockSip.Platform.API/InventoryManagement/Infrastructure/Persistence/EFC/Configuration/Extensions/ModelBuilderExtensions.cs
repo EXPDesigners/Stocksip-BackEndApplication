@@ -73,7 +73,7 @@ public static class ModelBuilderExtensions
                 HasMaxLength(3);
         });
         
-        builder.Entity<Product>().Property(w => w.Brand).IsRequired().HasMaxLength(50);
+        builder.Entity<Product>().Property(p => p.Brand).IsRequired().HasMaxLength(50);
         
         builder.Entity<Product>().Property(p => p.LiquorType).HasConversion<string>().HasMaxLength(20).IsRequired();
         
@@ -83,17 +83,19 @@ public static class ModelBuilderExtensions
             ms.Property(msk => msk.MinimumStock).IsRequired();
         });
         
-        builder.Entity<Product>().OwnsOne(w => w.ImageUrl, i =>
+        builder.Entity<Product>().OwnsOne(p => p.ImageUrl, i =>
         {
             i.Property(img => img.ImageUri)
                 .IsRequired()
                 .HasMaxLength(500)
                 .HasColumnName("image_url");
         });
-        
-        builder.Entity<Product>().Property(p => p.ProviderId)
-            .HasConversion(v => v.Id, v => new ProviderId(v))
-            .IsRequired(false);
+
+        builder.Entity<Product>().OwnsOne(p => p.AccountId, ac =>
+        {
+            ac.WithOwner();
+            ac.Property(a => a.Id).IsRequired();
+        });
         
         // Inventory ORM Mapping Rules
 

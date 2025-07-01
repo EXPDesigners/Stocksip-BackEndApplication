@@ -28,6 +28,6 @@ public static class ProductResourceFromEntityAssembler
             entity.LiquorType.GetDisplayName(),
             entity.UnitPrice.Amount,
             entity.MinimumStock.GetMinimumStock(),
-            entity.ProviderId?.Id);
+            entity.AccountId?.Id);
     }
 }

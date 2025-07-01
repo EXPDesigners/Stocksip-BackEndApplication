@@ -28,7 +28,7 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     public async Task<IEnumerable<Product>> FindByProviderIdAndWarehouseIdAsync(ProviderId providerId, string warehouseId)
     {
         var products = await Context.Set<Product>()
-            .Where(product => product.ProviderId == providerId &&
+            .Where(product => product.AccountId == providerId &&
                               product.Inventories.Any(inventory => inventory.WarehouseId == warehouseId))
             .Include(product => product.Inventories)
             .ToListAsync();
@@ -110,9 +110,7 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     public async Task<IEnumerable<Product>> FindProductsByAccountIdAsync(AccountId accountId)
     {
         return await Context.Set<Product>()
-            .Where(product => product.Inventories.Any(inventory => inventory.Warehouse.AccountId == accountId))
-            .Include(product => product.Inventories
-                .Where(inventory => inventory.Warehouse.AccountId == accountId))
+            .Where(product => product.AccountId.Id == accountId.Id)
             .ToListAsync();
     }
 

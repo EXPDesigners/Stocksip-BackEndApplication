@@ -155,17 +155,10 @@ public class InventoryCommandService (
         var inventory = await inventoryRepository.FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(command.ProductId, command.WarehouseId, command.ExpirationDate)
                         ?? throw new ArgumentException($"Inventory with Product ID {command.ProductId}, Warehouse ID {command.WarehouseId} and Expiration Date {command.ExpirationDate} does not exist.");
         
-        // If the current stock of the product in the warehouse is zero, it sets the product ID to an empty string to indicate that the product has been deleted from the warehouse.
-        if (inventory.ProductStock.GetCurrentStock() == 0)
-        {
-            inventory.ProductId = "";
-        }
-        
-        // If the current stock of the product in the warehouse is not zero, it throws an exception to prevent deletion.
-        else
-        {
+        // Validates if the current stock of the product in the inventory is zero before deleting it.
+        if (inventory.ProductStock.GetCurrentStock() != 0)
             throw new ArgumentException("Cannot delete product from warehouse because the stock is not zero.");
-        }
+
         
         // If the retrieved inventory exists, it removes the relation between the product and the inventory.
         product.RemoveInventoryRelation(inventory);

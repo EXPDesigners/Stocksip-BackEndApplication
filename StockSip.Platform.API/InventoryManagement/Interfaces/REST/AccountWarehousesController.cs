@@ -53,13 +53,10 @@ public class AccountWarehousesController (
         var targetAccountId = new AccountId(accountId);
         var getAllWarehousesByAccountIdQuery = new GetAllWarehousesByAccountIdQuery(targetAccountId);
         var warehouses = await warehouseQueryService.Handle(getAllWarehousesByAccountIdQuery);
-        var enumerable = warehouses.ToList();
-        if (enumerable.Count == 0)
-        {
-            return NotFound($"Warehouses for Account ID {accountId} not found...");
-        }
-
-        var resources = enumerable.Select(WarehouseResourceFromEntityAssembler.ToResourceFromEntity);
+        var warehouseList = warehouses.ToList();
+        var resources = warehouseList
+            .Select(WarehouseResourceFromEntityAssembler.ToResourceFromEntity)
+            .ToList();
         return Ok(resources);
     }
 }
