@@ -14,9 +14,35 @@ namespace StockSip.Platform.API.InventoryManagement.Interfaces.REST;
 [Produces(MediaTypeNames.Application.Json)]
 [Tags("Accounts")]
 public class AccountProductsController (
-    IProductQueryService productQueryService
+    IProductQueryService productQueryService,
+    IProductCommandService productCommandService
     ) : ControllerBase
 {
+    /// <summary>
+    /// This endpoint creates a new product.
+    /// </summary>
+    /// <param name="resource">
+    /// The resource containing the product details to be created.
+    /// </param>
+    /// <returns>
+    /// An IActionResult indicating the result of the creation operation, including the created product resource if successful.
+    /// </returns>
+    [HttpPost]
+    [SwaggerOperation(
+        Summary = "Create a New Product",
+        Description = "Creates a new product and returns the created product resource.",
+        OperationId = "CreateProduct")]
+    [SwaggerResponse(StatusCodes.Status201Created, "Product created successfully!", typeof(ProductInventoryResource))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Product could not be created...")]
+    public async Task<IActionResult> CreateProduct([FromForm] CreateProductResource resource, [FromRoute] string accountId)
+    {
+        var createProductCommand = CreateProductCommandFromResourceAssembler.ToCommandFromResource(resource, accountId);
+        var product = await productCommandService.Handle(createProductCommand);
+        if (product is null) return BadRequest("Failed to create product resource.");
+        var productResource = ProductResourceFromEntityAssembler.ToResourceFromEntity(product);
+        return Ok(productResource);
+    }
+    
     [HttpGet]
     [SwaggerOperation(
         Summary = "Get All Products by Account ID",

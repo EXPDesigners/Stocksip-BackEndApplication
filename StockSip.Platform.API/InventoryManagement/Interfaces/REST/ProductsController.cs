@@ -55,34 +55,6 @@ public class ProductsController(
     }
 
     /// <summary>
-    /// This endpoint creates a new product.
-    /// </summary>
-    /// <param name="resource">
-    /// The resource containing the product details to be created.
-    /// </param>
-    /// <returns>
-    /// An IActionResult indicating the result of the creation operation, including the created product resource if successful.
-    /// </returns>
-    [HttpPost]
-    [SwaggerOperation(
-        Summary = "Create a New Product",
-        Description = "Creates a new product and returns the created product resource.",
-        OperationId = "CreateProduct")]
-    [SwaggerResponse(StatusCodes.Status201Created, "Product created successfully!", typeof(ProductInventoryResource))]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "Product could not be created...")]
-    public async Task<IActionResult> CreateProduct([FromForm] CreateProductResource resource)
-    {
-        var createProductCommand = CreateProductCommandFromResourceAssembler.ToCommandFromResource(resource);
-        var product = await productCommandService.Handle(createProductCommand);
-        if (product is null)
-        {
-            return BadRequest("Failed to create product. Please check the provided data...");
-        }
-        var createdResource = ProductResourceFromEntityAssembler.ToResourceFromEntity(product);
-        return CreatedAtAction(nameof(GetProductById), new { productId = createdResource.ProductId }, createdResource);
-    }
-
-    /// <summary>
     /// This endpoint updates an existing product by its unique identifier.
     /// </summary>
     /// <param name="resource">
