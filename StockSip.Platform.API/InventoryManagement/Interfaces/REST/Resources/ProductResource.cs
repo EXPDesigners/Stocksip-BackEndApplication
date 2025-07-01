@@ -5,7 +5,7 @@
 /// </summary>
 public record ProductResource(string ProductId,
                               string ImageUrl,
-                              string Name, 
+                              string Name,
                               string BrandName, 
                               string LiquorType, 
                               double UnitPriceAmount, 

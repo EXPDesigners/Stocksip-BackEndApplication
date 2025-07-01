@@ -129,6 +129,17 @@ public class Inventory
         ProductState = EProductState.WithStock;
     }
     
+    public void UpdateBestBeforeDate(DateOnly newBestBeforeDate)
+    {
+        if (newBestBeforeDate < DateOnly.FromDateTime(DateTime.Now))
+        {
+            throw new ArgumentException("Best before date cannot be in the past");
+        }
+        
+        // Update the product's best before date
+        ProductBestBeforeDate = new ProductBestBeforeDate(newBestBeforeDate);
+    }
+    
     /// <summary>
     /// Adds stock to the product in the inventory.
     /// </summary>

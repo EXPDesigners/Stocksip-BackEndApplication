@@ -126,6 +126,7 @@ public static class ModelBuilderExtensions
         builder.Entity<Inventory>().OwnsOne(i => i.ProductBestBeforeDate, b =>
         {
             b.Property(p => p.BestBeforeDate)
+                .HasColumnType("date")
                 .HasConversion(
                     v => v.ToDateTime(TimeOnly.MinValue),
                     v => DateOnly.FromDateTime(v))

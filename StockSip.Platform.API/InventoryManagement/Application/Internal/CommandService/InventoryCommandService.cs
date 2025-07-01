@@ -35,7 +35,7 @@ public class InventoryCommandService (
                         ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
         
         // Retrieves the inventory of the product in the warehouse if it exists.
-        var updatedInventory = await inventoryRepository.FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(command.ProductId, command.WarehouseId, command.ExpirationDate)
+        var updatedInventory = await inventoryRepository.FindByProductIdAndWarehouseId(command.ProductId, command.WarehouseId)
                                ?? throw new ArgumentException($"Inventory with Product ID {command.ProductId}, Warehouse ID {command.WarehouseId} and Expiration Date {command.ExpirationDate} does not exist.");
 
         // Registers a product exit with the provided command details.
@@ -44,6 +44,7 @@ public class InventoryCommandService (
         
         // If the retrieved inventory exists, it decreases the stock to the current inventory.
         updatedInventory.RemoveStockFromProduct(command.RemovedQuantity);
+        updatedInventory.UpdateBestBeforeDate(command.ExpirationDate);
         
         // Completes the current inventory update by saving the changes to the database.
         await unitOfWork.CompleteAsync();
@@ -70,20 +71,11 @@ public class InventoryCommandService (
                         ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
         
         // Retrieves the inventory of the product in the warehouse if it exists, if not, it will create a new inventory entry with the new Expiration Date.
-        var updatedInventory = await inventoryRepository.FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(command.ProductId, command.WarehouseId, command.StockExpirationDate);
+        var updatedInventory = await inventoryRepository.FindByProductIdAndWarehouseId(command.ProductId, command.WarehouseId)
+                               ?? throw new ArgumentException($"Inventory with Product ID {command.ProductId} and Warehouse ID {command.WarehouseId} does not exist.");
 
-        if (updatedInventory is not null)
-        {
-            updatedInventory.AddStockToProduct(command.AddedQuantity);
-        }
-        else
-        {
-            updatedInventory = new Inventory(command.WarehouseId, command.ProductId, command.StockExpirationDate, command.AddedQuantity)
-            {
-                Product = product,
-                Warehouse = warehouse
-            };
-        }
+        updatedInventory.AddStockToProduct(command.AddedQuantity);
+        updatedInventory.UpdateBestBeforeDate(command.StockExpirationDate);
         
         // Completes the current inventory update by saving the changes to the database.
         await unitOfWork.CompleteAsync();

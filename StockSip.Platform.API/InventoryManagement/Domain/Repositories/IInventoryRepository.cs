@@ -17,6 +17,8 @@ public interface IInventoryRepository : IBaseRepository<Inventory>
     /// This method retrieves an inventory item by the product ID, warehouse ID and expiration date.
     /// </summary>
     Task<Inventory?> FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(string productId, string warehouseId, DateOnly expirationDate);
+    
+    Task<Inventory?> FindByProductIdAndWarehouseId(string productId, string warehouseId);
 
     /// <summary>
     /// This method checks if an inventory exists by the given product and warehouse ID.

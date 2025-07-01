@@ -51,6 +51,13 @@ public class InventoryRepository(AppDbContext context) : BaseRepository<Inventor
                                               && inventory.ProductBestBeforeDate.BestBeforeDate == expirationDate);
     }
 
+    public async Task<Inventory?> FindByProductIdAndWarehouseId(string productId, string warehouseId)
+    {
+        return await Context.Set<Inventory>()
+            .FirstOrDefaultAsync(inventory => inventory.ProductId == productId
+                                              && inventory.WarehouseId == warehouseId);
+    }
+
     /// <summary>
     /// This method checks
     /// </summary>

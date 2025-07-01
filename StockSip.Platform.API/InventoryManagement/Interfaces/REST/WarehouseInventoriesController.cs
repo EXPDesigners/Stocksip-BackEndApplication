@@ -98,6 +98,12 @@ public class WarehouseInventoriesController (
         string productId,
         string warehouseId)
     {
+        Console.WriteLine($"📥 AddStockToProduct:");
+        Console.WriteLine($"➡ productId: {productId}");
+        Console.WriteLine($"➡ warehouseId: {warehouseId}");
+        Console.WriteLine($"➡ stockExpirationDate: {resource.StockExpirationDate}");
+        Console.WriteLine($"➡ addedQuantity: {resource.AddedQuantity}");
+        
         var addStockCommand = AddStockToProductCommandFromResourceAssembler.ToCommandFromResource(resource, productId, warehouseId);
         var updatedInventory = await inventoryCommandService.Handle(addStockCommand);
         if (updatedInventory is null)
@@ -148,6 +154,11 @@ public class WarehouseInventoriesController (
         string productId,
         string warehouseId)
     {
+        Console.WriteLine($"📥 AddStockToProduct:");
+        Console.WriteLine($"➡ productId: {productId}");
+        Console.WriteLine($"➡ warehouseId: {warehouseId}");
+        Console.WriteLine($"➡ stockExpirationDate: {resource.ExpirationDate}");
+        Console.WriteLine($"➡ addedQuantity: {resource.Quantity}");
         var addProductToWarehouseCommand = 
             AddProductsToWarehouseCommandFromResourceAssembler.ToCommandFromResource(resource, productId, warehouseId);
         var productWithAddedStock = await inventoryCommandService.Handle(addProductToWarehouseCommand);
