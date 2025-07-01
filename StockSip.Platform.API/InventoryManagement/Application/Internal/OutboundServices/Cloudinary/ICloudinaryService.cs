@@ -1,4 +1,4 @@
-﻿namespace StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices;
+﻿namespace StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices.Cloudinary;
 
 /// <summary>
 /// This interface defines methods for interacting with Cloudinary, a cloud-based image and video management service.

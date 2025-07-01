@@ -186,10 +186,10 @@ public class InventoryCommandService (
         }
         
         // Retrieves the current inventory of the product in the old warehouse.
-        var currentInventory = await inventoryRepository.FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(
+        var currentInventory = await inventoryRepository.FindByProductIdAndWarehouseId(
                 command.ProductId,
-                command.OldWarehouseId,
-                command.MovedStockExpirationDate) ?? throw new ArgumentException($"Inventory with Product ID {command.ProductId} and Warehouse ID {command.OldWarehouseId} does not exist.");
+                command.OldWarehouseId) ?? throw new ArgumentException($"Inventory with Product ID {command.ProductId} and Warehouse ID {command.OldWarehouseId} does not exist.");
+        
 
         // Removes the moved stock from the current inventory. And If the current inventory has no stock left, the product state will be set to OUT_OF_STOCK.
         currentInventory.RemoveStockFromProduct(command.MovedQuantity);

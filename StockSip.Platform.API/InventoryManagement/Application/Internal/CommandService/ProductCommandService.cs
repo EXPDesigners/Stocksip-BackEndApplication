@@ -1,4 +1,4 @@
-﻿using StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices;
+﻿using StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices.Cloudinary;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;

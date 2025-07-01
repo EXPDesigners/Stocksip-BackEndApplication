@@ -1,7 +1,7 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Options;
-using StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices;
+using StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices.Cloudinary;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.FileStorage.Cloudinary.Configuration;
 
 namespace StockSip.Platform.API.InventoryManagement.Infrastructure.FileStorage.Cloudinary.Services;

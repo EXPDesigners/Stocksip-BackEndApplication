@@ -13,7 +13,7 @@ using StockSip.Platform.API.AlertsAndNotifications.Interfaces.ACL;
 using StockSip.Platform.API.InventoryManagement.Application.ACL;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.EventHandlers;
-using StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices;
+using StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices.Cloudinary;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.QueryService;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Events;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
