@@ -69,8 +69,8 @@ public class WarehouseInventoriesController (
     [SwaggerResponse(StatusCodes.Status404NotFound, "Stock not found in the specified source warehouse...")]
     public async Task<IActionResult> MoveProductToAnotherWarehouse(
         [FromBody] MoveProductsToAnotherWarehouseResource resource,
-        string warehouseId,
-        string productId)
+        [FromRoute] string warehouseId,
+        [FromRoute] string productId)
     {
         var moveProductsToAnotherWarehouseCommand =
             MoveProductsToAnotherWarehouseCommandFromResourceAssembler.ToCommandFromResource(
@@ -81,9 +81,7 @@ public class WarehouseInventoriesController (
             return NotFound($"Inventory of product ID {productId} not found in warehouse {warehouseId} with expiration date {resource.MovedStockExpirationDate}. So products cannot be moved.");
         }
         var inventoryResource = InventoryResourceFromEntityAssembler.ToResourceFromEntity(movedStock);
-        return CreatedAtAction(nameof(GetInventoryByProductIdAndWarehouseIdAndBestBeforeDate), 
-            new { productId, resource.NewWarehouseId, resource.MovedStockExpirationDate }, 
-            inventoryResource);
+        return Ok(inventoryResource);
     }
     
     [HttpPut("product/{productId}/additions")]
