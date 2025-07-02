@@ -65,6 +65,9 @@ public class ProductCommandService (
         }
         
         productToUpdate.UpdateInformation(
+                command.Name,
+                command.Brand,
+                command.LiquorType,
                 command.UpdatedUnitPriceAmount,
                 command.UpdatedMinimumStock,
                 imageUrl

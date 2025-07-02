@@ -3,4 +3,9 @@
 /// <summary>
 /// This record is used to update the details of a product in the warehouse.
 /// </summary>
-public record UpdateProductResource(double UpdatedUnitPriceAmount, int UpdatedMinimumStock, IFormFile? UpdatedImage);
+public record UpdateProductResource(string Name, 
+                                    string BrandName, 
+                                    string LiquorType, 
+                                    double UnitPriceAmount, 
+                                    int MinimumStock, 
+                                    IFormFile? UpdatedImage);

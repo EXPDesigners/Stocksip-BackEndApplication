@@ -148,8 +148,11 @@ public partial class Product
     /// <exception cref="ArgumentException">
     /// Thrown when the updated price is less than or equal to zero.
     /// </exception>
-    public void UpdateInformation(double updatedPrice, int updatedMinimumStock, string updatedImageUrl)
+    public void UpdateInformation(string name, string brand, string liquorType, double updatedPrice, int updatedMinimumStock, string updatedImageUrl)
     {
+        ProductName = new ProductName(name);
+        LiquorType = Enum.Parse<ELiquorType>(liquorType, true);
+        Brand = brand;
         SetMinimumStock(updatedMinimumStock);
         ImageUrl = new ImageUrl(updatedImageUrl);
         UnitPrice = new Money(updatedPrice, "PEN");

@@ -6,7 +6,7 @@
 public enum EBrandName
 {
     Tabernero,
-    SantiagoQueirolo,
+    SantiagoQQueirolo,
     Porton,
     Cristal,
     JohnnieWalker,
@@ -16,5 +16,6 @@ public enum EBrandName
     Corona,
     PilsenCallao,
     Cusqueña,
-    Cartavio
+    Cartavio,
+    NoBrand
 }

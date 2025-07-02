@@ -21,9 +21,12 @@ public static class UpdateProductCommandFromResourceAssembler
     public static UpdateProductCommand ToCommandFromResource(UpdateProductResource resource, string productId)
     {
         return new UpdateProductCommand(
-            productId, 
-            resource.UpdatedUnitPriceAmount,
-            resource.UpdatedMinimumStock, 
+            productId,
+            resource.Name,
+            resource.BrandName,
+            resource.LiquorType,
+            resource.UnitPriceAmount,
+            resource.MinimumStock, 
             resource.UpdatedImage);
     }
 }
