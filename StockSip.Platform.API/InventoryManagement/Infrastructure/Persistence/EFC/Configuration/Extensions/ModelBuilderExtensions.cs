@@ -94,7 +94,8 @@ public static class ModelBuilderExtensions
         builder.Entity<Product>().OwnsOne(p => p.AccountId, ac =>
         {
             ac.WithOwner();
-            ac.Property(a => a.Id).IsRequired();
+            ac.Property(a => a.Id).IsRequired()
+                .HasColumnName("account_id");
         });
         
         // Inventory ORM Mapping Rules

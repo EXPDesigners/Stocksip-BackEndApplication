@@ -36,7 +36,7 @@ public class WarehouseInventoriesController (
         return Ok(productResources);
     }
     
-    [HttpGet("product/{productId}/expiration-date/{expirationDate:datetime}")]
+    [HttpGet("products/{productId}/expiration-date/{expirationDate:datetime}")]
     [SwaggerOperation(
         Summary = "Get an inventory by its product ID, warehouse ID and expiration date",
         Description = "Retrieves an inventory by its product ID, warehouse ID, and expiration date.",
@@ -59,7 +59,7 @@ public class WarehouseInventoriesController (
         return Ok(inventoryResource);
     }
     
-    [HttpPut("product/{productId}/moves")]
+    [HttpPut("products/{productId}/moves")]
     [SwaggerOperation(
         Summary = "Move products to another warehouse",
         Description =
@@ -84,7 +84,7 @@ public class WarehouseInventoriesController (
         return Ok(inventoryResource);
     }
     
-    [HttpPut("product/{productId}/additions")]
+    [HttpPut("products/{productId}/additions")]
     [SwaggerOperation(
         Summary = "Add stock to a product in a warehouse",
         Description = "Adds stock to a product in a warehouse by its product ID, warehouse ID, and expiration date.",
@@ -114,7 +114,7 @@ public class WarehouseInventoriesController (
             inventoryResource);
     }
     
-    [HttpPut("product/{productId}/substractions")]
+    [HttpPut("products/{productId}/substractions")]
     [SwaggerOperation(
         Summary = "Decrease stock from a product in a warehouse",
         Description = "Decreases stock from a product in a warehouse by its product ID, warehouse ID, and expiration date.",
@@ -140,7 +140,7 @@ public class WarehouseInventoriesController (
             inventoryResource);
     }
     
-    [HttpPost("product/{productId}")]
+    [HttpPost("products/{productId}")]
     [SwaggerOperation(
         Summary = "Add stock to a product in a warehouse",
         Description = "Adds stock to a product in a warehouse by its product ID and warehouse ID, including the expiration date.",
@@ -152,11 +152,6 @@ public class WarehouseInventoriesController (
         string productId,
         string warehouseId)
     {
-        Console.WriteLine($"📥 AddStockToProduct:");
-        Console.WriteLine($"➡ productId: {productId}");
-        Console.WriteLine($"➡ warehouseId: {warehouseId}");
-        Console.WriteLine($"➡ stockExpirationDate: {resource.ExpirationDate}");
-        Console.WriteLine($"➡ addedQuantity: {resource.Quantity}");
         var addProductToWarehouseCommand = 
             AddProductsToWarehouseCommandFromResourceAssembler.ToCommandFromResource(resource, productId, warehouseId);
         var productWithAddedStock = await inventoryCommandService.Handle(addProductToWarehouseCommand);
@@ -171,7 +166,7 @@ public class WarehouseInventoriesController (
             inventoryResource);
     }
     
-    [HttpDelete("product/{productId}")]
+    [HttpDelete("products/{productId}")]
     [SwaggerOperation(
         Summary = "Deletes a product from a warehouse",
         Description = "Deletes a product from a warehouse by its ID, warehouse ID, and expiration date.",

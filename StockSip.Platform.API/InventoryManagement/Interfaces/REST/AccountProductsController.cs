@@ -55,13 +55,10 @@ public class AccountProductsController (
         var targetAccountId = new AccountId(accountId);
         var getAllProductsByAccountIdQuery = new GetAllProductsByAccountIdQuery(targetAccountId);
         var products = await productQueryService.Handle(getAllProductsByAccountIdQuery);
-        var enumerable = products.ToList();
-        if (enumerable.Count == 0)
-        {
-            return NotFound($"Products for Account ID {accountId} not found...");
-        }
-
-        var resources = enumerable.Select(ProductResourceFromEntityAssembler.ToResourceFromEntity);
+        var productsList = products.ToList();
+        var resources = productsList
+            .Select(ProductResourceFromEntityAssembler.ToResourceFromEntity)
+            .ToList();
         return Ok(resources);
     }
 }

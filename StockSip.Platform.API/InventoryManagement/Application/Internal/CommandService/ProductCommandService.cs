@@ -91,4 +91,21 @@ public class ProductCommandService (
         await unitOfWork.CompleteAsync();
         return productToUpdate;
     }
+
+    /// <summary>
+    /// This method handles the deletion of a product.
+    /// </summary>
+    /// <param name="command">The command containing the product ID to be deleted.</param>
+    /// <exception cref="ArgumentException">A product with the specified ID does not exist.</exception>
+    public async Task Handle(DeleteProductCommand command)
+    {
+        var productToDelete = await productRepository.FindByIdAsync(command.ProductId)
+                                ?? throw new ArgumentException($"Product with ID {command.ProductId} does not exist.");
+        
+        var imageUrl = await productRepository.FindImageUrlByProductIdAsync(command.ProductId);
+        cloudinaryService.DeleteImage(imageUrl);
+        
+        productRepository.Remove(productToDelete);
+        await unitOfWork.CompleteAsync();
+    }
 }

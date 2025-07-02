@@ -1,5 +1,6 @@
 ﻿using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
@@ -83,5 +84,25 @@ public class ProductsController(
         }
         var updatedResource = ProductResourceFromEntityAssembler.ToResourceFromEntity(updatedProduct);
         return CreatedAtAction(nameof(GetProductById), new { productId = updatedResource.ProductId }, updatedResource);
+    }
+
+    /// <summary>
+    /// This endpoint is used to delete a product by its unique identifier.
+    /// </summary>
+    /// <param name="productId">The unique identifier of the product to be deleted.</param>
+    /// <returns>A response indicating the result of the deletion operation.</returns>
+    [HttpDelete("{productId}")]
+    [SwaggerOperation(
+        Summary = "Delete a Product",
+        Description = "Deletes a product by its unique identifier.",
+        OperationId = "DeleteProduct"
+    )]
+    [SwaggerResponse(StatusCodes.Status200OK, "Product deleted successfully.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Product not found.")]
+    public async Task<IActionResult> DeleteProduct([FromRoute] string productId)
+    {
+        var deleteProductCommand = new DeleteProductCommand(productId);
+        await productCommandService.Handle(deleteProductCommand);
+        return Ok(new { Message = $"Product with ID {productId} has been deleted successfully." });
     }
 }
