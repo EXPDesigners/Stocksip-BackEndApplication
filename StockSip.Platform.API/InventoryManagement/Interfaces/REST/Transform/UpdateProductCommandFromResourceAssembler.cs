@@ -27,6 +27,6 @@ public static class UpdateProductCommandFromResourceAssembler
             resource.LiquorType,
             resource.UnitPriceAmount,
             resource.MinimumStock, 
-            resource.UpdatedImage);
+            resource.Image);
     }
 }

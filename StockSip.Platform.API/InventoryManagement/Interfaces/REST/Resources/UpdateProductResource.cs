@@ -8,4 +8,4 @@ public record UpdateProductResource(string Name,
                                     string LiquorType, 
                                     double UnitPriceAmount, 
                                     int MinimumStock, 
-                                    IFormFile? UpdatedImage);
+                                    IFormFile? Image);
