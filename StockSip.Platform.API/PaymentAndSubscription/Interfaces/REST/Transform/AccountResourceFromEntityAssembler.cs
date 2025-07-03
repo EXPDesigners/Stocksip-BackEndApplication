@@ -12,7 +12,6 @@ public class AccountResourceFromEntityAssembler
             entity.BusinessName.Name,
             entity.Status.ToString(),
             entity.AccountRole.ToString(),
-            entity.StreetAddress.Street, 
             entity.GetCreationDate()
         );
     }

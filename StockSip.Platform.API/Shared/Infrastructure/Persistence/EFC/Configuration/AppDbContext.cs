@@ -1,5 +1,6 @@
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using Microsoft.EntityFrameworkCore;
+using StockSip.Platform.API.Authorization.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Configuration.Extensions;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
@@ -27,6 +28,9 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         
         // Apply configuration for the Payment and Subscription bounded context
         builder.ApplyPaymentAndSubscriptionConfiguration();
+        
+        // Apply configuration for the Authentication bounded context
+        builder.ApplyAuthenticationConfiguration();
         
         // Use snake case naming convention for the database
         builder.UseSnakeCaseNamingConvention();

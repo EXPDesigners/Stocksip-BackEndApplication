@@ -29,12 +29,6 @@ public static class ModelBuilderExtensions
             r.WithOwner();
             r.Property(ar => ar.Role).IsRequired().HasMaxLength(50);
         });
-        
-        builder.Entity<Account>().OwnsOne(a => a.StreetAddress, sa =>
-        {
-            sa.WithOwner();
-            sa.Property(st => st.Street).IsRequired().HasMaxLength(200);
-        });
 
         builder.Entity<Account>().Property(a => a.CreatedDate).IsRequired();
 

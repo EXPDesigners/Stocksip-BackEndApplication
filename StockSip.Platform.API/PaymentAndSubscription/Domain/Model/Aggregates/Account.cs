@@ -17,8 +17,6 @@ public class Account
     
     public AccountRole AccountRole { get; internal set; }
     
-    public StreetAddress StreetAddress { get; internal set; }
-    
     public DateTime CreatedDate { get; internal set; }
     
     public UserId OwnerUserId { get; internal set; }
@@ -31,12 +29,12 @@ public class Account
     /// <summary>
     /// Constructor to create a new account with the specified owner user ID, account role, and address.
     /// </summary>
-    public Account(string ownerUserId, string accountRole, string address)
+    public Account(string ownerUserId, string accountRole, string businessName)
     {
         AccountId = Guid.NewGuid().ToString();
+        BusinessName = new BusinessName(businessName);
         OwnerUserId = new UserId(ownerUserId);
         AccountRole = new AccountRole(accountRole);
-        StreetAddress = new StreetAddress(address);
         CreatedDate = DateTime.UtcNow;
         Status = EAccountStatus.INACTIVE;
     }

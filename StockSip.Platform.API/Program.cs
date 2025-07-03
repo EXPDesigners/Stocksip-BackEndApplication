@@ -10,6 +10,16 @@ using StockSip.Platform.API.AlertsAndNotifications.Domain.Repositories;
 using StockSip.Platform.API.AlertsAndNotifications.Domain.Services;
 using StockSip.Platform.API.AlertsAndNotifications.Infrastructure.Persistence.EFC.Repositories;
 using StockSip.Platform.API.AlertsAndNotifications.Interfaces.ACL;
+using StockSip.Platform.API.Authorization.Application.Internal.CommandServices;
+using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices;
+using StockSip.Platform.API.Authorization.Application.Internal.QueryServices;
+using StockSip.Platform.API.Authorization.Domain.Repositories;
+using StockSip.Platform.API.Authorization.Domain.Services;
+using StockSip.Platform.API.Authorization.Infrastructure.Hashing.BCrypt.Services;
+using StockSip.Platform.API.Authorization.Infrastructure.Persistence.EFC.Repositories;
+using StockSip.Platform.API.Authorization.Infrastructure.Pipeline.Middleware.Extensions;
+using StockSip.Platform.API.Authorization.Infrastructure.Tokens.JWT.Configuration;
+using StockSip.Platform.API.Authorization.Infrastructure.Tokens.JWT.Services;
 using StockSip.Platform.API.InventoryManagement.Application.ACL;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.EventHandlers;
@@ -87,7 +97,34 @@ builder.Services.AddSwaggerGen(options =>
             Url = new Uri("https://www.apache.org/licenses/LICENSE-2.0.html")
         },
     });
+    
     options.EnableAnnotations();
+    
+    // Add Bearer Authentication for Swagger
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+    // Add Security Requirement for Swagger
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
 });
 
 // Dependency Injection
@@ -129,6 +166,19 @@ builder.Services.AddScoped<IAccountCommandService, AccountCommandService>();
 
 builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
 
+
+// Authentication Bounded Context
+
+// TokenSettings Configuration
+
+builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserCommandService, UserCommandService>();
+builder.Services.AddScoped<IUserQueryService, UserQueryService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IHashingService, HashingService>();
+
 // Add Mediator for CQRS
 builder.Services.AddCortexMediator(
     configuration: builder.Configuration,
@@ -158,6 +208,9 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 
 // Apply CORS Policy
 app.UseCors("AllowAllPolicy");
+
+// Configure the Authentication HTTP request pipeline.
+app.UseRequestAuthorization();
 
 app.UseHttpsRedirection();
 
