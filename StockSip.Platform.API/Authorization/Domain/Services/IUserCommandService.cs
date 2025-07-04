@@ -12,7 +12,7 @@ public interface IUserCommandService
     /// <summary>
     /// Handle the sign in command to authenticate a user and return a token.
     /// </summary>
-    Task<(User user, string token)> Handle(SignInCommand command);
+    Task<(User user, string token, string? accountId)> Handle(SignInCommand command);
     
     /// <summary>
     /// Handle the sign-up command to create a new user account.

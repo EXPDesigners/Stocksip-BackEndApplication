@@ -15,7 +15,7 @@ public class Account
     
     public EAccountStatus Status { get; set; }
     
-    public AccountRole AccountRole { get; internal set; }
+    public EAccountRole AccountRole { get; internal set; }
     
     public DateTime CreatedDate { get; internal set; }
     
@@ -34,7 +34,7 @@ public class Account
         AccountId = Guid.NewGuid().ToString();
         BusinessName = new BusinessName(businessName);
         OwnerUserId = new UserId(ownerUserId);
-        AccountRole = new AccountRole(accountRole);
+        AccountRole = Enum.Parse<EAccountRole>(accountRole, true); ;
         CreatedDate = DateTime.UtcNow;
         Status = EAccountStatus.INACTIVE;
     }

@@ -14,5 +14,5 @@ public record CreateWarehouseCommand(string Name,
                                      double MaxTemperature,
                                      double MinTemperature,
                                      double Capacity,
-                                     string ProfileId,
+                                     string AccountId,
                                      IFormFile? Image);

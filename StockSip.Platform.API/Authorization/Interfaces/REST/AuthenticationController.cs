@@ -8,6 +8,10 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace StockSip.Platform.API.Authorization.Interfaces.REST;
 
+/// <summary>
+/// This controller provides endpoints for user authentication, including sign-in and sign-up functionalities.
+/// </summary>
+/// <param name="userCommandService">The service for handling user commands.</param>
 [Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
@@ -38,7 +42,7 @@ public class AuthenticationController(IUserCommandService userCommandService) : 
             var authenticatedUser = await userCommandService.Handle(signInCommand);
             var resource =
                 AuthenticatedUserResourceFromEntityAssembler.ToResourceFromEntity(authenticatedUser.user,
-                    authenticatedUser.token);
+                    authenticatedUser.token, authenticatedUser.accountId);
             return Ok(resource);
         }
         catch (Exception ex)
@@ -61,6 +65,7 @@ public class AuthenticationController(IUserCommandService userCommandService) : 
         Description = "Sign up a new user",
         OperationId = "SignUp")]
     [SwaggerResponse(StatusCodes.Status200OK, "The user was created successfully")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "The sign-up process has failed", typeof(string))]
     public async Task<IActionResult> SignUp([FromBody] SignUpResource signUpResource)
     {
         var signUpCommand = SignUpCommandFromResourceAssembler.ToCommandFromResource(signUpResource);

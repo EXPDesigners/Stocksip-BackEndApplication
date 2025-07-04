@@ -29,13 +29,13 @@ public class WarehouseCommandService(
     /// <exception cref="ArgumentException"> Thrown when a warehouse with the same name or address already exists.</exception>
     public async Task<Warehouse?> Handle(CreateWarehouseCommand command)
     {
-        if (await warehouseRepository.ExistByNameIgnoreCaseAndProfileIdAsync(command.Name, new AccountId(command.ProfileId)))
+        if (await warehouseRepository.ExistByNameIgnoreCaseAndProfileIdAsync(command.Name, new AccountId(command.AccountId)))
         {
             throw new ArgumentException($"Warehouse with name {command.Name} already exists.");
         }
 
         if (await warehouseRepository.ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAsync(
-                command.Street, command.City, command.PostalCode, new AccountId(command.ProfileId)))
+                command.Street, command.City, command.PostalCode, new AccountId(command.AccountId)))
         {
             throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.PostalCode} already exists.");
         }

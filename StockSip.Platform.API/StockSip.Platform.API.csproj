@@ -35,7 +35,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Authorization\Interfaces\ACL\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\Commands\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\Queries\" />
       <Folder Include="OrderOperationAndMonitoring\Domain\Model\ValueObjects\" />

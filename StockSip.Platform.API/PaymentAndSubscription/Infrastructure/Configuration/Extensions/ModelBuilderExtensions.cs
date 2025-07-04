@@ -24,11 +24,7 @@ public static class ModelBuilderExtensions
         
         builder.Entity<Account>().Property(a => a.Status).HasConversion<string>().HasMaxLength(50).IsRequired();
 
-        builder.Entity<Account>().OwnsOne(a => a.AccountRole, r =>
-        {
-            r.WithOwner();
-            r.Property(ar => ar.Role).IsRequired().HasMaxLength(50);
-        });
+        builder.Entity<Account>().Property(p => p.AccountRole).HasConversion<string>().HasMaxLength(20).IsRequired();
 
         builder.Entity<Account>().Property(a => a.CreatedDate).IsRequired();
 

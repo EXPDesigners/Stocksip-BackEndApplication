@@ -92,7 +92,7 @@ public partial class Product
                     string? providerId = null)
     {
         ProductName = new ProductName(additionalName);
-        LiquorType = Enum.Parse<ELiquorType>(liquorType, true); ;
+        LiquorType = Enum.Parse<ELiquorType>(liquorType, true);
         Brand = brandName;
         UnitPrice = new Money(unitPriceAmount, "PEN");
         MinimumStock = new ProductMinimumStock(minimumStock);
@@ -108,7 +108,7 @@ public partial class Product
         UnitPrice = new Money(command.UnitPriceAmount, "PEN");
         MinimumStock = new ProductMinimumStock(command.MinimumStock);
         ImageUrl = new ImageUrl(imageUrl);
-        if (command.ProviderId != null) AccountId = new ProviderId(command.ProviderId);
+        if (command.AccountId != null) AccountId = new ProviderId(command.AccountId);
     }
 
     /// <summary>

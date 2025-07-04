@@ -3,6 +3,7 @@ using StockSip.Platform.API.Authorization.Domain.Model.Aggregate;
 using StockSip.Platform.API.Authorization.Domain.Model.Commands;
 using StockSip.Platform.API.Authorization.Domain.Repositories;
 using StockSip.Platform.API.Authorization.Domain.Services;
+using StockSip.Platform.API.PaymentAndSubscription.Interfaces.ACL;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 
 namespace StockSip.Platform.API.Authorization.Application.Internal.CommandServices;
@@ -13,6 +14,7 @@ namespace StockSip.Platform.API.Authorization.Application.Internal.CommandServic
 public class UserCommandService(IUserRepository userRepository, 
                                 ITokenService tokenService,
                                 IHashingService hashingService,
+                                IPaymentAndSubscriptionFacade paymentAndSubscriptionFacade,
                                 IUnitOfWork unitOfWork) : IUserCommandService
 {
     /// <summary>
@@ -21,7 +23,7 @@ public class UserCommandService(IUserRepository userRepository,
     /// <param name="command">The sign-in command containing the username and password.</param>
     /// <returns>A tuple containing the user and the generated token.</returns>
     /// <exception cref="Exception">A general exception is thrown if the username or password is invalid.</exception>
-    public async Task<(User user, string token)> Handle(SignInCommand command)
+    public async Task<(User user, string token, string? accountId)> Handle(SignInCommand command)
     {
         var user = await userRepository.FindByUsernameAsync(command.Username);
 
@@ -29,8 +31,9 @@ public class UserCommandService(IUserRepository userRepository,
             throw new Exception("Invalid username or password");
 
         var token = tokenService.GenerateToken(user);
+        var accountId = await paymentAndSubscriptionFacade.GetAccountIdByUserIdAsync(user.UserId);
 
-        return (user, token);
+        return (user, token, accountId);
     }
 
     /// <summary>

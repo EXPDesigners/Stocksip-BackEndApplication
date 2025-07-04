@@ -1,7 +1,9 @@
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
+using StockSip.Platform.API.Authorization.Infrastructure.Pipeline.Middleware.Attributes;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Queries;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Services;
+using StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST.Resources;
 using StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST.Transform;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -12,6 +14,7 @@ namespace StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST;
 /// </summary>
 /// <param name="accountCommandService">The command service for handling account operations.</param>
 /// <param name="accountQueryService">The query service for retrieving account information.</param>
+[Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
@@ -20,6 +23,23 @@ public class AccountsController(
     IAccountCommandService accountCommandService, 
     IAccountQueryService accountQueryService) : ControllerBase
 {
+
+    [HttpPost]
+    [AllowAnonymous]
+    [SwaggerOperation(
+        Summary = "Create Account",
+        Description = "Creates a new account with the provided details.",
+        OperationId = "CreateAccount")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Account created successfully.")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Failed to create account.")]
+    public async Task<IActionResult> CreateAccount([FromBody] SignUpWithAccountResource resource)
+    {
+        var createAccountCommand = SignUpWithAccountFromResourceAssembler.ToCommandFromResource(resource);
+        var account = await accountCommandService.Handle(createAccountCommand);
+        if (account is null) return BadRequest("Failed to create account");
+        var resourceFromEntity = AccountResourceFromEntityAssembler.ToResourceFromEntity(account);
+        return Ok(resourceFromEntity);
+    }
  
     /// <summary>
     /// This endpoint retrieves an account by its unique identifier.

@@ -10,6 +10,7 @@ using StockSip.Platform.API.AlertsAndNotifications.Domain.Repositories;
 using StockSip.Platform.API.AlertsAndNotifications.Domain.Services;
 using StockSip.Platform.API.AlertsAndNotifications.Infrastructure.Persistence.EFC.Repositories;
 using StockSip.Platform.API.AlertsAndNotifications.Interfaces.ACL;
+using StockSip.Platform.API.Authorization.Application.Internal.ACL;
 using StockSip.Platform.API.Authorization.Application.Internal.CommandServices;
 using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices;
 using StockSip.Platform.API.Authorization.Application.Internal.QueryServices;
@@ -20,6 +21,7 @@ using StockSip.Platform.API.Authorization.Infrastructure.Persistence.EFC.Reposit
 using StockSip.Platform.API.Authorization.Infrastructure.Pipeline.Middleware.Extensions;
 using StockSip.Platform.API.Authorization.Infrastructure.Tokens.JWT.Configuration;
 using StockSip.Platform.API.Authorization.Infrastructure.Tokens.JWT.Services;
+using StockSip.Platform.API.Authorization.Interfaces.ACL;
 using StockSip.Platform.API.InventoryManagement.Application.ACL;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
 using StockSip.Platform.API.InventoryManagement.Application.Internal.EventHandlers;
@@ -32,10 +34,12 @@ using StockSip.Platform.API.InventoryManagement.Infrastructure.FileStorage.Cloud
 using StockSip.Platform.API.InventoryManagement.Infrastructure.FileStorage.Cloudinary.Services;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Repositories;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.CommandService;
+using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.OutboundServices.ACL;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.QueryService;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Repositories;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Services;
 using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Repositories;
+using StockSip.Platform.API.PaymentAndSubscription.Interfaces.ACL;
 using StockSip.Platform.API.Shared.Application.Internal.EventHandlers;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 using StockSip.Platform.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
@@ -163,9 +167,10 @@ builder.Services.AddScoped<IEventHandler<ProductProblemDetectedEvent>, ProductPr
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountQueryService, AccountQueryService>();
 builder.Services.AddScoped<IAccountCommandService, AccountCommandService>();
+builder.Services.AddScoped<IExternalAuthenticationService, ExternalAuthenticationService>();
+builder.Services.AddScoped<IPaymentAndSubscriptionFacade, PaymentAndSubscriptionFacade>();
 
 builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
-
 
 // Authentication Bounded Context
 
@@ -178,6 +183,7 @@ builder.Services.AddScoped<IUserCommandService, UserCommandService>();
 builder.Services.AddScoped<IUserQueryService, UserQueryService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IHashingService, HashingService>();
+builder.Services.AddScoped<IAuthenticationContextFacade, AuthenticationContextFacade>();
 
 // Add Mediator for CQRS
 builder.Services.AddCortexMediator(

@@ -3,8 +3,14 @@ using StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST.Resources;
 
 namespace StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST.Transform;
 
+/// <summary>
+/// This class is responsible for transforming an Account entity into an AccountResource.
+/// </summary>
 public class AccountResourceFromEntityAssembler
 {
+    /// <summary>
+    /// Defines a method to convert an Account entity to an AccountResource.
+    /// </summary>
     public static AccountResource ToResourceFromEntity(Account entity)
     {
         return new AccountResource(
