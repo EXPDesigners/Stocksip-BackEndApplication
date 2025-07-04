@@ -29,20 +29,6 @@ public class ProductQueryService(
     }
 
     /// <summary>
-    /// Method to retrieve all products associated with a specific warehouse ID.
-    /// </summary>
-    /// <param name="query">
-    /// The query containing the warehouse ID for which products are to be retrieved.
-    /// </param>
-    /// <returns>
-    /// The list of products associated with the specified warehouse ID.
-    /// </returns>
-    public async Task<IEnumerable<Product>> Handle(GetAllProductsByWarehouseIdQuery query)
-    {
-        return await productRepository.FindByWarehouseIdAsync(query.WarehouseId); 
-    }
-
-    /// <summary>
     /// Method to retrieve a product by its ID.
     /// </summary>
     /// <param name="query">

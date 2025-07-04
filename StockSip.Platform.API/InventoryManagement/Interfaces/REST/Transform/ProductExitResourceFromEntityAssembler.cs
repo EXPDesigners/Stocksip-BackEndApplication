@@ -21,7 +21,7 @@ public static class ProductExitResourceFromEntityAssembler
     public static ProductExitResource ToResourceFromEntity(ProductExit entity)
     {
         return new ProductExitResource(
-            entity.Id,
+            entity.ProductExitId,
             entity.ProductId,
             entity.WarehouseId,
             entity.ProductQuantity,

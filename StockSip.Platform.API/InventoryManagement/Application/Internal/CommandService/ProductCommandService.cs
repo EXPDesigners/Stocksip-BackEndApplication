@@ -1,4 +1,5 @@
-﻿using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
+﻿using StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices.Cloudinary;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
@@ -16,6 +17,7 @@ public class ProductCommandService (
     IProductRepository productRepository,
     IWarehouseRepository warehouseRepository,
     IInventoryRepository inventoryRepository,
+    ICloudinaryService cloudinaryService,
     IUnitOfWork unitOfWork
     ) : IProductCommandService
 {
@@ -27,12 +29,16 @@ public class ProductCommandService (
     /// <exception cref="ArgumentException"> Thrown when a product with the same name already exists.</exception>
     public async Task<Product?> Handle(CreateProductCommand command)
     {
-        if (await productRepository.ExistsByFullNameIgnoreCase(command.BrandName, command.LiquorType, command.AdditionalName))
+        if (await productRepository.ExistsByFullNameIgnoreCaseAsync(command.BrandName, command.LiquorType, command.Name))
         {
-            throw new ArgumentException($"Product with full name {command.BrandName} {command.LiquorType} {command.AdditionalName} already exists.");
+            throw new ArgumentException($"Product with full name {command.BrandName} {command.LiquorType} {command.Name} already exists.");
         }
+
+        string imageUrl = command.Image != null
+            ? cloudinaryService.UploadImage(command.Image)
+            : "https://res.cloudinary.com/deuy1pr9e/image/upload/v1750999534/default-product_lcmtsm.jpg";
         
-        var product = new Product(command);
+        var product = new Product(command, imageUrl);
         await productRepository.AddAsync(product);
         await unitOfWork.CompleteAsync();
         return product;
@@ -49,10 +55,22 @@ public class ProductCommandService (
         var productToUpdate = await productRepository.FindByIdAsync(command.ProductId)
                                 ?? throw new ArgumentException($"Product with ID {command.ProductId} does not exist.");
         
+        var currentImageUrl = await productRepository.FindImageUrlByProductIdAsync(command.ProductId);
+        string imageUrl = currentImageUrl;
+
+        if (command.UpdatedImage != null)
+        {
+            cloudinaryService.DeleteImage(currentImageUrl);
+            imageUrl = cloudinaryService.UploadImage(command.UpdatedImage);
+        }
+        
         productToUpdate.UpdateInformation(
+                command.Name,
+                command.Brand,
+                command.LiquorType,
                 command.UpdatedUnitPriceAmount,
                 command.UpdatedMinimumStock,
-                command.UpdatedImageUrl
+                imageUrl
             );
         
         productRepository.Update(productToUpdate);
@@ -60,14 +78,37 @@ public class ProductCommandService (
         return productToUpdate;
     }
 
+    /// <summary>
+    /// This method handles the update of the minimum stock level for an existing product.
+    /// </summary>
+    /// <param name="command">The command containing the product ID and the new minimum stock level.</param>
+    /// <returns>A <see cref="Product"/> object representing the updated product.</returns>
+    /// <exception cref="ArgumentException">If the product with the specified ID does not exist.</exception>
     public async Task<Product?> Handle(UpdateProductMinimumStockCommand command)
     {
         var productToUpdate = await productRepository.FindByIdAsync(command.ProductId)
-            ?? throw new ArgumentException($"Product with ID {command.ProductId} does not exist.");
+                              ?? throw new ArgumentException($"Product with ID {command.ProductId} does not exist.");
         
         productToUpdate.SetMinimumStock(command.NewMinimumStock);
         productRepository.Update(productToUpdate);
         await unitOfWork.CompleteAsync();
         return productToUpdate;
+    }
+
+    /// <summary>
+    /// This method handles the deletion of a product.
+    /// </summary>
+    /// <param name="command">The command containing the product ID to be deleted.</param>
+    /// <exception cref="ArgumentException">A product with the specified ID does not exist.</exception>
+    public async Task Handle(DeleteProductCommand command)
+    {
+        var productToDelete = await productRepository.FindByIdAsync(command.ProductId)
+                                ?? throw new ArgumentException($"Product with ID {command.ProductId} does not exist.");
+        
+        var imageUrl = await productRepository.FindImageUrlByProductIdAsync(command.ProductId);
+        cloudinaryService.DeleteImage(imageUrl);
+        
+        productRepository.Remove(productToDelete);
+        await unitOfWork.CompleteAsync();
     }
 }

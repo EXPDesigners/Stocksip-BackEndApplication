@@ -12,7 +12,13 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 /// <param name="UpdatedMinimumStock">
 /// The new minimum stock level for the product.
 /// </param>
-/// <param name="UpdatedImageUrl">
+/// <param name="UpdatedImage">
 /// The new image URL for the product.
 /// </param>
-public record UpdateProductCommand(string ProductId, double UpdatedUnitPriceAmount, int UpdatedMinimumStock, string UpdatedImageUrl);
+public record UpdateProductCommand(string ProductId, 
+                                   string Name, 
+                                   string Brand, 
+                                   string LiquorType, 
+                                   double UpdatedUnitPriceAmount, 
+                                   int UpdatedMinimumStock, 
+                                   IFormFile? UpdatedImage);

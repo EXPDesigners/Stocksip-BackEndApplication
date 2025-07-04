@@ -8,7 +8,7 @@ public record ProductStock()
     /// <summary>
     /// The stock of the product.
     /// </summary>
-    public int Stock { get; }
+    public int Stock { get; init; }
     
     /// <summary>
     /// Default constructor for the ProductStock value object.

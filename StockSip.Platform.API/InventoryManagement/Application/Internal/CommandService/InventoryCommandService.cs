@@ -35,7 +35,7 @@ public class InventoryCommandService (
                         ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
         
         // Retrieves the inventory of the product in the warehouse if it exists.
-        var updatedInventory = await inventoryRepository.FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(command.ProductId, command.WarehouseId, command.ExpirationDate)
+        var updatedInventory = await inventoryRepository.FindByProductIdAndWarehouseId(command.ProductId, command.WarehouseId)
                                ?? throw new ArgumentException($"Inventory with Product ID {command.ProductId}, Warehouse ID {command.WarehouseId} and Expiration Date {command.ExpirationDate} does not exist.");
 
         // Registers a product exit with the provided command details.
@@ -44,6 +44,7 @@ public class InventoryCommandService (
         
         // If the retrieved inventory exists, it decreases the stock to the current inventory.
         updatedInventory.RemoveStockFromProduct(command.RemovedQuantity);
+        updatedInventory.UpdateBestBeforeDate(command.ExpirationDate);
         
         // Completes the current inventory update by saving the changes to the database.
         await unitOfWork.CompleteAsync();
@@ -70,17 +71,11 @@ public class InventoryCommandService (
                         ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
         
         // Retrieves the inventory of the product in the warehouse if it exists, if not, it will create a new inventory entry with the new Expiration Date.
-        var updatedInventory = await inventoryRepository.FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(command.ProductId, command.WarehouseId, command.StockExpirationDate);
+        var updatedInventory = await inventoryRepository.FindByProductIdAndWarehouseId(command.ProductId, command.WarehouseId)
+                               ?? throw new ArgumentException($"Inventory with Product ID {command.ProductId} and Warehouse ID {command.WarehouseId} does not exist.");
 
-        // If the retrieved inventory exists, it adds the stock to the current inventory.
-        updatedInventory?.AddStockToProduct(command.AddedQuantity);
-        
-        // If the retrieved inventory does not exist, it creates a new inventory entry with the specified quantity and a different expiration date, but with the same product.
-        updatedInventory ??= new Inventory(command.WarehouseId, command.ProductId, command.StockExpirationDate, command.AddedQuantity)
-        {
-            Product = product,
-            Warehouse = warehouse
-        };
+        updatedInventory.AddStockToProduct(command.AddedQuantity);
+        updatedInventory.UpdateBestBeforeDate(command.StockExpirationDate);
         
         // Completes the current inventory update by saving the changes to the database.
         await unitOfWork.CompleteAsync();
@@ -106,6 +101,11 @@ public class InventoryCommandService (
         // Validate if the warehouse where the product will be added exists.
         var warehouse = await warehouseRepository.FindByIdAsync(command.WarehouseId)
                         ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
+
+        if (await inventoryRepository.ExistsByProductIdAndWarehouseIdAsync(command.ProductId, command.WarehouseId))
+        {
+            throw new ArgumentException($"Product with ID {command.ProductId} already exists in warehouse with ID {command.WarehouseId}.");
+        }
         
         // Creates a new inventory entry for the product in the warehouse with the specified quantity.
         var inventory = new Inventory(command)
@@ -147,17 +147,10 @@ public class InventoryCommandService (
         var inventory = await inventoryRepository.FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(command.ProductId, command.WarehouseId, command.ExpirationDate)
                         ?? throw new ArgumentException($"Inventory with Product ID {command.ProductId}, Warehouse ID {command.WarehouseId} and Expiration Date {command.ExpirationDate} does not exist.");
         
-        // If the current stock of the product in the warehouse is zero, it sets the product ID to an empty string to indicate that the product has been deleted from the warehouse.
-        if (inventory.ProductStock.GetCurrentStock() == 0)
-        {
-            inventory.ProductId = "";
-        }
-        
-        // If the current stock of the product in the warehouse is not zero, it throws an exception to prevent deletion.
-        else
-        {
+        // Validates if the current stock of the product in the inventory is zero before deleting it.
+        if (inventory.ProductStock.GetCurrentStock() != 0)
             throw new ArgumentException("Cannot delete product from warehouse because the stock is not zero.");
-        }
+
         
         // If the retrieved inventory exists, it removes the relation between the product and the inventory.
         product.RemoveInventoryRelation(inventory);
@@ -193,10 +186,10 @@ public class InventoryCommandService (
         }
         
         // Retrieves the current inventory of the product in the old warehouse.
-        var currentInventory = await inventoryRepository.FindByProductIdAndWarehouseIdAndBestBeforeDateAsync(
+        var currentInventory = await inventoryRepository.FindByProductIdAndWarehouseId(
                 command.ProductId,
-                command.OldWarehouseId,
-                command.MovedStockExpirationDate) ?? throw new ArgumentException($"Inventory with Product ID {command.ProductId} and Warehouse ID {command.OldWarehouseId} does not exist.");
+                command.OldWarehouseId) ?? throw new ArgumentException($"Inventory with Product ID {command.ProductId} and Warehouse ID {command.OldWarehouseId} does not exist.");
+        
 
         // Removes the moved stock from the current inventory. And If the current inventory has no stock left, the product state will be set to OUT_OF_STOCK.
         currentInventory.RemoveStockFromProduct(command.MovedQuantity);

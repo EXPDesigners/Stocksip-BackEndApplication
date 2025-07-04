@@ -1,4 +1,5 @@
-﻿using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
+﻿using StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices.Cloudinary;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
@@ -17,6 +18,7 @@ public class WarehouseCommandService(
     IWarehouseRepository warehouseRepository,
     IProductRepository productRepository,
     IInventoryRepository inventoryRepository,
+    ICloudinaryService cloudinaryService,
     IUnitOfWork unitOfWork) : IWarehouseCommandService
 {
     /// <summary>
@@ -37,8 +39,10 @@ public class WarehouseCommandService(
         {
             throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.PostalCode} already exists.");
         }
+
+        string imageUrl = command.Image != null ? cloudinaryService.UploadImage(command.Image) : "https://res.cloudinary.com/deuy1pr9e/image/upload/v1750914969/default-warehouse_whqolq.avif";
         
-        var warehouse = new Warehouse(command);
+        var warehouse = new Warehouse(command, imageUrl);
         await warehouseRepository.AddAsync(warehouse);
         await unitOfWork.CompleteAsync();
         return warehouse;
@@ -52,19 +56,32 @@ public class WarehouseCommandService(
     /// <exception cref="ArgumentException">Thrown when a warehouse with the same name or address already exists, or if the warehouse to update does not exist.</exception>
     public async Task<Warehouse?> Handle(UpdateWarehouseCommand command)
     {
+        
+        var accountId = await warehouseRepository.FindAccountIdByWarehouseIdAsync(command.WarehouseId);
+        
         var warehouseToUpdate = await warehouseRepository.FindByIdAsync(command.WarehouseId)
             ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
 
         if (await warehouseRepository.ExistsByNameIgnoreCaseAndProfileIdAndWarehouseIdIsNotAsync(
-                command.Name, new AccountId(command.ProfileId), command.WarehouseId))
+                command.Name, new AccountId(accountId), command.WarehouseId))
         {
             throw new ArgumentException($"Warehouse with name {command.Name} already exists.");
         }
         
         if (await warehouseRepository.ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAndProfileIdIsNotAsync(
-                command.Street, command.City, command.PostalCode, new AccountId(command.ProfileId), command.WarehouseId))
+                command.Street, command.City, command.PostalCode, new AccountId(accountId), command.WarehouseId))
         {
             throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.PostalCode} already exists.");
+        }
+        
+        var currentImageUrl = await warehouseRepository.FindImageUrlByWarehouseIdAsync(command.WarehouseId);
+        string imageUrl = currentImageUrl;
+
+        if (command.Image != null)
+        {
+            cloudinaryService.DeleteImage(currentImageUrl);
+            
+            imageUrl = cloudinaryService.UploadImage(command.Image);
         }
         
         warehouseToUpdate.UpdateWarehouse(
@@ -76,7 +93,8 @@ public class WarehouseCommandService(
             command.Country,
             command.MaxTemperature,
             command.MinTemperature,
-            command.Capacity
+            command.Capacity,
+            imageUrl
         );
         
         warehouseRepository.Update(warehouseToUpdate);
@@ -124,8 +142,12 @@ public class WarehouseCommandService(
     /// </exception>
     public async Task Handle(DeleteWarehouseCommand command)
     {
+        
         var warehouseToDelete = await warehouseRepository.FindByIdAsync(command.WarehouseId)
                                 ?? throw new ArgumentException($"Warehouse with ID {command.WarehouseId} does not exist.");
+        
+        var imageUrl = await warehouseRepository.FindImageUrlByWarehouseIdAsync(command.WarehouseId);
+        cloudinaryService.DeleteImage(imageUrl);
         
         warehouseRepository.Remove(warehouseToDelete);
         await unitOfWork.CompleteAsync();

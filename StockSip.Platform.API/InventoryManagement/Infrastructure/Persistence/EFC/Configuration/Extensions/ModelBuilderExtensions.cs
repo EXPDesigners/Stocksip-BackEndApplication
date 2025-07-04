@@ -50,7 +50,7 @@ public static class ModelBuilderExtensions
                 .HasColumnName("image_url");
         });
         
-        builder.Entity<Warehouse>().Property(w => w.AccountId).HasConversion(v => v.Id, v => new AccountId(v)).IsRequired().HasColumnName("profile_id");
+        builder.Entity<Warehouse>().Property(w => w.AccountId).HasConversion(v => v.Id, v => new AccountId(v)).IsRequired().HasColumnName("account_id");
         
         // Product ORM Mapping Rules
         builder.Entity<Product>().HasKey(p => p.ProductId);
@@ -73,7 +73,7 @@ public static class ModelBuilderExtensions
                 HasMaxLength(3);
         });
         
-        builder.Entity<Product>().Property(w => w.Brand).IsRequired().HasMaxLength(50);
+        builder.Entity<Product>().Property(p => p.Brand).IsRequired().HasMaxLength(50);
         
         builder.Entity<Product>().Property(p => p.LiquorType).HasConversion<string>().HasMaxLength(20).IsRequired();
         
@@ -83,21 +83,25 @@ public static class ModelBuilderExtensions
             ms.Property(msk => msk.MinimumStock).IsRequired();
         });
         
-        builder.Entity<Product>().OwnsOne(w => w.ImageUrl, i =>
+        builder.Entity<Product>().OwnsOne(p => p.ImageUrl, i =>
         {
             i.Property(img => img.ImageUri)
                 .IsRequired()
                 .HasMaxLength(500)
                 .HasColumnName("image_url");
         });
-        
-        builder.Entity<Product>().Property(p => p.ProviderId)
-            .HasConversion(v => v.Id, v => new ProviderId(v))
-            .IsRequired(false);
+
+        builder.Entity<Product>().OwnsOne(p => p.AccountId, ac =>
+        {
+            ac.WithOwner();
+            ac.Property(a => a.Id).IsRequired()
+                .HasColumnName("account_id");
+        });
         
         // Inventory ORM Mapping Rules
-        
-        builder.Entity<Inventory>().HasKey(i => new { i.ProductId, i.WarehouseId });
+
+        builder.Entity<Inventory>().HasKey(i => i.InventoryId);
+        builder.Entity<Inventory>().Property(i => i.InventoryId).IsRequired();
 
         builder.Entity<Inventory>()
             .Property(i => i.ProductState)
@@ -113,30 +117,24 @@ public static class ModelBuilderExtensions
             .HasOne(i => i.Warehouse)
             .WithMany()
             .HasForeignKey(i => i.WarehouseId);
+
+        builder.Entity<Inventory>().OwnsOne(i => i.ProductStock, ps =>
+        {
+            ps.WithOwner();
+            ps.Property(s => s.Stock).IsRequired();
+        });
+
+        builder.Entity<Inventory>().OwnsOne(i => i.ProductBestBeforeDate, b =>
+        {
+            b.Property(p => p.BestBeforeDate)
+                .HasColumnType("date")
+                .HasConversion(
+                    v => v.ToDateTime(TimeOnly.MinValue),
+                    v => DateOnly.FromDateTime(v))
+                .IsRequired();
+        });
         
-        builder.Entity<Inventory>()
-            .OwnsOne(i => i.ProductStock, ps =>
-            {
-                ps.WithOwner()
-                    .HasForeignKey("ProductId", "WarehouseId");
-
-                ps.HasKey("ProductId", "WarehouseId");
-
-                ps.Property(p => p.Stock)
-                    .IsRequired();
-            });
-        
-        builder.Entity<Inventory>()
-            .OwnsOne(i => i.BestBeforeDate, ed =>
-            {
-                ed.WithOwner()
-                    .HasForeignKey("ProductId", "WarehouseId");
-
-                ed.HasKey("ProductId", "WarehouseId");
-
-                ed.Property(e => e.BestBeforeDate)
-                    .IsRequired();
-            });
+        // ProductExit ORM Mapping Rules
 
     }
 }

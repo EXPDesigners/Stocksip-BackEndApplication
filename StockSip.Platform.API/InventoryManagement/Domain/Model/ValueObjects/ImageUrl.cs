@@ -6,10 +6,6 @@
 /// </summary>
 public record ImageUrl()
 {
-    /// <summary>
-    /// The default image URL used when no specific image URL is provided.
-    /// </summary>
-    private static readonly Uri DefaultImageUrl = new ("https://res.cloudinary.com/deuy1pr9e/image/upload/v1749934502/warehouses/ed50b16b-91b8-4027-a23d-71aaa158bc8b.jpg");
     
     /// <summary>
     /// The image URL for the product or warehouse.
@@ -22,7 +18,12 @@ public record ImageUrl()
     /// <param name="imageUri">The image url</param>
     public ImageUrl(string imageUri) : this()
     {
-        ImageUri = string.IsNullOrWhiteSpace(imageUri) ? DefaultImageUrl : CreateValidateUrl(imageUri);
+        if (string.IsNullOrWhiteSpace(imageUri))
+        {
+            throw new ArgumentException("Image URL cannot be null or empty.", nameof(imageUri));
+        }
+
+        ImageUri = CreateValidateUrl(imageUri);
     }
     
     /// <summary>

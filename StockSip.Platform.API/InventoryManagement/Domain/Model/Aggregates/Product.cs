@@ -1,8 +1,6 @@
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
-using StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.Shared.Domain.Model.ValueObjects;
-using DateTime = System.DateTime;
 
 namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 
@@ -49,12 +47,12 @@ public partial class Product
     /// <summary>
     /// The unique identifier of the provider associated with the product, if any.
     /// </summary>
-    public ProviderId? ProviderId { get; private set; }
+    public ProviderId? AccountId { get; private set; }
     
     /// <summary>
     /// The collection of inventories associated with the product, represented as a list of Inventory entities.
     /// </summary>
-    public ICollection<Inventory> Inventories { get; private set; }
+    public ICollection<Inventory> Inventories { get; internal set; } = new List<Inventory>();
     
     /// <summary>
     /// Default constructor for Entity Framework Core.
@@ -99,18 +97,18 @@ public partial class Product
         UnitPrice = new Money(unitPriceAmount, "PEN");
         MinimumStock = new ProductMinimumStock(minimumStock);
         ImageUrl = new ImageUrl(null);
-        if (providerId != null) ProviderId = new ProviderId(providerId);
+        if (providerId != null) AccountId = new ProviderId(providerId);
     }
     
-    public Product(CreateProductCommand command)
+    public Product(CreateProductCommand command, string imageUrl)
     {
-        ProductName = new ProductName(command.AdditionalName);
+        ProductName = new ProductName(command.Name);
         LiquorType = Enum.Parse<ELiquorType>(command.LiquorType, true);
         Brand = command.BrandName;
         UnitPrice = new Money(command.UnitPriceAmount, "PEN");
         MinimumStock = new ProductMinimumStock(command.MinimumStock);
-        ImageUrl = new ImageUrl(null);
-        if (command.ProviderId != null) ProviderId = new ProviderId(command.ProviderId);
+        ImageUrl = new ImageUrl(imageUrl);
+        if (command.ProviderId != null) AccountId = new ProviderId(command.ProviderId);
     }
 
     /// <summary>
@@ -150,16 +148,14 @@ public partial class Product
     /// <exception cref="ArgumentException">
     /// Thrown when the updated price is less than or equal to zero.
     /// </exception>
-    public void UpdateInformation(double updatedPrice, int updatedMinimumStock, string updatedImageUrl)
+    public void UpdateInformation(string name, string brand, string liquorType, double updatedPrice, int updatedMinimumStock, string updatedImageUrl)
     {
-        if (updatedPrice <= 0)
-        {
-            throw new ArgumentException("Price must be greater than zero: ", nameof(updatedPrice));
-        } 
-        
+        ProductName = new ProductName(name);
+        LiquorType = Enum.Parse<ELiquorType>(liquorType, true);
+        Brand = brand;
         SetMinimumStock(updatedMinimumStock);
         ImageUrl = new ImageUrl(updatedImageUrl);
-        UnitPrice = new Money(updatedPrice, UnitPrice.Currency);
+        UnitPrice = new Money(updatedPrice, "PEN");
     }
 
     /// <summary>

@@ -3,4 +3,4 @@
 /// <summary>
 /// This record represents a resource for decreasing stock from an existing product in a warehouse.
 /// </summary>
-public record DecreaseStockFromProductResource(DateTime ExpirationDate, int RemovedQuantity);
+public record DecreaseStockFromProductResource(DateOnly ExpirationDate, int RemovedQuantity);

@@ -12,5 +12,4 @@ public record CreateWarehouseResource(string Name,
                                       double MaxTemperature,
                                       double MinTemperature,
                                       double Capacity,
-                                      string ProfileId
-                                      );
+                                      IFormFile? Image);

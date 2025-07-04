@@ -27,7 +27,7 @@ public static class UpdateWarehouseCommandFromResourceAssembler
             resource.MaxTemperature,
             resource.MinTemperature,
             resource.Capacity,
-            resource.ProfileId
+            resource.Image
         );
     }
 }

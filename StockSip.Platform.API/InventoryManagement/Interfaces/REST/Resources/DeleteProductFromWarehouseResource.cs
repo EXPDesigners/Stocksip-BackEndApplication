@@ -3,4 +3,4 @@
 /// <summary>
 /// This record represents a resource for deleting a product from a warehouse.
 /// </summary>
-public record DeleteProductFromWarehouseResource(DateTime ExpirationDate);
+public record DeleteProductFromWarehouseResource(DateOnly ExpirationDate);

@@ -3,10 +3,9 @@
 /// <summary>
 /// This record defines the resource for creating a new product.
 /// </summary>
-public record CreateProductResource(string? AdditionalName, 
+public record CreateProductResource(string? Name, 
                                     string LiquorType, 
                                     string BrandName, 
                                     double UnitPriceAmount,
                                     int MinimumStock,
-                                    string ImageUrl,
-                                    string? ProviderId);
+                                    IFormFile? Image);
