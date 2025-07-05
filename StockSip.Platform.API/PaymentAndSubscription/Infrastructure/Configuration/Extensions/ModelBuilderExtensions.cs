@@ -10,30 +10,46 @@ public static class ModelBuilderExtensions
 {
     public static void ApplyPaymentAndSubscriptionConfiguration(this ModelBuilder builder)
     {
-        // Payment and Subscription Domain Configuration
-        
-        // Account ORM Mapping Rules
         builder.Entity<Account>().HasKey(a => a.AccountId);
         builder.Entity<Account>().Property(a => a.AccountId).ValueGeneratedOnAdd();
 
         builder.Entity<Account>().OwnsOne(a => a.BusinessName, bs =>
         {
             bs.WithOwner();
-            bs.Property(nm => nm.Name).IsRequired().HasMaxLength(50).HasColumnName("business_name");
+            bs.Property(n => n.Name)
+                .IsRequired()
+                .HasMaxLength(50)
+                .HasColumnName("business_name");
         });
-        
-        builder.Entity<Account>().Property(a => a.Status).HasConversion<string>().HasMaxLength(50).IsRequired();
+
+        builder.Entity<Account>().OwnsOne(a => a.Email, e =>
+        {
+            e.WithOwner();
+            e.Property(v => v.Value)
+                .IsRequired()
+                .HasMaxLength(100)
+                .HasColumnName("email");
+        });
+
+        builder.Entity<Account>().Property(a => a.Status)
+            .HasConversion<string>()
+            .HasMaxLength(50)
+            .IsRequired();
 
         builder.Entity<Account>().OwnsOne(a => a.AccountRole, r =>
         {
             r.WithOwner();
-            r.Property(ar => ar.Role).IsRequired().HasMaxLength(50);
+            r.Property(ar => ar.Role)
+                .IsRequired()
+                .HasMaxLength(50);
         });
-        
+
         builder.Entity<Account>().OwnsOne(a => a.StreetAddress, sa =>
         {
             sa.WithOwner();
-            sa.Property(st => st.Street).IsRequired().HasMaxLength(200);
+            sa.Property(st => st.Street)
+                .IsRequired()
+                .HasMaxLength(200);
         });
 
         builder.Entity<Account>().Property(a => a.CreatedDate).IsRequired();
@@ -41,11 +57,11 @@ public static class ModelBuilderExtensions
         builder.Entity<Account>().OwnsOne(a => a.OwnerUserId, ou =>
         {
             ou.WithOwner();
-            ou.Property(o => o.OwnerUserId).IsRequired();
+            ou.Property(o => o.OwnerUserId)
+                .IsRequired()
+                .HasColumnName("owner_user_id");
         });
-
-        // Subscription ORM Mapping Rules
-
-        // Subscription Plan ORM Mapping Rules
+        
     }
+
 }

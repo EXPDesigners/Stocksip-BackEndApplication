@@ -9,11 +9,12 @@ public class AccountResourceFromEntityAssembler
     {
         return new AccountResource(
             entity.AccountId,
-            entity.BusinessName.Name,
-            entity.Status.ToString(),
-            entity.AccountRole.ToString(),
-            entity.StreetAddress.Street, 
-            entity.GetCreationDate()
+            entity.Email.ToString(),
+            entity.BusinessName.ToString(),       
+            entity.Status.ToString(), 
+            entity.AccountRole.ToString(),    
+            entity.StreetAddress.ToString(),     
+            entity.GetCreationDate()       
         );
     }
 }

@@ -6,4 +6,9 @@
 /// <param name="username">The username for the new user.</param>
 /// <param name="password">The password for the new user.</param>
 /// <param name="role">The role assigned to the new account.</param>
-public record CreateAccountCommand(string username, string password, string role);
+public record CreateAccountCommand(
+    string OwnerUserId,
+    string Email,
+    string AccountRole,
+    string BusinessName,
+    string StreetAddress);

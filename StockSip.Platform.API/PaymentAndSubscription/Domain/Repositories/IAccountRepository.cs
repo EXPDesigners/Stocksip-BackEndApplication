@@ -8,5 +8,6 @@ namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Repositories;
 /// </summary>
 public interface IAccountRepository : IBaseRepository<Account>
 {
-    
+    Task<Account?> FindByIdAsync(string accountId);
+    Task<Account?> FindByEmailAsync(string email);
 }

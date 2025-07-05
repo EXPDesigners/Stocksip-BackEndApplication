@@ -21,6 +21,13 @@ using StockSip.Platform.API.InventoryManagement.Domain.Services;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.FileStorage.Cloudinary.Configuration;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.FileStorage.Cloudinary.Services;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Repositories;
+using StockSip.Platform.API.OrderOperationAndMonitoring.Application.Internal.CommandService;
+using StockSip.Platform.API.OrderOperationAndMonitoring.Application.Internal.QueryService;
+using StockSip.Platform.API.OrderOperationAndMonitoring.Domain.External;
+using StockSip.Platform.API.OrderOperationAndMonitoring.Domain.Repositories;
+using StockSip.Platform.API.OrderOperationAndMonitoring.Domain.Services;
+using StockSip.Platform.API.OrderOperationAndMonitoring.Infrastructure.External;
+using StockSip.Platform.API.OrderOperationAndMonitoring.Infrastructure.Persistence.EFC.Repositories;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.CommandService;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.QueryService;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Repositories;
@@ -88,6 +95,7 @@ builder.Services.AddSwaggerGen(options =>
         },
     });
     options.EnableAnnotations();
+    options.CustomSchemaIds(type => type.FullName);
 });
 
 // Dependency Injection
@@ -126,8 +134,23 @@ builder.Services.AddScoped<IEventHandler<ProductProblemDetectedEvent>, ProductPr
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountQueryService, AccountQueryService>();
 builder.Services.AddScoped<IAccountCommandService, AccountCommandService>();
+builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+
+// Order Operation and Monitoring - Bounded Context
+builder.Services.AddScoped<ICatalogRepository, CatalogRepository>();
+builder.Services.AddScoped<ICatalogCommandService, CatalogCommandService>();
+builder.Services.AddScoped<ICatalogQueryService, CatalogQueryService>();
+builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
+builder.Services.AddScoped<IPurchaseOrderCommandService, PurchaseOrderCommandService>();
+builder.Services.AddScoped<IPurchaseOrderQueryService, PurchaseOrderQueryService>();
+
 
 builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
+
+builder.Services.AddHttpClient<IAccountClient, AccountClient>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["AccountApi:BaseUrl"]);
+});
 
 // Add Mediator for CQRS
 builder.Services.AddCortexMediator(

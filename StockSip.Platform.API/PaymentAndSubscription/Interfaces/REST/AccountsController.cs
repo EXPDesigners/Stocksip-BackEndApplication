@@ -2,6 +2,8 @@ using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Queries;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Services;
+using StockSip.Platform.API.PaymentAndSubscription.Interfaces.Rest.Resources;
+using StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST.Resources;
 using StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST.Transform;
 using Swashbuckle.AspNetCore.Annotations;
 
@@ -39,5 +41,41 @@ public class AccountsController(
         if (account is null) return NotFound($"Account with ID {accountId} not found.");
         var resource = AccountResourceFromEntityAssembler.ToResourceFromEntity(account);
         return Ok(resource);
+    }
+    
+    [HttpGet]
+    [SwaggerOperation(
+        Summary     = "Get Account by Email",
+        Description = "Returns the account that matches the given e‑mail address.",
+        OperationId = "Accounts_GetByEmail")]
+    [ProducesResponseType(typeof(AccountResource), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetAccountByEmail([FromQuery] string email)
+    {
+        var account = await accountQueryService.Handle(new GetAccountByEmailQuery(email));
+        if (account is null) return NotFound($"Account with e‑mail {email} not found.");
+
+        var resource = AccountResourceFromEntityAssembler.ToResourceFromEntity(account);
+        return Ok(resource);
+    }
+    
+    [HttpPost]
+    [SwaggerOperation(
+        Summary     = "Create Account",
+        Description = "Creates a new account with the supplied data.",
+        OperationId = "Accounts_Create")]
+    [ProducesResponseType(typeof(AccountResource), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CreateAccount([FromBody] CreateAccountResource body)
+    {
+        var cmd      = CreateAccountCommandFromResourceAssembler.ToCommand(body);
+        var created  = await accountCommandService.Handle(cmd);
+        if (created is null) return BadRequest("Could not create account.");
+
+        var resource = AccountResourceFromEntityAssembler.ToResourceFromEntity(created);
+        return CreatedAtAction(
+            nameof(GetAccountById),
+            new { accountId = resource.AccountId },
+            resource);
     }
 }
