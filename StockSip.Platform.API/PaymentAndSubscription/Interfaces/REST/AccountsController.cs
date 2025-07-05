@@ -24,11 +24,11 @@ public class AccountsController(
     IAccountQueryService accountQueryService) : ControllerBase
 {
 
-    [HttpPost]
+    [HttpPost("sign-up")]
     [AllowAnonymous]
     [SwaggerOperation(
-        Summary = "Create Account",
-        Description = "Creates a new account with the provided details.",
+        Summary = "Sing-up",
+        Description = "Sign up a new account.",
         OperationId = "CreateAccount")]
     [SwaggerResponse(StatusCodes.Status200OK, "Account created successfully.")]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Failed to create account.")]

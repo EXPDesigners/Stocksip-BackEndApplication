@@ -50,26 +50,4 @@ public class AuthenticationController(IUserCommandService userCommandService) : 
             return Unauthorized(ex.Message);
         }
     }
-
-    /**
-     * <summary>
-     *     Sign up endpoint. It allows creating a new user
-     * </summary>
-     * <param name="signUpResource">The sign-up resource containing username and password.</param>
-     * <returns>A confirmation message on successful creation.</returns>
-     */
-    [HttpPost("sign-up")]
-    [AllowAnonymous]
-    [SwaggerOperation(
-        Summary = "Sign-up",
-        Description = "Sign up a new user",
-        OperationId = "SignUp")]
-    [SwaggerResponse(StatusCodes.Status200OK, "The user was created successfully")]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "The sign-up process has failed", typeof(string))]
-    public async Task<IActionResult> SignUp([FromBody] SignUpResource signUpResource)
-    {
-        var signUpCommand = SignUpCommandFromResourceAssembler.ToCommandFromResource(signUpResource);
-        await userCommandService.Handle(signUpCommand);
-        return Ok(new { message = "User created successfully" });
-    }
 }
