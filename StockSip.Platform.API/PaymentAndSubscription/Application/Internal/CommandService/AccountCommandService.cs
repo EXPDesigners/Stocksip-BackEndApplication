@@ -24,7 +24,7 @@ public class AccountCommandService(
 
         var userId = await externalAuthenticationService.CreateUserAsync(command.Username, command.Password);
 
-        var account = new Account(userId, command.AccountRole, command.BusinessName);
+        var account = new Account(userId, command.BusinessName, command.Username, command.AccountRole);
         await accountRepository.AddAsync(account);
         await unitOfWork.CompleteAsync();
 

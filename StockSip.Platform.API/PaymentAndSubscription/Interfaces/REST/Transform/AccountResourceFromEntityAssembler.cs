@@ -10,20 +10,19 @@ namespace StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST.Transform
 public static class AccountResourceFromEntityAssembler
 {
     /// <summary>
-    /// Convierte un <see cref="Account"/> en <see cref="AccountResource"/>.
+    /// Converts an <see cref="Account"/> entity to an <see cref="AccountResource"/> DTO.
     /// </summary>
-    /// <param name="entity">La entidad de dominio.</param>
-    /// <returns>El recurso REST listo para exponer.</returns>
+    /// <param name="entity">The <see cref="Account"/> entity to convert.</param>
+    /// <returns>The corresponding <see cref="AccountResource"/> DTO.</returns>
     public static AccountResource ToResourceFromEntity(Account entity)
     {
         return new AccountResource(
-            accountId:      entity.AccountId,
-            email:          entity.Email.ToString(),          // Nuevo respecto a la primera versión
-            businessName:   entity.BusinessName.ToString(),  // Usamos ToString() (≈ Name) para compatibilidad
-            status:         entity.Status.ToString(),
-            accountRole:    entity.AccountRole.ToString(),
-            streetAddress:  entity.StreetAddress.ToString(),  // Nuevo campo
-            createdAt:      entity.GetCreationDate()
+            entity.AccountId,
+            entity.Email.ToString(),
+            entity.BusinessName.ToString(),
+            entity.Status.ToString(),
+            entity.AccountRole.ToString(),
+            entity.GetCreationDate()
         );
     }
 }

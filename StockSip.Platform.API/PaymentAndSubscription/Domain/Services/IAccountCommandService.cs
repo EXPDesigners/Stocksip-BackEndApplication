@@ -12,4 +12,5 @@ public interface IAccountCommandService
     /// This method handles the creation of an account based on the provided command.
     /// </summary>
     Task<Account?> Handle(SignUpWithAccountCommand command);
+    Task<Account?> Handle(CreateAccountCommand    command); 
 }

@@ -54,16 +54,6 @@ public static class ModelBuilderExtensions
               .HasMaxLength(20); // <- se conservan 20 caracteres de la otra versión
         });
 
-        // Street Address (VO)
-        builder.Entity<Account>().OwnsOne(a => a.StreetAddress, sa =>
-        {
-            sa.WithOwner();
-            sa.Property(st => st.Street)
-              .IsRequired()
-              .HasMaxLength(200)
-              .HasColumnName("street_address");
-        });
-
         // Auditing
         builder.Entity<Account>().Property(a => a.CreatedDate).IsRequired();
 

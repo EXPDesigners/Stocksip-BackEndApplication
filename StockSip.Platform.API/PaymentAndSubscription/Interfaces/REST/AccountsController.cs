@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using StockSip.Platform.API.Authorization.Infrastructure.Pipeline.Middleware.Attributes;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Queries;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Services;
+using StockSip.Platform.API.PaymentAndSubscription.Interfaces.Rest.Resources;
 using StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST.Resources;
 using StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST.Transform;
 using Swashbuckle.AspNetCore.Annotations;

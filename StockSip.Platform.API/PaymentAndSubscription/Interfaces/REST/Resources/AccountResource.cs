@@ -9,5 +9,4 @@ public record AccountResource(
     string BusinessName, 
     string Status,
     string AccountRole,
-    string StreetAddress,
     string CreatedTime);
