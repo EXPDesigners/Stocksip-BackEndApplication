@@ -2,7 +2,7 @@ using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using Microsoft.EntityFrameworkCore;
 using StockSip.Platform.API.Authorization.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Configuration.Extensions;
-using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Configuration.Extensions;
+using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Persistence.Configuration.Extensions;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
 namespace StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;

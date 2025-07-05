@@ -1,4 +1,5 @@
 ﻿using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Entities;
+using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.ValueObjects;
 
 namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Aggregates;
 
@@ -15,6 +16,7 @@ public class Subscription
     public Plan Plan { get; internal set; }
     
     public string PlanId { get; private set; }
+    public ESubscriptionStatus SubscriptionStatus { get; private set; }
     
     public DateTime CreatedDate { get; internal set; }
     public DateTime ExpiredDate { get; internal set; }
@@ -30,5 +32,13 @@ public class Subscription
         AccountId = accountId;
         Plan = plan;
         ExpiredDate = expiredDate;
+    }
+    
+    /// <summary>
+    /// This method marks the subscription as active.
+    /// </summary>
+    public void MarkAsCompleted()
+    {
+        SubscriptionStatus = ESubscriptionStatus.COMPLETED;
     }
 }

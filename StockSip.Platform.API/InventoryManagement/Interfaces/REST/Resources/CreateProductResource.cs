@@ -6,6 +6,6 @@
 public record CreateProductResource(string? Name, 
                                     string LiquorType, 
                                     string BrandName, 
-                                    double UnitPriceAmount,
+                                    decimal UnitPriceAmount,
                                     int MinimumStock,
                                     IFormFile? Image);

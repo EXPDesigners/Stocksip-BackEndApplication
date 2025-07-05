@@ -7,10 +7,12 @@ namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Services;
 /// This interface defines the contract for subscription services.
 /// </summary>
 ///
-public interface ISubscriptionService
+public interface ISubscriptionCommandService
 {
     /// <summary>
     /// this method handles the creation of a subscription based on the provided command.
     /// </summary>
-    Task<Subscription?> Handle(CreateSubscriptionCommand command);
+    Task<string?> Handle(SubscribeToPlanCommand command);
+
+    Task Handle(CompleteSubscriptionCommand command);
 }

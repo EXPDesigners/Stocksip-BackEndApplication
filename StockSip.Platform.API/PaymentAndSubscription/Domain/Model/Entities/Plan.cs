@@ -15,7 +15,7 @@ public class Plan
     
     public string Description { get; private set; }
     
-    public EPaymentFrequency EPaymentFrequency { get; internal set; }
+    public EPaymentFrequency PaymentFrequency { get; internal set; }
     
     public Money Price { get; internal set; }
     

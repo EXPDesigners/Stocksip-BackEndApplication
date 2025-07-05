@@ -35,10 +35,14 @@ using StockSip.Platform.API.InventoryManagement.Infrastructure.FileStorage.Cloud
 using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Repositories;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.CommandService;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.OutboundServices.ACL;
+using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.OutboundServices.PayPal;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.QueryService;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Repositories;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Services;
-using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Repositories;
+using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.PaymentProviders.PayPal.Client;
+using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.PaymentProviders.PayPal.Configuration;
+using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.PaymentProviders.PayPal.Services;
+using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Persistence.Repositories;
 using StockSip.Platform.API.PaymentAndSubscription.Interfaces.ACL;
 using StockSip.Platform.API.Shared.Application.Internal.EventHandlers;
 using StockSip.Platform.API.Shared.Domain.Repositories;
@@ -167,8 +171,19 @@ builder.Services.AddScoped<IEventHandler<ProductProblemDetectedEvent>, ProductPr
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountQueryService, AccountQueryService>();
 builder.Services.AddScoped<IAccountCommandService, AccountCommandService>();
+
 builder.Services.AddScoped<IExternalAuthenticationService, ExternalAuthenticationService>();
 builder.Services.AddScoped<IPaymentAndSubscriptionFacade, PaymentAndSubscriptionFacade>();
+
+builder.Services.AddScoped<IPlanRepository, PlanRepository>();
+
+builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+builder.Services.AddScoped<ISubscriptionCommandService, SubscriptionCommandCommandService>();
+
+builder.Services.AddHttpClient();
+builder.Services.Configure<PayPalSettings>(builder.Configuration.GetSection("PaypalSettings"));
+builder.Services.AddScoped<IPaymentService, PayPalService>();
+builder.Services.AddSingleton<PayPalClient>();
 
 builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
 

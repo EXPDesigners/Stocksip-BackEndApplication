@@ -19,6 +19,6 @@ public record UpdateProductCommand(string ProductId,
                                    string Name, 
                                    string Brand, 
                                    string LiquorType, 
-                                   double UpdatedUnitPriceAmount, 
+                                   decimal UpdatedUnitPriceAmount, 
                                    int UpdatedMinimumStock, 
                                    IFormFile? UpdatedImage);

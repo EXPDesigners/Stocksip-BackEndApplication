@@ -17,7 +17,7 @@ public class Account
     
     public EAccountRole AccountRole { get; internal set; }
     
-    public DateTime CreatedDate { get; internal set; }
+    public DateOnly CreatedDate { get; internal set; }
     
     public UserId OwnerUserId { get; internal set; }
     
@@ -35,7 +35,7 @@ public class Account
         BusinessName = new BusinessName(businessName);
         OwnerUserId = new UserId(ownerUserId);
         AccountRole = Enum.Parse<EAccountRole>(accountRole, true); ;
-        CreatedDate = DateTime.UtcNow;
+        CreatedDate = DateOnly.FromDateTime(DateTime.Now);
         Status = EAccountStatus.INACTIVE;
     }
 
@@ -47,6 +47,10 @@ public class Account
         Status = EAccountStatus.ACTIVE;
     }
     
+    /// <summary>
+    /// This method is used to deactivate the account, changing its status to INACTIVE.
+    /// </summary>
+    /// <returns>A boolean indicating whether the account was successfully deactivated.</returns>
     public string GetCreationDate()
     {
         return CreatedDate.ToString("yyyy-M-d");

@@ -29,7 +29,7 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 public record CreateProductCommand(string? Name, 
                                     string LiquorType, 
                                     string BrandName, 
-                                    double UnitPriceAmount,
+                                    decimal UnitPriceAmount,
                                     int MinimumStock,
                                     IFormFile? Image,
                                     string? AccountId);
