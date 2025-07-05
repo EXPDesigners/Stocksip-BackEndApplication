@@ -33,6 +33,13 @@ using StockSip.Platform.API.InventoryManagement.Domain.Services;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.FileStorage.Cloudinary.Configuration;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.FileStorage.Cloudinary.Services;
 using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Repositories;
+using StockSip.Platform.API.OrderOperationAndMonitoring.Application.Internal.CommandService;
+using StockSip.Platform.API.OrderOperationAndMonitoring.Application.Internal.QueryService;
+using StockSip.Platform.API.OrderOperationAndMonitoring.Domain.External;
+using StockSip.Platform.API.OrderOperationAndMonitoring.Domain.Repositories;
+using StockSip.Platform.API.OrderOperationAndMonitoring.Domain.Services;
+using StockSip.Platform.API.OrderOperationAndMonitoring.Infrastructure.External;
+using StockSip.Platform.API.OrderOperationAndMonitoring.Infrastructure.Persistence.EFC.Repositories;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.CommandService;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.OutboundServices.ACL;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.QueryService;
@@ -48,101 +55,99 @@ using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+#region ────── MVC + CORS ──────────────────────────────────────────────
 
-// Add ASP.NET Core MVC with Kebab Case Route Naming Convention
-builder.Services.AddRouting(options => options.LowercaseUrls = true);
-builder.Services.AddControllers(options => options.Conventions.Add(new KebabCaseRouteNamingConvention()));
+builder.Services.AddRouting(o => o.LowercaseUrls = true);
+builder.Services.AddControllers(o => o.Conventions.Add(new KebabCaseRouteNamingConvention()));
 builder.Services.AddEndpointsApiExplorer();
 
-// Add CORS Policy
-builder.Services.AddCors(options =>
+builder.Services.AddCors(o =>
 {
-    options.AddPolicy("AllowAllPolicy",
-        policy => policy.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+    o.AddPolicy("AllowAllPolicy", p =>
+        p.AllowAnyOrigin()
+         .AllowAnyMethod()
+         .AllowAnyHeader());
 });
 
-// Add Configuration for Entity Framework Core
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+#endregion
 
-if (connectionString == null) throw new InvalidOperationException("Connection string not found.");
+#region ────── EF Core ─────────────────────────────────────────────────
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                      ?? throw new InvalidOperationException("Connection string not found.");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     if (builder.Environment.IsDevelopment())
         options.UseMySQL(connectionString)
-            .LogTo(Console.WriteLine, LogLevel.Information)
-            .EnableSensitiveDataLogging()
-            .EnableDetailedErrors();
-    else if (builder.Environment.IsProduction())
+               .LogTo(Console.WriteLine, LogLevel.Information)
+               .EnableSensitiveDataLogging()
+               .EnableDetailedErrors();
+    else
         options.UseMySQL(connectionString)
-            .LogTo(Console.WriteLine, LogLevel.Error);
+               .LogTo(Console.WriteLine, LogLevel.Error);
 });
 
-// Add Swagger/OpenAPI support
-builder.Services.AddSwaggerGen(options =>
+#endregion
+
+#region ────── Swagger ────────────────────────────────────────────────
+
+builder.Services.AddSwaggerGen(o =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo
+    o.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "StockSip.Platform.API",
-        Version = "v1",
-        Description = "StockSip Platform API for Inventory Management",
+        Title       = "StockSip.Platform.API",
+        Version     = "v1",
+        Description = "StockSip Platform API",
         TermsOfService = new Uri("https://stocksip.com/tos"),
-        Contact = new OpenApiContact
-        {
-            Name = "StockSip",
-            Email = "contact@stocksip.com"
-        },
+        Contact = new OpenApiContact { Name = "StockSip", Email = "contact@stocksip.com" },
         License = new OpenApiLicense
         {
-            Name = "Apache 2.0",
-            Url = new Uri("https://www.apache.org/licenses/LICENSE-2.0.html")
-        },
+            Name = "Apache 2.0",
+            Url  = new Uri("https://www.apache.org/licenses/LICENSE-2.0.html")
+        }
     });
-    
-    options.EnableAnnotations();
-    
-    // Add Bearer Authentication for Swagger
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+
+    // Annotations y nombres completos para evitar colisiones
+    o.EnableAnnotations();
+    o.CustomSchemaIds(t => t.FullName);
+
+    // Bearer auth
+    o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        In = ParameterLocation.Header,
-        Description = "Please enter token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
+        In           = ParameterLocation.Header,
+        Name         = "Authorization",
+        Type         = SecuritySchemeType.Http,
+        Scheme       = "bearer",
         BearerFormat = "JWT",
-        Scheme = "bearer"
+        Description  = "Enter JWT token"
     });
-    // Add Security Requirement for Swagger
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    o.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
-                {
-                    Id = "Bearer",
-                    Type = ReferenceType.SecurityScheme
-                }
+                Reference = new OpenApiReference { Id = "Bearer", Type = ReferenceType.SecurityScheme }
             },
             Array.Empty<string>()
         }
     });
 });
 
-// Dependency Injection
+#endregion
 
-// Shared Bounded Context
+#region ────── Dependency Injection ───────────────────────────────────
+
+// Shared
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-// Alerts And Notifications - Bounded Context
+// Alerts & Notifications
 builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 builder.Services.AddScoped<IAlertCommandService, AlertCommandService>();
 builder.Services.AddScoped<IAlertQueryService, AlertQueryService>();
 builder.Services.AddScoped<IAlertsAndNotificationsContextFacade, AlertsAndNotificationsContextFacade>();
 
-// Inventory Management - Bounded Context
+// Inventory Management
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<IWarehouseCommandService, WarehouseCommandService>();
 builder.Services.AddScoped<IWarehouseQueryService, WarehouseQueryService>();
@@ -157,27 +162,33 @@ builder.Services.AddScoped<IInventoryCommandService, InventoryCommandService>();
 builder.Services.AddScoped<IInventoryQueryService, InventoryQueryService>();
 builder.Services.AddScoped<ExternalAlertsAndNotificationsService>();
 
-// Cloudinary Configuration
+// Cloudinary
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
 builder.Services.AddScoped<IEventHandler<ProductProblemDetectedEvent>, ProductProblemDetectedEventHandler>();
 
-// Payment and Subscription - Bounded Context
+// Payment & Subscription
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountQueryService, AccountQueryService>();
 builder.Services.AddScoped<IAccountCommandService, AccountCommandService>();
 builder.Services.AddScoped<IExternalAuthenticationService, ExternalAuthenticationService>();
 builder.Services.AddScoped<IPaymentAndSubscriptionFacade, PaymentAndSubscriptionFacade>();
+builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 
-builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
+// Order Operation & Monitoring
+builder.Services.AddScoped<ICatalogRepository, CatalogRepository>();
+builder.Services.AddScoped<ICatalogCommandService, CatalogCommandService>();
+builder.Services.AddScoped<ICatalogQueryService, CatalogQueryService>();
+builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
+builder.Services.AddScoped<IPurchaseOrderCommandService, PurchaseOrderCommandService>();
+builder.Services.AddScoped<IPurchaseOrderQueryService, PurchaseOrderQueryService>();
 
-// Authentication Bounded Context
+builder.Services.AddHttpClient<IAccountClient, AccountClient>(c =>
+    c.BaseAddress = new Uri(builder.Configuration["AccountApi:BaseUrl"]!));
 
-// TokenSettings Configuration
-
+// Authentication / Authorization
 builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
-
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserCommandService, UserCommandService>();
 builder.Services.AddScoped<IUserQueryService, UserQueryService>();
@@ -185,43 +196,47 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IHashingService, HashingService>();
 builder.Services.AddScoped<IAuthenticationContextFacade, AuthenticationContextFacade>();
 
-// Add Mediator for CQRS
+// Pipeline behaviors
+builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
+
+#endregion
+
+#region ────── Cortex Mediator ────────────────────────────────────────
+
 builder.Services.AddCortexMediator(
-    configuration: builder.Configuration,
-    handlerAssemblyMarkerTypes: new[] { typeof(Program) }, configure: options =>
-    {
-        options.AddOpenCommandPipelineBehavior(typeof(LoggingCommandBehavior<>));
-        //options.AddDefaultBehaviors();
-    });
+    builder.Configuration,
+    new[] { typeof(Program) },
+    options => options.AddOpenCommandPipelineBehavior(typeof(LoggingCommandBehavior<>)));
+
+#endregion
 
 var app = builder.Build();
 
-// Verify if the database exists and create it if it doesn't
+#region ────── Database auto‑create ───────────────────────────────────
+
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<AppDbContext>();
-
-    context.Database.EnsureCreated();
+    var ctx = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    ctx.Database.EnsureCreated();
 }
 
-// Use Swagger for API documentation if in development mode
+#endregion
+
+#region ────── HTTP Pipeline ──────────────────────────────────────────
+
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Apply CORS Policy
 app.UseCors("AllowAllPolicy");
 
-// Configure the Authentication HTTP request pipeline.
-app.UseRequestAuthorization();
-
+app.UseRequestAuthorization(); // Middleware de autorización JWT custom
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
+app.UseAuthorization();        // Policies / roles, etc.
 
 app.MapControllers();
-
 app.Run();
+
+#endregion

@@ -13,9 +13,13 @@ public class Account
     
     public BusinessName BusinessName { get; internal set; }
     
+    public EmailAddress Email { get; internal set; }
+    
     public EAccountStatus Status { get; set; }
     
-    public EAccountRole AccountRole { get; internal set; }
+    public AccountRole AccountRole { get; internal set; }
+    
+    public StreetAddress StreetAddress { get; internal set; }
     
     public DateTime CreatedDate { get; internal set; }
     
@@ -29,15 +33,30 @@ public class Account
     /// <summary>
     /// Constructor to create a new account with the specified owner user ID, account role, and address.
     /// </summary>
-    public Account(string ownerUserId, string accountRole, string businessName)
+    public Account(string ownerUserId, string businessName, string email, string accountRole, string address)
     {
         AccountId = Guid.NewGuid().ToString();
-        BusinessName = new BusinessName(businessName);
         OwnerUserId = new UserId(ownerUserId);
-        AccountRole = Enum.Parse<EAccountRole>(accountRole, true); ;
+        BusinessName = new BusinessName(businessName);
+        Email = new EmailAddress(email);
+        AccountRole = new AccountRole(accountRole);
+        StreetAddress = new StreetAddress(address);
         CreatedDate = DateTime.UtcNow;
         Status = EAccountStatus.INACTIVE;
     }
+    
+    public Account(CreateAccountCommand cmd)
+    {
+        AccountId     = Guid.NewGuid().ToString();
+        Email         = new EmailAddress(cmd.Email);
+        OwnerUserId   = new UserId(cmd.OwnerUserId);
+        AccountRole   = new AccountRole(cmd.AccountRole);
+        BusinessName  = new BusinessName(cmd.BusinessName);
+        StreetAddress = new StreetAddress(cmd.StreetAddress);
+        CreatedDate   = DateTime.UtcNow;
+        Status        = EAccountStatus.INACTIVE;
+    }
+
 
     /// <summary>
     /// This method is used to activate the account, changing its status to ACTIVE.
