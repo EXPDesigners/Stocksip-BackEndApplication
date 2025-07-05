@@ -5,34 +5,67 @@ namespace StockSip.Platform.API.OrderOperationAndMonitoring.Domain.Model.Aggrega
 
 public class Catalog
 {
-    public int CatalogId { get; internal set; }
-    public string Name { get; set; }
-    public DateTime DateCreated { get; set; }
-    public bool IsPublished { get; set; }
-    public AccountId AccountId { get; set; }
+    public long CatalogId { get; internal set; } = 0;
 
+    public AccountId AccountId { get; internal set; }
+
+    public CatalogName Name { get; private set; }
+
+    public DateCreated DateCreated { get; internal set; } = DateCreated.Now();
+
+    public bool IsPublished { get; private set; }
+
+    public IList<CatalogItem> Items { get; private set; } = new List<CatalogItem>();
+
+    
     private Catalog() { }
     
-    public Catalog(string name, DateTime dateCreated, bool isPublished, AccountId accountId)
+    public Catalog(string accountId, string name)
     {
-        Name = name;
-        DateCreated = dateCreated;
-        IsPublished = isPublished;
-        AccountId = accountId;
+        AccountId   = new AccountId(accountId);
+        Name        = new CatalogName(name);
+        DateCreated = DateCreated.Now();
+        IsPublished = false;
     }
 
-    public Catalog(CreateCatalogCommand command) : this(command.Name,
-        new DateCreated(command.DateCreatedAt).Value,
-        new IsPublished(command.IsPublished),
-        new AccountId(command.AccountId)) 
-    {}
+    /// <summary>
+    /// Creates a new catalog from a command.
+    /// </summary>
+    public Catalog(CreateCatalogCommand cmd) : this(cmd.AccountId, cmd.Name) { }
     
-    public void Update(CreateCatalogCommand command)
+
+    public void Publish()
     {
-        Name = command.Name;
-        DateCreated = new DateCreated(command.DateCreatedAt).Value;
-        IsPublished = new IsPublished(command.IsPublished);
-        AccountId = new AccountId(command.AccountId);
+        if (IsPublished)
+            throw new InvalidOperationException("Catalog already published.");
+
+        if (Items.Count == 0)
+            throw new InvalidOperationException("Cannot publish an empty catalog.");
+
+        IsPublished = true;
     }
 
+    public void Unpublish() => IsPublished = false;
+
+    public Catalog AddItem(CatalogItem item)
+    {
+        Items.Add(item);
+        item.SetCatalog(this);
+        return this;
+    }
+    
+    public void Update(UpdateCatalogCommand cmd)
+    {
+        if (!AccountId.Equals(new AccountId(cmd.AccountId)))
+            throw new InvalidOperationException("Account mismatch.");
+
+        Name = new CatalogName(cmd.Name);
+    }
+
+    public Catalog RemoveItem(CatalogItem item)
+    {
+        Items.Remove(item);
+        item.SetCatalog(null);
+        return this;
+    }
 }
