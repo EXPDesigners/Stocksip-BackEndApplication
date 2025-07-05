@@ -1,12 +1,22 @@
 namespace StockSip.Platform.API.OrderOperationAndMonitoring.Domain.Model.ValueObjects;
 
-public record DateCreated(string DateCreatedString)
+public record DateCreated
 {
-    public DateTime Value { get; init; } = DateTime.Parse(DateCreatedString, null, System.Globalization.DateTimeStyles.RoundtripKind);
+    public DateTime Value { get; }
 
-    public static implicit operator DateCreated(string dateTimeString) => new(dateTimeString);
+    public DateCreated(DateTime value)
+    {
+        if (value == default)
+            throw new ArgumentException("DateCreated cannot be default value.", nameof(value));
 
-    public static implicit operator string(DateCreated dateCreated) => dateCreated.Value.ToString("o");
+        Value = value;
+    }
 
-    public override string ToString() => Value.ToString("o");
+    public static DateCreated Now() => new DateCreated(DateTime.UtcNow);
+
+    public override string ToString() => Value.ToString("u");
+
+    // Implicit conversions
+    public static implicit operator DateTime(DateCreated date) => date.Value;
+    public static implicit operator DateCreated(DateTime value) => new DateCreated(value);
 }

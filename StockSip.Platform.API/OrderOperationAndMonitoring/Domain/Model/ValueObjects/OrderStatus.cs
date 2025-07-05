@@ -1,3 +1,9 @@
 namespace StockSip.Platform.API.OrderOperationAndMonitoring.Domain.Model.ValueObjects;
 
-public record Status();
+public enum OrderStatus
+{
+    Received,
+    InProcess,
+    Arrived,
+    Canceled
+}
