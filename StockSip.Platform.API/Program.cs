@@ -2,6 +2,8 @@ using Cortex.Mediator.Behaviors;
 using Cortex.Mediator.Commands;
 using Cortex.Mediator.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using MySql.EntityFrameworkCore.Extensions; 
 using Microsoft.OpenApi.Models;
 using StockSip.Platform.API.AlertsAndNotifications.Application.ACL;
 using StockSip.Platform.API.AlertsAndNotifications.Application.Internal.CommandServices;
@@ -65,6 +67,13 @@ builder.Services.AddCors(o =>
         p.AllowAnyOrigin()
          .AllowAnyMethod()
          .AllowAnyHeader());
+});
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseMySQL(connectionString);
 });
 
 builder.Services.AddSwaggerGen(o =>
