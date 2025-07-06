@@ -198,7 +198,14 @@ builder.Services.AddScoped<IAuthenticationContextFacade, AuthenticationContextFa
 
 // Pipeline behaviors
 builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
+builder.Services.AddHttpClient<IAccountClient, AccountClient>(client =>
+{
+    var url = builder.Configuration["AccountApi:BaseUrl"];
+    if (string.IsNullOrWhiteSpace(url))
+        throw new InvalidOperationException("Missing AccountApi:BaseUrl in configuration");
 
+    client.BaseAddress = new Uri(url);
+});
 #endregion
 
 #region ────── Cortex Mediator ────────────────────────────────────────
