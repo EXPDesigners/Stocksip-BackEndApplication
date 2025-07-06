@@ -4,24 +4,22 @@ namespace StockSip.Platform.API.OrderOperationAndMonitoring.Domain.Model.ValueOb
 /// <summary>
 /// This record defines the identifier of a profile that will receive alerts and notifications.
 /// </summary>
-public record AccountId()
+public record AccountId
 {
-    /// <summary>
-    /// The unique identifier for the profile.
-    /// </summary>
-    public string Id { get; }
     
-    /// <summary>
-    /// The default constructor for the AccountId record.
-    /// </summary>
-    /// <param name="id">The unique identifier for the account. </param>
-    /// <exception cref="ArgumentException"> Account Id must be non-negative integer</exception>
-    public AccountId(string id) : this()
+    public string Value { get; init; } = null!; 
+
+
+    private AccountId() { }
+    
+    public AccountId(string value)
     {
-        if (id == null || id.Trim().Length == 0)
-        {
-            throw new ArgumentException("Account ID must be a non-empty string.");
-        }
-        Id = id;
+        if (string.IsNullOrWhiteSpace(value))
+            throw new ArgumentException("AccountId cannot be empty.", nameof(value));
+
+        Value = value;
     }
+
+    public override string ToString() => Value;
+    public static implicit operator string(AccountId id) => id.Value;
 }

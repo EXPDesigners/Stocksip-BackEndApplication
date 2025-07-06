@@ -15,7 +15,7 @@ public class CatalogRepository(AppDbContext context)
     public async Task<IEnumerable<Catalog>> FindByAccountIdAsync(AccountId accountId)
     {
         return await Catalogs
-            .Where(c => c.AccountId == accountId)   
+            .Where(c => c.AccountId.Value == accountId.Value)   
             .ToListAsync();
     }
 

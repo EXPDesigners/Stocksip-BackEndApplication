@@ -55,8 +55,6 @@ using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-#region ────── MVC + CORS ──────────────────────────────────────────────
-
 builder.Services.AddRouting(o => o.LowercaseUrls = true);
 builder.Services.AddControllers(o => o.Conventions.Add(new KebabCaseRouteNamingConvention()));
 builder.Services.AddEndpointsApiExplorer();
@@ -68,29 +66,6 @@ builder.Services.AddCors(o =>
          .AllowAnyMethod()
          .AllowAnyHeader());
 });
-
-#endregion
-
-#region ────── EF Core ─────────────────────────────────────────────────
-
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-                      ?? throw new InvalidOperationException("Connection string not found.");
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    if (builder.Environment.IsDevelopment())
-        options.UseMySQL(connectionString)
-               .LogTo(Console.WriteLine, LogLevel.Information)
-               .EnableSensitiveDataLogging()
-               .EnableDetailedErrors();
-    else
-        options.UseMySQL(connectionString)
-               .LogTo(Console.WriteLine, LogLevel.Error);
-});
-
-#endregion
-
-#region ────── Swagger ────────────────────────────────────────────────
 
 builder.Services.AddSwaggerGen(o =>
 {
@@ -134,20 +109,14 @@ builder.Services.AddSwaggerGen(o =>
     });
 });
 
-#endregion
-
-#region ────── Dependency Injection ───────────────────────────────────
-
 // Shared
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-// Alerts & Notifications
 builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 builder.Services.AddScoped<IAlertCommandService, AlertCommandService>();
 builder.Services.AddScoped<IAlertQueryService, AlertQueryService>();
 builder.Services.AddScoped<IAlertsAndNotificationsContextFacade, AlertsAndNotificationsContextFacade>();
 
-// Inventory Management
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<IWarehouseCommandService, WarehouseCommandService>();
 builder.Services.AddScoped<IWarehouseQueryService, WarehouseQueryService>();
@@ -162,13 +131,11 @@ builder.Services.AddScoped<IInventoryCommandService, InventoryCommandService>();
 builder.Services.AddScoped<IInventoryQueryService, InventoryQueryService>();
 builder.Services.AddScoped<ExternalAlertsAndNotificationsService>();
 
-// Cloudinary
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
 builder.Services.AddScoped<IEventHandler<ProductProblemDetectedEvent>, ProductProblemDetectedEventHandler>();
 
-// Payment & Subscription
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountQueryService, AccountQueryService>();
 builder.Services.AddScoped<IAccountCommandService, AccountCommandService>();
@@ -176,7 +143,6 @@ builder.Services.AddScoped<IExternalAuthenticationService, ExternalAuthenticatio
 builder.Services.AddScoped<IPaymentAndSubscriptionFacade, PaymentAndSubscriptionFacade>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 
-// Order Operation & Monitoring
 builder.Services.AddScoped<ICatalogRepository, CatalogRepository>();
 builder.Services.AddScoped<ICatalogCommandService, CatalogCommandService>();
 builder.Services.AddScoped<ICatalogQueryService, CatalogQueryService>();
@@ -187,7 +153,6 @@ builder.Services.AddScoped<IPurchaseOrderQueryService, PurchaseOrderQueryService
 builder.Services.AddHttpClient<IAccountClient, AccountClient>(c =>
     c.BaseAddress = new Uri(builder.Configuration["AccountApi:BaseUrl"]!));
 
-// Authentication / Authorization
 builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserCommandService, UserCommandService>();
@@ -195,6 +160,13 @@ builder.Services.AddScoped<IUserQueryService, UserQueryService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IHashingService, HashingService>();
 builder.Services.AddScoped<IAuthenticationContextFacade, AuthenticationContextFacade>();
+builder.Services.AddHttpClient<IAccountClient, AccountClient>(client =>
+{
+    var url = builder.Configuration["AccountApi:BaseUrl"];
+    if (string.IsNullOrWhiteSpace(url))
+        throw new InvalidOperationException("Missing AccountApi:BaseUrl in configuration");
+    client.BaseAddress = new Uri(url);
+});
 
 // Pipeline behaviors
 builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
@@ -206,30 +178,23 @@ builder.Services.AddHttpClient<IAccountClient, AccountClient>(client =>
 
     client.BaseAddress = new Uri(url);
 });
-#endregion
 
-#region ────── Cortex Mediator ────────────────────────────────────────
+builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
 
 builder.Services.AddCortexMediator(
     builder.Configuration,
     new[] { typeof(Program) },
     options => options.AddOpenCommandPipelineBehavior(typeof(LoggingCommandBehavior<>)));
 
-#endregion
 
 var app = builder.Build();
 
-#region ────── Database auto‑create ───────────────────────────────────
 
 using (var scope = app.Services.CreateScope())
 {
     var ctx = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     ctx.Database.EnsureCreated();
 }
-
-#endregion
-
-#region ────── HTTP Pipeline ──────────────────────────────────────────
 
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
@@ -239,11 +204,10 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 
 app.UseCors("AllowAllPolicy");
 
-app.UseRequestAuthorization(); // Middleware de autorización JWT custom
+app.UseRequestAuthorization();
 app.UseHttpsRedirection();
-app.UseAuthorization();        // Policies / roles, etc.
+app.UseAuthorization();
 
 app.MapControllers();
 app.Run();
 
-#endregion

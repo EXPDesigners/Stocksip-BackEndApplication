@@ -8,7 +8,7 @@ public class CatalogResourceFromEntityAssembler
     public static CatalogResource ToResourceFromEntity(Catalog entity) =>
         new(
             entity.CatalogId,
-            entity.AccountId.Id,
+            entity.AccountId,
             entity.Name.Value,
             entity.DateCreated.Value,
             entity.IsPublished);

@@ -17,12 +17,11 @@ public static class ModelBuilderExtensions
              .HasColumnName("catalog_id")
              .ValueGeneratedOnAdd();
 
-            c.OwnsOne(x => x.AccountId, a =>
+            c.OwnsOne(x => x.AccountId, nav =>
             {
-                a.Property(p => p.Id)
-                 .HasColumnName("account_id")
-                 .IsRequired()
-                 .HasMaxLength(36);
+                nav.Property(p => p.Value)
+                    .HasColumnName("account_id")
+                    .IsRequired();
             });
 
             c.OwnsOne(x => x.Name, n =>
