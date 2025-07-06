@@ -12,10 +12,6 @@ public static class ModelBuilderExtensions
 {
     public static void ApplyPaymentAndSubscriptionConfiguration(this ModelBuilder builder)
     {
-        // ─────────────────────────────────────────────────────────────────────────────
-        // Account
-        // ─────────────────────────────────────────────────────────────────────────────
-
         builder.Entity<Account>().HasKey(a => a.AccountId);
         builder.Entity<Account>().Property(a => a.AccountId).ValueGeneratedOnAdd();
 
@@ -38,14 +34,12 @@ public static class ModelBuilderExtensions
               .HasMaxLength(100)
               .HasColumnName("email");
         });
-
-        // Account Status
+        
         builder.Entity<Account>().Property(a => a.Status)
               .HasConversion<string>()
               .HasMaxLength(50)
               .IsRequired();
-
-        // Account Role (VO)
+        
         builder.Entity<Account>().OwnsOne(a => a.AccountRole, r =>
         {
             r.WithOwner();
@@ -53,11 +47,9 @@ public static class ModelBuilderExtensions
               .IsRequired()
               .HasMaxLength(20); // <- se conservan 20 caracteres de la otra versión
         });
-
-        // Auditing
+        
         builder.Entity<Account>().Property(a => a.CreatedDate).IsRequired();
-
-        // Owner User Id (VO)
+        
         builder.Entity<Account>().OwnsOne(a => a.OwnerUserId, ou =>
         {
             ou.WithOwner();
@@ -65,9 +57,5 @@ public static class ModelBuilderExtensions
               .IsRequired()
               .HasColumnName("owner_user_id");
         });
-
-        // ─────────────────────────────────────────────────────────────────────────────
-        // TODO: Subscription & SubscriptionPlan mapping rules
-        // ─────────────────────────────────────────────────────────────────────────────
     }
 }
