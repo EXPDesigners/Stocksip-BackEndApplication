@@ -8,30 +8,30 @@ using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Repositories;
 namespace StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Repositories;
 
 /// <summary>
-/// Implementa <see cref="IAccountRepository"/> ofreciendo métodos de búsqueda por:
-/// • AccountId<br/>
-/// • Email<br/>
-/// • UserId (propietario externo)<br/>
-/// </summary>
+/// Implements <see cref="IAccountRepository"/> using Entity Framework Core.
 public class AccountRepository(AppDbContext context)
     : BaseRepository<Account>(context), IAccountRepository
 {
     private DbSet<Account> Accounts => Context.Set<Account>();
 
     /// <summary>
-    /// Devuelve la entidad <see cref="Account"/> cuyo <c>AccountId</c> coincide.
+    /// Retrieves the <see cref="Account"/> entity by its unique identifier.
     /// </summary>
+    /// <param name="accountId">The unique identifier of the account to be retrieved.</param>
+    /// <returns>The <see cref="Account"/> entity if found; otherwise, null.</returns>
     public async Task<Account?> FindByIdAsync(string accountId) =>
         await Accounts.FirstOrDefaultAsync(a => a.AccountId == accountId);
 
     /// <summary>
-    /// Devuelve la entidad <see cref="Account"/> cuyo email coincide.
+    /// Retrieves the <see cref="Account"/> entity by its email address.
     /// </summary>
+    /// <param name="email">The email address of the account to be retrieved.</param>
+    /// <returns>The <see cref="Account"/> entity if found; otherwise, null.</returns>
     public async Task<Account?> FindByEmailAsync(string email) =>
         await Accounts.FirstOrDefaultAsync(a => a.Email.Value == email);
 
     /// <summary>
-    /// Devuelve el <c>AccountId</c> asociado al <paramref name="userId"/> externo, o <c>null</c> si no existe.
+    /// Finds the account associated with a specific user ID.
     /// </summary>
     public async Task<string?> FindByUserIdAsync(string userId)
     {
