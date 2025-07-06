@@ -19,4 +19,10 @@ public class PaymentAndSubscriptionFacade(IAccountRepository accountRepository) 
     {
         return await accountRepository.FindByUserIdAsync(userId);
     }
+    
+    public async Task<string?> GetAccountRoleByAccountIdAsync(string accountId)
+    {
+        var account = await accountRepository.FindByIdAsync(accountId);
+        return account?.AccountRole?.ToString();
+    }
 }

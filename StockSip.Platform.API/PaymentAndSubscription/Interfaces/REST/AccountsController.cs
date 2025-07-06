@@ -11,9 +11,9 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST;
 
 /// <summary>
-///     Endpoints para gestión de cuentas.
+///     This controller provides endpoints for managing accounts in the Payment and Subscription API.
 /// </summary>
-[Authorize] // → todos requieren token, salvo los marcados con [AllowAnonymous]
+[Authorize] 
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
@@ -23,9 +23,8 @@ public class AccountsController(
     IAccountQueryService   accountQueryService)
     : ControllerBase
 {
-    #region ──────────── Query Endpoints ────────────
+    #region
 
-    /// <summary>Obtiene una cuenta por su <paramref name="accountId" />.</summary>
     [HttpGet("{accountId}")]
     [SwaggerOperation(
         Summary     = "Get Account by ID",
@@ -41,8 +40,7 @@ public class AccountsController(
         var resource = AccountResourceFromEntityAssembler.ToResourceFromEntity(account);
         return Ok(resource);
     }
-
-    /// <summary>Obtiene una cuenta por su dirección de correo.</summary>
+    
     [HttpGet]
     [SwaggerOperation(
         Summary     = "Get Account by Email",
@@ -61,9 +59,8 @@ public class AccountsController(
 
     #endregion
 
-    #region ──────────── Command Endpoints ────────────
-
-    /// <summary>Registro (sign‑up) de un usuario y su cuenta asociada.</summary>
+    #region
+    
     [HttpPost("sign-up")]
     [AllowAnonymous]
     [SwaggerOperation(
@@ -81,8 +78,7 @@ public class AccountsController(
         var resource = AccountResourceFromEntityAssembler.ToResourceFromEntity(created);
         return Ok(resource);
     }
-
-    /// <summary>Crea una cuenta (sin registrar usuario externo).</summary>
+    
     [HttpPost]
     [SwaggerOperation(
         Summary     = "Create Account",

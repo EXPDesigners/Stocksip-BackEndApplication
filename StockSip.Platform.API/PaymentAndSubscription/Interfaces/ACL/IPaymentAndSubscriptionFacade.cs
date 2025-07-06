@@ -11,4 +11,11 @@ public interface IPaymentAndSubscriptionFacade
     /// This method is used to create a new user account with the provided username and password.
     /// </summary>
     Task<string?> GetAccountIdByUserIdAsync(string userId);
+
+    /// <summary>
+    /// Retrieves the role associated with a specific account ID.
+    /// </summary>
+    /// <param name="accountId">The unique identifier of the account for which the role is to be retrieved.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the account role as a string, or null if no role is found for the given account ID.</returns>
+    Task<string?> GetAccountRoleByAccountIdAsync(string accountId);
 }

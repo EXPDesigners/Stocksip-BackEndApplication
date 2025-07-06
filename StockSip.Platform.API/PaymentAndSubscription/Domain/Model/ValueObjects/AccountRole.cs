@@ -5,7 +5,7 @@ public record AccountRole
     public string Role { get; }
 
     public static readonly AccountRole Supplier          = new("Supplier");
-    public static readonly AccountRole LiquorStoreOwner  = new("LiquorStoreOwner");
+    public static readonly AccountRole LiquorStoreOwner  = new("Liquor Store Owner");
 
     public AccountRole(string role)
     {

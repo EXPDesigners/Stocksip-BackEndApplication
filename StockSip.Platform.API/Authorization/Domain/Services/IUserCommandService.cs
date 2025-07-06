@@ -10,12 +10,18 @@ namespace StockSip.Platform.API.Authorization.Domain.Services;
 public interface IUserCommandService
 {
     /// <summary>
-    /// Handle the sign in command to authenticate a user and return a token.
+    /// Handles a sign-in command by validating the user credentials, generating an authentication token,
+    /// and retrieving additional account details.
     /// </summary>
-    Task<(User user, string token, string? accountId)> Handle(SignInCommand command);
-    
+    /// <param name="command">The sign-in command containing the username and password.</param>
+    /// <returns>A tuple containing the authenticated user, a JWT token, the account ID if available, and the account role if available.</returns>
+    Task<(User user, string token, string? accountId, string? accountRole)> Handle(SignInCommand command);
+
     /// <summary>
-    /// Handle the sign-up command to create a new user account.
+    /// Handles a sign-up command by creating a new user, hashing the user's password,
+    /// and validating the uniqueness of the username.
     /// </summary>
+    /// <param name="command">The sign-up command containing the username and password.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
     Task Handle(SignUpCommand command);
 }

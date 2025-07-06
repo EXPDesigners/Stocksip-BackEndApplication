@@ -9,6 +9,6 @@
 public record CreateAccountCommand(
     string OwnerUserId,
     string Email,
-    string AccountRole,
     string BusinessName,
-    string StreetAddress);
+    string AccountRole  
+);

@@ -9,9 +9,8 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace StockSip.Platform.API.Authorization.Interfaces.REST;
 
 /// <summary>
-/// This controller provides endpoints for user authentication, including sign-in and sign-up functionalities.
+///     Endpoints de autenticación (sign‑in / sign‑up).
 /// </summary>
-/// <param name="userCommandService">The service for handling user commands.</param>
 [Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
@@ -19,30 +18,37 @@ namespace StockSip.Platform.API.Authorization.Interfaces.REST;
 [SwaggerTag("Available Authentication endpoints")]
 public class AuthenticationController(IUserCommandService userCommandService) : ControllerBase
 {
-     /**
-     * <summary>
-     *     Sign in endpoint. It allows authenticating a user
-     * </summary>
-     * <param name="signInResource">The sign-in resource containing username and password.</param>
-     * <returns>The authenticated user resource, including a JWT token</returns>
-     */
+    /// <summary>
+    /// Authenticates a user and retrieves a JWT upon successful validation of credentials.
+    /// </summary>
+    /// <param name="signInResource">The resource containing the user's sign-in credentials (username and password).</param>
+    /// <returns>
+    /// An <see cref="IActionResult"/> containing either:
+    /// - A 200 OK response with the authenticated user details and JWT if authentication is successful.
+    /// - A 401 Unauthorized response with an error message if authentication fails.
+    /// </returns>
     [HttpPost("sign-in")]
     [AllowAnonymous]
     [SwaggerOperation(
-        Summary = "Sign in",
-        Description = "Sign in a user",
+        Summary     = "Sign in",
+        Description = "Authenticate a user and obtain a JWT.",
         OperationId = "SignIn")]
-    [SwaggerResponse(StatusCodes.Status200OK, "The user was authenticated", typeof(AuthenticatedUserResource))]
-    [SwaggerResponse(StatusCodes.Status401Unauthorized, "The sign-in process has failed", typeof(string))]
+    [SwaggerResponse(StatusCodes.Status200OK, "User authenticated", typeof(AuthenticatedUserResource))]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "Invalid credentials", typeof(string))]
     public async Task<IActionResult> SignIn([FromBody] SignInResource signInResource)
     {
         try
         {
-            var signInCommand = SignInCommandFromResourceAssembler.ToCommandFromResource(signInResource);
-            var authenticatedUser = await userCommandService.Handle(signInCommand);
-            var resource =
-                AuthenticatedUserResourceFromEntityAssembler.ToResourceFromEntity(authenticatedUser.user,
-                    authenticatedUser.token, authenticatedUser.accountId);
+            var cmd  = SignInCommandFromResourceAssembler.ToCommandFromResource(signInResource);
+            var auth = await userCommandService.Handle(cmd);
+
+            var resource = AuthenticatedUserResourceFromEntityAssembler.ToResourceFromEntity(
+                auth.user,
+                auth.token,
+                auth.accountId,
+                auth.accountRole
+            );
+
             return Ok(resource);
         }
         catch (Exception ex)

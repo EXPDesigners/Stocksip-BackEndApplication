@@ -12,55 +12,60 @@ namespace StockSip.Platform.API.Authorization.Infrastructure.Pipeline.Middleware
 /// It validates a token is included in the request header and that the token is valid.
 /// If the token is valid, then it sets the user in HttpContext.Items["User"].
 /// </summary>
-public class RequestAuthorizationMiddleware(RequestDelegate next, ILogger<RequestAuthorizationMiddleware> logger)
+public class RequestAuthorizationMiddleware(RequestDelegate next,
+                                           ILogger<RequestAuthorizationMiddleware> logger)
 {
-        private readonly ILogger<RequestAuthorizationMiddleware> _logger = logger;
-    /**
-     * InvokeAsync is called by the ASP.NET Core runtime.
-     * It is used to authorize requests.
-     * It validates a token is included in the request header and that the token is valid.
-     * If the token is valid, then it sets the user in HttpContext.Items["User"].
-     */
+    private readonly ILogger<RequestAuthorizationMiddleware> _logger = logger;
+
     public async Task InvokeAsync(
-        HttpContext context,
+        HttpContext     context,
         IUserQueryService userQueryService,
-        ITokenService tokenService)
+        ITokenService     tokenService)
     {
         _logger.LogInformation("Entering InvokeAsync");
-        // skip authorization if endpoint is decorated with [AllowAnonymous] attribute
-        var allowAnonymous = context.Request.HttpContext.GetEndpoint()!.Metadata
-            .Any(m => m.GetType() == typeof(AllowAnonymousAttribute));
-        _logger.LogInformation("Allow Anonymous is {AllowAnonymous}", allowAnonymous);
-        if (allowAnonymous)
+            
+        if (context.Request.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
         {
-            _logger.LogInformation("Skipping authorization");
-            // [AllowAnonymous] attribute is set, so skip authorization
             await next(context);
             return;
         }
-        _logger.LogInformation("Entering authorization");
-        // get token from request header
-        var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
         
-        // if token is null then throw exception
-        if (token is null) throw new AuthenticationException("Null or invalid token");
+        var endpoint  = context.GetEndpoint();
+        var allowAnon = endpoint?.Metadata.Any(m => m is AllowAnonymousAttribute) ?? false;
 
-        // validate token
+        _logger.LogInformation("Allow Anonymous = {AllowAnonymous}", allowAnon);
+        if (allowAnon)
+        {
+            await next(context);
+            return;
+        }
+        
+        var token = context.Request.Headers["Authorization"]
+                               .FirstOrDefault()?
+                               .Split(' ')
+                               .Last();
+
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            _logger.LogWarning("Missing token");
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsync("Missing or invalid token");
+            return;
+        }
+        
         var userId = await tokenService.ValidateToken(token);
-
-        // if token is invalid then throw exception
-        if (userId is null) throw new AuthenticationException("Invalid token");
-
-        // get user by id
-        var getUserByIdQuery = new GetUserByIdQuery(userId);
-
-        // set user in HttpContext.Items["User"]
-
-        var user = await userQueryService.Handle(getUserByIdQuery);
-        _logger.LogInformation("Successful authorization. Updating Context...");
+        if (userId is null)
+        {
+            _logger.LogWarning("Invalid token");
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsync("Invalid token");
+            return;
+        }
+        
+        var user = await userQueryService.Handle(new GetUserByIdQuery(userId));
+        _logger.LogInformation("Successful authorization. Setting HttpContext.Items[\"User\"]");
         context.Items["User"] = user;
-        _logger.LogInformation("Continuing with Middleware Pipeline");
-        // call next middleware
+
         await next(context);
     }
 }
