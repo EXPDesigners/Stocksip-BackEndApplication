@@ -37,12 +37,16 @@ public class CatalogQueryService(
         var catalog = await catalogRepository.FindCatalogByItemIdAsync(itemId);
         return catalog?.Items.FirstOrDefault(i => i.Id == itemId);
     }
-    
+
 
     public async Task<IEnumerable<Catalog>> GetPublishedCatalogsByProviderEmailAsync(string email)
     {
-        var account = await accountClient.GetAccountByEmailAsync(email)
-                      ?? throw new ArgumentException($"No account found for email {email}");
+        var account = await accountClient.GetAccountByEmailAsync(email);
+        if (account == null)
+            throw new ArgumentException($"No account found for email {email}");
+
+        // Debug: muestra exactamente qué rol llega
+        Console.WriteLine($"[CatalogQuery] Email='{email}' Role='{account.Role}'");
 
         if (!string.Equals(account.Role, "Supplier", StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("The account is not a Supplier.");
@@ -50,7 +54,7 @@ public class CatalogQueryService(
         var supplierAccountId = new AccountId(account.AccountId);
         return await catalogRepository.FindPublishedByAccountIdAsync(supplierAccountId);
     }
-    
+
 
     public Task<IEnumerable<Catalog>> Handle(GetCatalogsByAccountQuery q) =>
         FindByAccountIdAsync(q.AccountId);

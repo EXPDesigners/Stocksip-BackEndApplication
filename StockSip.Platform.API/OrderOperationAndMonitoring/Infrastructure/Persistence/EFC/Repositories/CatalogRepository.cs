@@ -23,7 +23,7 @@ public class CatalogRepository(AppDbContext context)
     public async Task<IEnumerable<Catalog>> FindPublishedByAccountIdAsync(AccountId accountId)
     {
         return await Catalogs
-            .Where(c => c.AccountId == accountId && c.IsPublished)
+            .Where(c => c.AccountId.Value == accountId.Value && c.IsPublished)
             .ToListAsync();
     }
 
