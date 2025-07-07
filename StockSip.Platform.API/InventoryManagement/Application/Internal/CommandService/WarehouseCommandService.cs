@@ -5,6 +5,7 @@ using StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
+using StockSip.Platform.API.PaymentAndSubscription.Interfaces.ACL;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 
 namespace StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
@@ -19,7 +20,8 @@ public class WarehouseCommandService(
     IProductRepository productRepository,
     IInventoryRepository inventoryRepository,
     ICloudinaryService cloudinaryService,
-    IUnitOfWork unitOfWork) : IWarehouseCommandService
+    IUnitOfWork unitOfWork,
+    IPaymentAndSubscriptionFacade paymentAndSubscriptionFacade) : IWarehouseCommandService
 {
     /// <summary>
     /// This method handles the creation of a new warehouse.
@@ -29,16 +31,25 @@ public class WarehouseCommandService(
     /// <exception cref="ArgumentException"> Thrown when a warehouse with the same name or address already exists.</exception>
     public async Task<Warehouse?> Handle(CreateWarehouseCommand command)
     {
-        if (await warehouseRepository.ExistByNameIgnoreCaseAndProfileIdAsync(command.Name, new AccountId(command.AccountId)))
+        var accountId = new AccountId(command.AccountId);
+        
+        if (await warehouseRepository.ExistByNameIgnoreCaseAndProfileIdAsync(command.Name, accountId))
         {
             throw new ArgumentException($"Warehouse with name {command.Name} already exists.");
         }
 
         if (await warehouseRepository.ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAsync(
-                command.Street, command.City, command.PostalCode, new AccountId(command.AccountId)))
+                command.Street, command.City, command.PostalCode, accountId))
         {
             throw new ArgumentException($"Warehouse with address {command.Street}, {command.City}, {command.PostalCode} already exists.");
         }
+        
+        var (maxWarehouses, _) = await paymentAndSubscriptionFacade.GetLimitsByAccountIdAsync(command.AccountId);
+        
+        var currentWarehouseCount = await warehouseRepository.CountByAccountIdAsync(accountId);
+        
+        if (currentWarehouseCount >= maxWarehouses)
+            throw new InvalidOperationException($"The account has reached the maximum number of warehouses ({maxWarehouses}) for the current plan.");
 
         string imageUrl = command.Image != null ? cloudinaryService.UploadImage(command.Image) : "https://res.cloudinary.com/deuy1pr9e/image/upload/v1750914969/default-warehouse_whqolq.avif";
         

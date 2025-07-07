@@ -41,6 +41,11 @@ public class AccountWarehousesController (
         return Ok(warehouseResource);
     }
     
+    /// <summary>
+    /// This method retrieves all warehouses associated with a specific Account ID.
+    /// </summary>
+    /// <param name="accountId">The unique identifier for the account whose warehouses are to be retrieved.</param>
+    /// <returns>A list of warehouses associated with the specified Account ID.</returns>
     [HttpGet]
     [SwaggerOperation(
         Summary = "Get All Warehouses by Account ID",
@@ -58,5 +63,25 @@ public class AccountWarehousesController (
             .Select(WarehouseResourceFromEntityAssembler.ToResourceFromEntity)
             .ToList();
         return Ok(resources);
+    }
+    
+    /// <summary>
+    /// This method retrieves the count of warehouses associated with a specific Account ID.
+    /// </summary>
+    /// <param name="accountId">The unique identifier for the account whose warehouses count is to be retrieved.</param>
+    /// <returns>A count of warehouses associated with the specified Account ID.</returns>
+    [HttpGet("counts")]
+    [SwaggerOperation(
+        Summary = "Get Warehouses Count by Account ID",
+        Description = "Retrieves the count of warehouses associated with a specific Account ID.",
+        OperationId = "GetWarehousesCountByAccountId")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Count of warehouses found!", typeof(int))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "No warehouses found for the given Account ID.")]
+    public async Task<IActionResult> GetWarehousesCountByAccountId([FromRoute] string accountId)
+    {
+        var getWarehousesCountByAccountIdQuery = new GetWarehousesCountUsagesQuery(accountId);
+        var count = await warehouseQueryService.Handle(getWarehousesCountByAccountIdQuery);
+        if (count < 0) return NotFound("No warehouses found for the given Account ID.");
+        return Ok(new { Count = count });
     }
 }

@@ -8,7 +8,9 @@ namespace StockSip.Platform.API.PaymentAndSubscription.Application.Internal.Outb
 /// Defines the facade for payment and subscription operations.
 /// </summary>
 /// <param name="accountRepository">A repository for account operations.</param>
-public class PaymentAndSubscriptionFacade(IAccountRepository accountRepository) : IPaymentAndSubscriptionFacade
+public class PaymentAndSubscriptionFacade(IAccountRepository accountRepository, 
+                                          IPlanRepository planRepository,
+                                          ISubscriptionRepository subscriptionRepository) : IPaymentAndSubscriptionFacade
 {
     /// <summary>
     /// Defines the method to get an account ID by user ID asynchronously.
@@ -24,5 +26,16 @@ public class PaymentAndSubscriptionFacade(IAccountRepository accountRepository) 
     {
         var account = await accountRepository.FindByIdAsync(accountId);
         return account?.AccountRole?.ToString();
+    }
+
+    public async Task<(int MaxWarehouses, int MaxProducts)> GetLimitsByAccountIdAsync(string accountId)
+    {
+        var subscription = await subscriptionRepository.FindByAccountIdAsync(accountId)
+                           ?? throw new ArgumentException($"No subscription found for account {accountId}");
+
+        var plan = await planRepository.FindByIdAsync(subscription.PlanId)
+                   ?? throw new ArgumentException($"No plan found for ID {subscription.PlanId}");
+
+        return (plan.MaxWarehouses, plan.MaxProducts);
     }
 }

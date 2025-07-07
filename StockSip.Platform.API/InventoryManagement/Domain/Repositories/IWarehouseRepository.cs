@@ -66,4 +66,10 @@ public interface IWarehouseRepository : IBaseRepository<Warehouse>
     /// <returns>The image URL associated with the warehouse.</returns>
     Task<string> FindImageUrlByWarehouseIdAsync(string warehouseId);
     
+    /// <summary>
+    /// This method counts the number of warehouses associated with a specific account ID.
+    /// </summary>
+    /// <param name="accountId">The unique identifier of the account.</param>
+    /// <returns>A task that represents the asynchronous operation, containing the count of warehouses.</returns>
+    Task<int> CountByAccountIdAsync(AccountId accountId);
 }

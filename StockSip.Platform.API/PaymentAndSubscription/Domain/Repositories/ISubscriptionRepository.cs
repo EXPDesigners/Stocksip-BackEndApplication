@@ -1,4 +1,5 @@
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Aggregates;
+using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Queries;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 
 namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Repositories;
@@ -15,4 +16,8 @@ public interface ISubscriptionRepository : IBaseRepository<Subscription>
     Task<Subscription?> FindLatestPlanByAccountIdAsync(string accountId);
     
     Task<string?> FindPlanIdByAccountIdAsync(string accountId);
+    
+    Task<Subscription?> FindByAccountIdAsync(string accountId);
+    
+    Task<(int, int)> FindLimitsByAccountIdAsync(string accountId);
 }

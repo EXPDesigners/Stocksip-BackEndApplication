@@ -1,5 +1,4 @@
-﻿using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Aggregates;
-using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Queries;
+﻿using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Queries;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Repositories;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Services;
 
@@ -10,5 +9,10 @@ public class SubscriptionQueryService(ISubscriptionRepository subscriptionReposi
     public async Task<string?> Handle(GetPlanIdByAccountIdQuery query)
     {
         return await subscriptionRepository.FindPlanIdByAccountIdAsync(query.accountId);
+    }
+
+    public async Task<(int, int)> Handle(GetLimitsByAccountId query)
+    {
+        return await subscriptionRepository.FindLimitsByAccountIdAsync(query.accountId);
     }
 }
