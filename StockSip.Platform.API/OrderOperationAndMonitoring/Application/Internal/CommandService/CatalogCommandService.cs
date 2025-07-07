@@ -76,13 +76,21 @@ public class CatalogCommandService(
 
     public async Task<bool> Handle(DeleteCatalogItemCommand cmd)
     {
+        Console.WriteLine($"[DELETE] Recibido ID: {cmd.CatalogItemId}");
+
         var catalog = await catalogRepository.FindCatalogByItemIdAsync(cmd.CatalogItemId);
+        Console.WriteLine("[CatalogItemHandler] Buscando ítem con ID: " + cmd.CatalogItemId);
+
         if (catalog is null || catalog.IsPublished) return false;
 
-        var item = catalog.Items.First(i => i.Id == cmd.CatalogItemId);
-        catalog.RemoveItem(item);
+        var item = catalog.Items.FirstOrDefault(i => i.Id == cmd.CatalogItemId);
+        if (item is null) return false;
+
+        catalog.Items.Remove(item);
+        await catalogRepository.RemoveItemAsync(item);
 
         await unitOfWork.CompleteAsync();
+        Console.WriteLine("[CatalogItemHandler] Ítem eliminado correctamente.");
         return true;
     }
 }

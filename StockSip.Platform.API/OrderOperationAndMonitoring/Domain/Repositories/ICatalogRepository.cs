@@ -40,4 +40,9 @@ public interface ICatalogRepository : IBaseRepository<Catalog>
     /// <param name="itemId">Catalog item ID</param>
     /// <returns>The catalog containing the item, or null if not found</returns>
     Task<Catalog?> FindCatalogByItemIdAsync(string itemId);
+    
+    
+    Task <CatalogItem?> FindItemByIdAsync(string itemId);
+    
+    Task RemoveItemAsync(CatalogItem item);
 }

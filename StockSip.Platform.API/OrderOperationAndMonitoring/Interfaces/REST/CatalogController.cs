@@ -130,11 +130,20 @@ public class CatalogsController(
 
 
     [HttpDelete("catalogItems/{id}")]
-    [SwaggerOperation(Summary = "Delete catalog item")]
     public async Task<IActionResult> DeleteCatalogItem([FromRoute] string id)
     {
+        Console.WriteLine($"[DELETE] Recibido ID: {id}");
+
         var success = await catalogCommandService
             .Handle(new DeleteCatalogItemCommand(id));
-        return success ? NoContent() : NotFound();
+
+        if (!success)
+        {
+            Console.WriteLine($"[DELETE] No se encontró item con id: {id}");
+            return NotFound();
+        }
+
+        Console.WriteLine($"[DELETE] Eliminación exitosa del item: {id}");
+        return NoContent();
     }
 }

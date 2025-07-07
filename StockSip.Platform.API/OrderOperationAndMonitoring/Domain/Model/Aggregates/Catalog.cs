@@ -1,5 +1,6 @@
 using StockSip.Platform.API.OrderOperationAndMonitoring.Domain.Model.Commands;
 using StockSip.Platform.API.OrderOperationAndMonitoring.Domain.Model.ValueObjects;
+using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 
 namespace StockSip.Platform.API.OrderOperationAndMonitoring.Domain.Model.Aggregates;
 
@@ -62,10 +63,11 @@ public class Catalog
         Name = new CatalogName(cmd.Name);
     }
 
-    public Catalog RemoveItem(CatalogItem item)
+    public void RemoveItem(CatalogItem item, AppDbContext ctx)
     {
-        Items.Remove(item);
-        item.SetCatalog(null);
-        return this;
+        if (Items.Remove(item))
+        {
+            ctx.Remove(item);
+        }
     }
 }

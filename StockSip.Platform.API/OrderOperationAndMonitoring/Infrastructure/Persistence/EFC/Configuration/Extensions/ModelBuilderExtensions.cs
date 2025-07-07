@@ -8,105 +8,115 @@ public static class ModelBuilderExtensions
 {
     public static void ApplyOrderOperationAndMonitoringConfiguration(this ModelBuilder builder)
     {
-                builder.Entity<Catalog>(c =>
-        {
-            c.ToTable("catalogs");
+        builder.Entity<Catalog>(c =>
+{
+    c.ToTable("catalogs");
 
-            c.HasKey(x => x.CatalogId);
-            c.Property(x => x.CatalogId)
-             .HasColumnName("catalog_id")
-             .ValueGeneratedOnAdd();
+    c.HasKey(x => x.CatalogId);
 
-            c.OwnsOne(x => x.AccountId, nav =>
-            {
-                nav.Property(p => p.Value)
-                    .HasColumnName("account_id")
-                    .IsRequired();
-            });
+    c.Property(x => x.CatalogId)
+     .HasColumnName("catalog_id")
+     .ValueGeneratedOnAdd();
 
-            c.OwnsOne(x => x.Name, n =>
-            {
-                n.Property(p => p.Value)
-                 .HasColumnName("catalog_name")
-                 .IsRequired()
-                 .HasMaxLength(100);
-            });
+    // ---- AccountId -------------------------------------------------------
+    c.OwnsOne(x => x.AccountId, nav =>
+    {
+        nav.Property(p => p.Value)
+           .HasColumnName("account_id")
+           .IsRequired();
+    });
 
-            c.OwnsOne(x => x.DateCreated, d =>
-            {
-                d.Property(p => p.Value)
-                 .HasColumnName("date_created")
-                 .IsRequired();
-            });
+    // ---- Name  ----------------------------------------------------------
+    c.OwnsOne(x => x.Name, n =>
+    {
+        n.Property(p => p.Value)
+         .HasColumnName("catalog_name")
+         .IsRequired()
+         .HasMaxLength(100);
+    });
 
-            c.Property(x => x.IsPublished)
-             .HasColumnName("is_published")
-             .IsRequired();
+    // ---- DateCreated ----------------------------------------------------
+    c.OwnsOne(x => x.DateCreated, d =>
+    {
+        d.Property(p => p.Value)
+         .HasColumnName("date_created")
+         .IsRequired();
+    });
 
-            // relación con Items
-            c.HasMany(x => x.Items)
-             .WithOne(i => i.Catalog!)
-             .HasForeignKey(i => i.CatalogId);
-        });
+    c.Property(x => x.IsPublished)
+     .HasColumnName("is_published")
+     .IsRequired();
+    
+    c.HasMany(x => x.Items)
+     .WithOne(i => i.Catalog!)
+     .HasForeignKey(i => i.CatalogId)
+     .OnDelete(DeleteBehavior.Cascade);
+});
 
-        /* ========== CATALOG ITEM ========== */
-        builder.Entity<CatalogItem>(ci =>
-        {
-            ci.ToTable("catalog_items");
+/* ========== CATALOG ITEM ========== */
+builder.Entity<CatalogItem>(ci =>
+{
+    ci.ToTable("catalog_items");
 
-            ci.HasKey(x => x.Id);
+    ci.HasKey(x => x.Id);
 
-            ci.Property(x => x.Id)
-              .HasColumnName("id")
-              .HasMaxLength(36);
+    ci.Property(x => x.Id)
+      .HasColumnName("id")
+      .HasMaxLength(36);
 
-            ci.Property(x => x.CatalogId)
-              .HasColumnName("catalog_id")
-              .IsRequired();
-            
-            ci.OwnsOne(x => x.Name, n =>
-            {
-                n.WithOwner().HasForeignKey("id");
-                n.Property(p => p.Name)
-                 .HasColumnName("name")
-                 .IsRequired()
-                 .HasMaxLength(100);
-            });
+    // FK hacia Catalog
+    ci.Property(x => x.CatalogId)
+      .HasColumnName("catalog_id")
+      .IsRequired();
+    
+    ci.HasOne(i => i.Catalog!)
+      .WithMany(c => c.Items)
+      .HasForeignKey(i => i.CatalogId)
+      .OnDelete(DeleteBehavior.Cascade);
+    
+    ci.OwnsOne(x => x.Name, n =>
+    {
+        n.WithOwner().HasForeignKey("id");
+        n.Property(p => p.Name)
+         .HasColumnName("name")
+         .IsRequired()
+         .HasMaxLength(100);
+    });
 
-            ci.OwnsOne(x => x.ProductType, pt =>
-            {
-                pt.WithOwner().HasForeignKey("id");
-                pt.Property(p => p.Value)
-                  .HasColumnName("product_type")
-                  .IsRequired()
-                  .HasMaxLength(50);
-            });
+    ci.OwnsOne(x => x.ProductType, pt =>
+    {
+        pt.WithOwner().HasForeignKey("id");
+        pt.Property(p => p.Value)
+          .HasColumnName("product_type")
+          .IsRequired()
+          .HasMaxLength(50);
+    });
 
-            ci.OwnsOne(x => x.Brand, b =>
-            {
-                b.WithOwner().HasForeignKey("id");
-                b.Property(p => p.Value)
-                 .HasColumnName("brand")
-                 .IsRequired()
-                 .HasMaxLength(100);
-            });
+    ci.OwnsOne(x => x.Brand, b =>
+    {
+        b.WithOwner().HasForeignKey("id");
+        b.Property(p => p.Value)
+         .HasColumnName("brand")
+         .IsRequired()
+         .HasMaxLength(100);
+    });
 
-            ci.OwnsOne(x => x.Content, ct =>
-            {
-                ct.WithOwner().HasForeignKey("id");
-                ct.Property(p => p.Value)
-                  .HasColumnName("content_ml")
-                  .IsRequired();
-            });
+    ci.OwnsOne(x => x.Content, ct =>
+    {
+        ct.WithOwner().HasForeignKey("id");
+        ct.Property(p => p.Value)
+          .HasColumnName("content_ml")
+          .IsRequired();
+    });
 
-            ci.Property(x => x.UnitPrice)
-              .HasColumnName("unit_price")
-              .HasColumnType("decimal(12,2)");
+    ci.Property(x => x.UnitPrice)
+      .HasColumnName("unit_price")
+      .HasColumnType("decimal(12,2)");
 
-            ci.Property(x => x.DateAdded)
-              .HasColumnName("date_added")
-              .IsRequired();
-        });
+    ci.Property(x => x.DateAdded)
+      .HasColumnName("date_added")
+      .IsRequired();
+});
         
         builder.Entity<PurchaseOrder>(po =>
 {
