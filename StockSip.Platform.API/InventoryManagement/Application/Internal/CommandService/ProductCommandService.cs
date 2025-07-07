@@ -1,8 +1,10 @@
 ﻿using StockSip.Platform.API.InventoryManagement.Application.Internal.OutboundServices.Cloudinary;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
+using StockSip.Platform.API.PaymentAndSubscription.Interfaces.ACL;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 
 namespace StockSip.Platform.API.InventoryManagement.Application.Internal.CommandService;
@@ -18,7 +20,8 @@ public class ProductCommandService (
     IWarehouseRepository warehouseRepository,
     IInventoryRepository inventoryRepository,
     ICloudinaryService cloudinaryService,
-    IUnitOfWork unitOfWork
+    IUnitOfWork unitOfWork,
+    IPaymentAndSubscriptionFacade paymentAndSubscriptionFacade
     ) : IProductCommandService
 {
     /// <summary>
@@ -33,6 +36,12 @@ public class ProductCommandService (
         {
             throw new ArgumentException($"Product with full name {command.BrandName} {command.LiquorType} {command.Name} already exists.");
         }
+        
+        var (maxProducts, _) = await paymentAndSubscriptionFacade.GetLimitsByAccountIdAsync(command.AccountId);
+        var currentProductCount = await productRepository.CountByAccountIdAsync(new AccountId(command.AccountId));
+        
+        if (currentProductCount >= maxProducts) 
+            throw new InvalidOperationException($"The account has reached the maximum number of products ({maxProducts}) for the current plan.");
 
         string imageUrl = command.Image != null
             ? cloudinaryService.UploadImage(command.Image)

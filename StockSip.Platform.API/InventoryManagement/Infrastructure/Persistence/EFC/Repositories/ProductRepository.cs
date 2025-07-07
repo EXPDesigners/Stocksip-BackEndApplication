@@ -184,4 +184,10 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
         
         return imageUrl ?? throw new InvalidOperationException("Image URL not found for the specified product ID.   ");
     }
+
+    public async Task<int> CountByAccountIdAsync(AccountId accountId)
+    {
+        return await Context.Set<Product>()
+            .CountAsync(product => product.AccountId.Id == accountId.Id);
+    }
 }

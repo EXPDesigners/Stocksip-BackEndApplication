@@ -11,4 +11,5 @@ public interface IProductQueryService
     Task<IEnumerable<Product>> Handle(GetProductsByFullNameAndWarehouseIdQuery query);
     Task<IEnumerable<Product>> Handle(GetAllProductsByAccountIdQuery query);
     Task<IEnumerable<ProductExit>> Handle(GetAllProductExitsByProductIdQuery query);
+    Task<int> Handle(GetProductsCountUsagesQuery query);
 }

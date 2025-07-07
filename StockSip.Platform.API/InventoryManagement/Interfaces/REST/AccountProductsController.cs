@@ -61,4 +61,19 @@ public class AccountProductsController (
             .ToList();
         return Ok(resources);
     }
+    
+    [HttpGet("counts")]
+    [SwaggerOperation(
+        Summary = "Get Products Counts by Account ID",
+        Description = "Retrieves the count of products associated with a specific Account ID.",
+        OperationId = "GetProductCountsByAccountId")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Product count found!", typeof(int))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "No products found for the given account ID.")]
+    public async Task<IActionResult> GetProductCountsByAccountId([FromRoute] string accountId)
+    {
+        var getProductCountsByAccountIdQuery = new GetProductsCountUsagesQuery(accountId);
+        var count = await productQueryService.Handle(getProductCountsByAccountIdQuery);
+        if (count < 0) return NotFound("No products found for the given account ID.");
+        return Ok(new { Count = count });
+    }
 }
