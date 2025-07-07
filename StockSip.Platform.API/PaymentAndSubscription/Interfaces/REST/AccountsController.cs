@@ -77,6 +77,12 @@ public class AccountsController(
     #endregion
     
     [HttpGet("{accountId}/status")]
+    [SwaggerOperation(
+        Summary     = "Get Account Status",
+        Description = "Retrieves the status of an account by its unique identifier.",
+        OperationId = "Accounts_GetStatus")]
+    [ProducesResponseType(typeof(AccountStatusResource), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAccountStatus([FromRoute] string accountId)
     {
         var account = await accountQueryService.Handle(new GetAccountByIdQuery(accountId));
