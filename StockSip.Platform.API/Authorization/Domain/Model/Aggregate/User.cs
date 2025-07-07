@@ -17,6 +17,8 @@ public class User(string username, string passwordHash)
 
     [JsonIgnore] public string PasswordHash { get; private set; } = passwordHash;
     
+    public string? RecoveryCode { get; private set; }
+    public DateTime? RecoveryCodeExpiration { get; private set; }
 
     /// <summary>
     /// Update the username of the user.
@@ -38,5 +40,22 @@ public class User(string username, string passwordHash)
     {
         PasswordHash = passwordHash;
         return this;
+    }
+    
+    public void SetRecoveryCode(string recoveryCode, TimeSpan duration)
+    {
+        RecoveryCode = recoveryCode;
+        RecoveryCodeExpiration = DateTime.UtcNow.Add(duration);
+    }
+    
+    public bool IsRecoveryCodeValid(string inputCode)
+    {
+        return RecoveryCode == inputCode && RecoveryCodeExpiration > DateTime.UtcNow;
+    }
+
+    public void ClearRecoveryCode()
+    {
+        RecoveryCode = null;
+        RecoveryCodeExpiration = null;
     }
 }

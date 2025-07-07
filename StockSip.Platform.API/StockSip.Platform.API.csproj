@@ -37,8 +37,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Authorization\Application\Internal\OutboundServices\Gmail\" />
-      <Folder Include="Authorization\Infrastructure\Email\Gmail\" />
       <Folder Include="PaymentAndSubscription\Interfaces\Rest\Transform\" />
     </ItemGroup>
 

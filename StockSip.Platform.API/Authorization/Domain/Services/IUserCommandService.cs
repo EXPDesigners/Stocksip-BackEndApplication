@@ -24,4 +24,22 @@ public interface IUserCommandService
     /// <param name="command">The sign-up command containing the username and password.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     Task Handle(SignUpCommand command);
+    
+    /// <summary>
+    /// This method handles a command to send a recovery code to a user.
+    /// </summary>
+    /// <param name="command">The command containing the username to which the recovery code will be sent.</param>
+    Task Handle(SendRecoveryCodeCommand command);
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="command"></param>
+    Task Handle(VerifyRecoveryCodeCommand command);
+    
+    /// <summary>
+    /// This method handles a command to reset a user's password.
+    /// </summary>
+    /// <param name="command">The command containing the username, new password, and confirmation password.</param>
+    Task Handle(ResetPasswordCommand command);
 }
