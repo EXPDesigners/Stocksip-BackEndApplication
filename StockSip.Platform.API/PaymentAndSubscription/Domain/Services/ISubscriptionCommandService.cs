@@ -15,4 +15,8 @@ public interface ISubscriptionCommandService
     Task<string?> Handle(SubscribeToPlanCommand command);
 
     Task Handle(CompleteSubscriptionCommand command);
+    
+    Task<string?> Handle(UpgradeSubscriptionCommand command);
+    
+    Task Handle(CompleteUpgradeCommand command);
 }

@@ -18,4 +18,12 @@ public class AccountRepository(AppDbContext context) : BaseRepository<Account>(c
 
         return account?.AccountId;
     }
+
+    public async Task<string?> FindStatusByAccountId(string accountId)
+    {
+        var account = await Context.Set<Account>()
+            .FirstOrDefaultAsync(account => account.AccountId == accountId);
+
+        return account?.Status.ToString();
+    }
 }

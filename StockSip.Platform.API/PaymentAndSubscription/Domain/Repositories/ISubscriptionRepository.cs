@@ -8,5 +8,11 @@ namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Repositories;
 /// </summary>
 public interface ISubscriptionRepository : IBaseRepository<Subscription>
 {
+    /// <summary>
+    /// This method retrieves the latest subscription plan for a given account ID.
+    /// </summary>
+    /// <returns>The latest subscription plan ID for the specified account, or null if no plan is found.</returns>
+    Task<Subscription?> FindLatestPlanByAccountIdAsync(string accountId);
     
+    Task<string?> FindPlanIdByAccountIdAsync(string accountId);
 }

@@ -1,5 +1,6 @@
 ﻿using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
+using StockSip.Platform.API.Authorization.Infrastructure.Pipeline.Middleware.Attributes;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Services;
 using StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST.Resources;
 using StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST.Transform;
@@ -13,15 +14,15 @@ namespace StockSip.Platform.API.PaymentAndSubscription.Interfaces.REST;
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
-[SwaggerTag("Available Payment Endpoints")]
-public class PaymentsController(ISubscriptionCommandService subscriptionCommandService) : ControllerBase
+[SwaggerTag("Available Subscription Endpoints")]
+public class SubscriptionsController(ISubscriptionCommandService subscriptionCommandService) : ControllerBase
 {
     /// <summary>
     /// This endpoint handles the subscription process for a specified plan.
     /// </summary>
     /// <param name="resource">A resource containing the details of the subscription request.</param>
     /// <returns>An IActionResult containing a redirect URL for payment processing.</returns>
-    [HttpPost("subscribe")]
+    [HttpPost("new")]
     [SwaggerOperation(
         Summary = "Subscribe to a Plan",
         Description = "Handles the subscription process for a specified plan.",
@@ -41,7 +42,7 @@ public class PaymentsController(ISubscriptionCommandService subscriptionCommandS
     /// </summary>
     /// <param name="resource">A resource containing the details of the subscription completion request.</param>
     /// <returns>An IActionResult indicating the success or failure of the subscription completion.</returns>
-    [HttpGet("success")]
+    [HttpGet("complete")]
     [SwaggerOperation(
         Summary = "Complete Subscription",
         Description = "Completes the subscription process after payment success.",
@@ -53,5 +54,27 @@ public class PaymentsController(ISubscriptionCommandService subscriptionCommandS
         var completeSubscriptionCommand = CompleteSubscriptionFromResourceAssembler.ToCommandFromResource(resource);
         await subscriptionCommandService.Handle(completeSubscriptionCommand);
         return Ok(new { message = "Subscription completed successfully." });
+    }
+    
+    [HttpPost("upgrade")]
+    [SwaggerOperation(
+        Summary = "Upgrade Subscription",
+        Description = "Handles the upgrade of an existing subscription to a new plan.",
+        OperationId = "UpgradeSubscription")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns a redirect URL for payment processing.")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid upgrade request.")]
+    public async Task<IActionResult> Upgrade([FromBody] UpgradeSubscriptionResource resource)
+    {
+        var upgradeSubscriptionCommand = UpgradeSubscriptionFromResourceAssembler.ToCommandFromResource(resource);
+        var redirectUrl = await subscriptionCommandService.Handle(upgradeSubscriptionCommand);
+        return Ok(new { redirectUrl });
+    }
+    
+    [HttpGet("upgrade-complete")]
+    public async Task<IActionResult> UpgradeSuccess([FromQuery] CompleteUpgradeResource resource)
+    {
+        var completeSubscriptionCommand = CompleteUpgradeFromResourceAssembler.ToCommandFromResource(resource);
+        await subscriptionCommandService.Handle(completeSubscriptionCommand);
+        return Ok(new { message = "Subscription upgraded successfully." });
     }
 }

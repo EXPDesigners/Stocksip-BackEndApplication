@@ -10,4 +10,6 @@ namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Repositories;
 public interface IAccountRepository : IBaseRepository<Account>
 {
     Task<string?> FindByUserIdAsync(string accountId);
+    
+    Task<string?> FindStatusByAccountId(string accountId);
 }

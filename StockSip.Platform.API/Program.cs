@@ -178,7 +178,10 @@ builder.Services.AddScoped<IPaymentAndSubscriptionFacade, PaymentAndSubscription
 builder.Services.AddScoped<IPlanRepository, PlanRepository>();
 
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
-builder.Services.AddScoped<ISubscriptionCommandService, SubscriptionCommandCommandService>();
+builder.Services.AddScoped<ISubscriptionCommandService, SubscriptionCommandService>();
+builder.Services.AddScoped<ISubscriptionQueryService, SubscriptionQueryService>();
+
+builder.Services.AddScoped<IPlanQueryService, PlanQueryService>();
 
 builder.Services.AddHttpClient();
 builder.Services.Configure<PayPalSettings>(builder.Configuration.GetSection("PaypalSettings"));

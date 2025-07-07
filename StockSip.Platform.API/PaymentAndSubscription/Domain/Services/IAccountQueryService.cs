@@ -12,4 +12,6 @@ public interface IAccountQueryService
     /// This method retrieves an account based on the provided query.
     /// </summary>
     Task<Account?> Handle(GetAccountByIdQuery query);
+    
+    Task<string?> Handle(GetAccountStatusByIdQuery query);
 }

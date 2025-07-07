@@ -27,7 +27,12 @@ public static class ModelBuilderExtensions
 
         builder.Entity<Account>().Property(p => p.AccountRole).HasConversion<string>().HasMaxLength(20).IsRequired();
 
-        builder.Entity<Account>().Property(a => a.CreatedDate).IsRequired();
+        builder.Entity<Account>()
+            .Property(a => a.CreatedDate)
+            .HasConversion(
+                v => v.ToDateTime(TimeOnly.MinValue),
+                v => DateOnly.FromDateTime(v))
+            .IsRequired();
 
         builder.Entity<Account>().OwnsOne(a => a.OwnerUserId, ou =>
         {
@@ -80,7 +85,63 @@ public static class ModelBuilderExtensions
         builder.Entity<Plan>().OwnsOne(p => p.Price, money =>
         {
             money.WithOwner();
-            money.Property(m => m.Amount).HasColumnName("price").IsRequired();
+            money.Property(m => m.Amount).IsRequired();
+            money.Property(m => m.Currency).IsRequired().HasMaxLength(3);
         });
+        
+        
+        var freePlan = Plan.CreateFreePlan();
+        var monthlyPlan = Plan.CreatePremiumMonthly();
+        var annualPlan = Plan.CreatePremiumAnnual();
+        
+        builder.Entity<Plan>().HasData(
+            new 
+            {
+                freePlan.PlanId,
+                freePlan.PlanType,
+                freePlan.Description,
+                freePlan.PaymentFrequency,
+                freePlan.MaxWarehouses,
+                freePlan.MaxProducts
+            },
+            new 
+            {
+                monthlyPlan.PlanId,
+                monthlyPlan.PlanType,
+                monthlyPlan.Description,
+                monthlyPlan.PaymentFrequency,
+                monthlyPlan.MaxWarehouses,
+                monthlyPlan.MaxProducts
+            },
+            new 
+            {
+                annualPlan.PlanId,
+                annualPlan.PlanType,
+                annualPlan.Description,
+                annualPlan.PaymentFrequency,
+                annualPlan.MaxWarehouses,
+                annualPlan.MaxProducts
+            }
+        );
+
+        builder.Entity<Plan>().OwnsOne(p => p.Price).HasData(
+            new
+            {
+                PlanId = freePlan.PlanId,
+                Amount = freePlan.Price.Amount,
+                Currency = freePlan.Price.Currency
+            },
+            new
+            {
+                PlanId = monthlyPlan.PlanId,
+                Amount = monthlyPlan.Price.Amount,
+                Currency = monthlyPlan.Price.Currency
+            },
+            new
+            {
+                PlanId = annualPlan.PlanId,
+                Amount = annualPlan.Price.Amount,
+                Currency = annualPlan.Price.Currency
+            });
     }
 }

@@ -1,4 +1,5 @@
 ﻿using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Entities;
+using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Queries;
 using StockSip.Platform.API.Shared.Domain.Repositories;
 
 namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Repositories;

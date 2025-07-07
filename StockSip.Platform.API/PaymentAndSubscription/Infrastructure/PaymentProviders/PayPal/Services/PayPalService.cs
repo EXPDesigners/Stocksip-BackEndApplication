@@ -44,48 +44,69 @@ public class PayPalService : IPaymentService
     /// <returns>A task that represents the asynchronous operation, containing the approval URL for the PayPal order.</returns>
     public async Task<string> CreateOrder(string planName, decimal amount, string returnUrl, string cancelUrl)
     {
-        // Ensure the amount is a valid decimal with two decimal places
-        var token = await Client.GetAccessTokenAsync();
+    Console.WriteLine("[PAYPAL] Starting order creation...");
+    Console.WriteLine($"[PAYPAL] Plan: {planName}, Amount: {amount}");
 
-        // Create the order body with the specified plan name and amount
-        var body = new
-        {
-            intent = "CAPTURE",
-            purchase_units = new[]
-            {
-                new { amount = new { currency_code = "USD", value = amount.ToString("F2") }, description = $"Plan: {planName}" }
-            },
-            application_context = new { return_url = returnUrl, cancel_url = cancelUrl }
-        };
+    var token = await Client.GetAccessTokenAsync();
+    Console.WriteLine("[PAYPAL] Access token retrieved.");
 
-        // Create the HTTP request to the PayPal API to create the order
-        var request = new HttpRequestMessage(HttpMethod.Post, "/v2/checkout/orders");
-        
-        // Set the request headers and content
-        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        
-        // Set the request headers to accept JSON responses
-        request.Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
+    var body = new
+    {
+        intent = "CAPTURE",
+        purchase_units = new[] {
+            new {
+                description = $"Subscription: {planName}",
+                amount = new {
+                    currency_code = "USD",
+                    value = amount.ToString("F2"),
+                    breakdown = new {
+                        item_total = new { currency_code = "USD", value = amount.ToString("F2") }
+                    }
+                },
+                items = new[] {
+                    new {
+                        name = planName,
+                        sku = "premium_sub",
+                        unit_amount = new { currency_code = "USD", value = amount.ToString("F2") },
+                        quantity = "1",
+                        category = "DIGITAL_GOODS"
+                    }
+                }
+            }
+        },
+        application_context = new {
+            brand_name = "StockSip",
+            locale = "en-US",
+            user_action = "PAY_NOW",
+            return_url = returnUrl,
+            cancel_url = cancelUrl
+        }
+    };
 
-        // Set the request headers to accept JSON responses
-        var client = new HttpClient { BaseAddress = new Uri(Settings.BaseUrl) };
-        
-        // Add the Accept header to specify that we want a JSON response
-        var response = await client.SendAsync(request);
-        
-        // Ensure the response indicates success
-        response.EnsureSuccessStatusCode();
+    var request = new HttpRequestMessage(HttpMethod.Post, "/v2/checkout/orders");
+    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+    request.Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
 
-        // Read the response content and deserialize it to get the order details
-        var responseBody = await response.Content.ReadAsStringAsync();
-        
-        // Deserialize the response body to a JsonElement
-        var order = JsonSerializer.Deserialize<JsonElement>(responseBody);
+    var client = new HttpClient { BaseAddress = new Uri(Settings.BaseUrl) };
 
-        // Find the approval URL from the order links
-        return order.GetProperty("links").EnumerateArray()
-            .First(l => l.GetProperty("rel").GetString() == "approve")
-            .GetProperty("href").GetString();
+    Console.WriteLine("[PAYPAL] Sending order creation request...");
+    var response = await client.SendAsync(request);
+
+    Console.WriteLine($"[PAYPAL] Response status: {response.StatusCode}");
+    var responseBody = await response.Content.ReadAsStringAsync();
+    Console.WriteLine($"[PAYPAL] Raw response: {responseBody}");
+
+    response.EnsureSuccessStatusCode();
+
+    var order = JsonSerializer.Deserialize<JsonElement>(responseBody);
+
+    var approvalUrl = order.GetProperty("links").EnumerateArray()
+        .First(l => l.GetProperty("rel").GetString() == "approve")
+        .GetProperty("href").GetString();
+
+    Console.WriteLine($"[PAYPAL] Approval URL: {approvalUrl}");
+
+    return approvalUrl;
     }
 
     /// <summary>
