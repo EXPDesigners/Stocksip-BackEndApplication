@@ -22,7 +22,7 @@ namespace StockSip.Platform.API.Authorization.Interfaces.REST;
 [Route("api/v1/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
 [SwaggerTag("Available User endpoints")]
-public class UsersController(IUserQueryService userQueryService) : ControllerBase
+public class UsersController(IUserQueryService userQueryService, IUserCommandService userCommandService) : ControllerBase
 {
     /// <summary>
     /// This endpoint retrieves a user by its ID.
@@ -42,5 +42,50 @@ public class UsersController(IUserQueryService userQueryService) : ControllerBas
         var user = await userQueryService.Handle(getUserByIdQuery);
         var userResource = UserResourceFromEntityAssembler.ToResourceFromEntity(user!);
         return Ok(userResource);
+    }
+
+    [HttpPost("send-recovery-code")]
+    [AllowAnonymous]
+    [SwaggerOperation(
+        Summary = "Send a recovery code to the user",
+        Description = "Send a recovery code to the user",
+        OperationId = "SendRecoveryCode")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Recovery code sent successfully", typeof(object))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid request", typeof(string))]
+    public async Task<IActionResult> SendRecoveryCode([FromBody] SendRecoveryCodeResource resource)
+    {
+        var command = SendRecoveryCodeFromResourceAssembler.ToCommandFromResource(resource);
+        await userCommandService.Handle(command);
+        return Ok(new { Message = "Recovery code sent successfully." });
+    }
+    
+    [HttpPost("verify-recovery-code")]
+    [AllowAnonymous]
+    [SwaggerOperation(
+        Summary = "Verify a recovery code",
+        Description = "Verify a recovery code",
+        OperationId = "VerifyRecoveryCode")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Recovery code verified successfully", typeof(object))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid recovery code", typeof(string))]
+    public async Task<IActionResult> VerifyRecoveryCode([FromBody] VerifyRecoveryCodeResource resource)
+    {
+        var command = VerifyRecoveryCodeFromResourceAssembler.ToCommandFromResource(resource);
+        await userCommandService.Handle(command);
+        return Ok(new { Message = "Recovery code verified successfully." });
+    }
+    
+    [HttpPost("reset-password")]
+    [AllowAnonymous]
+    [SwaggerOperation(
+        Summary = "Reset user password",
+        Description = "Reset user password using a recovery code",
+        OperationId = "ResetPassword")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Password reset successfully", typeof(object))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid request", typeof(string))]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordResource resource)
+    {
+        var command = ResetPasswordFromResourceAssembler.ToCommandFromResource(resource);
+        await userCommandService.Handle(command);
+        return Ok(new { Message = "Password reset successfully." });
     }
 }

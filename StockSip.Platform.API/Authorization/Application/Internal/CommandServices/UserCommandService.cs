@@ -1,4 +1,5 @@
-﻿using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Hashing;
+﻿using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Email;
+using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Hashing;
 using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Token;
 using StockSip.Platform.API.Authorization.Domain.Model.Aggregate;
 using StockSip.Platform.API.Authorization.Domain.Model.Commands;
@@ -17,7 +18,8 @@ public class UserCommandService(
     ITokenService                    tokenService,
     IHashingService                  hashingService,
     IPaymentAndSubscriptionFacade    paymentAndSubscriptionFacade,
-    IUnitOfWork                      unitOfWork) : IUserCommandService
+    IUnitOfWork                      unitOfWork,
+    IEmailService                    emailService) : IUserCommandService
 {
     /// <summary>
     /// Handles the sign-in process by validating user credentials, generating a token,
@@ -61,5 +63,40 @@ public class UserCommandService(
         {
             throw new Exception($"An error occurred while creating user: {e.Message}");
         }
+    }
+
+    public async Task Handle(SendRecoveryCodeCommand command)
+    {
+        var user = await userRepository.FindByUsernameAsync(command.Username)
+                   ?? throw new ArgumentException("No user found with this email");
+
+        var code = new Random().Next(100000, 999999).ToString();
+        user.SetRecoveryCode(code, TimeSpan.FromMinutes(15));
+        
+        await emailService.SendPasswordRecoveryEmail(user.Username, code);
+        await unitOfWork.CompleteAsync();
+    }
+
+    public async Task Handle(VerifyRecoveryCodeCommand command)
+    {
+        var user = await userRepository.FindByUsernameAsync(command.username)
+                   ?? throw new ArgumentException("No user found with this email");
+        
+        if (!user.IsRecoveryCodeValid(command.RecoverCode))
+            throw new Exception("Invalid recovery code");
+        
+        user.ClearRecoveryCode();
+        await unitOfWork.CompleteAsync();
+    }
+
+    public async Task Handle(ResetPasswordCommand command)
+    {
+        var user = await userRepository.FindByUsernameAsync(command.Username)
+                   ?? throw new ArgumentException("No user found with this email");
+        
+        var hashedPassword = hashingService.HashPassword(command.NewPassword);
+        user.UpdatePasswordHash(hashedPassword);
+        
+        await unitOfWork.CompleteAsync();
     }
 }

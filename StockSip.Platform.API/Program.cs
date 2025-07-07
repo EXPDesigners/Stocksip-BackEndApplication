@@ -12,11 +12,14 @@ using StockSip.Platform.API.AlertsAndNotifications.Infrastructure.Persistence.EF
 using StockSip.Platform.API.AlertsAndNotifications.Interfaces.ACL;
 using StockSip.Platform.API.Authorization.Application.Internal.ACL;
 using StockSip.Platform.API.Authorization.Application.Internal.CommandServices;
+using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Email;
 using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Hashing;
 using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Token;
 using StockSip.Platform.API.Authorization.Application.Internal.QueryServices;
 using StockSip.Platform.API.Authorization.Domain.Repositories;
 using StockSip.Platform.API.Authorization.Domain.Services;
+using StockSip.Platform.API.Authorization.Infrastructure.Email.Gmail.Configuration;
+using StockSip.Platform.API.Authorization.Infrastructure.Email.Gmail.Services;
 using StockSip.Platform.API.Authorization.Infrastructure.Hashing.BCrypt.Services;
 using StockSip.Platform.API.Authorization.Infrastructure.Persistence.EFC.Repositories;
 using StockSip.Platform.API.Authorization.Infrastructure.Pipeline.Middleware.Extensions;
@@ -174,6 +177,8 @@ builder.Services.AddScoped<ISubscriptionQueryService, SubscriptionQueryService>(
 
 builder.Services.AddScoped<IPlanQueryService, PlanQueryService>();
 
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmailService, GmailEmailService>();
 
 builder.Services.AddHttpClient();
 builder.Services.Configure<PayPalSettings>(builder.Configuration.GetSection("PaypalSettings"));
