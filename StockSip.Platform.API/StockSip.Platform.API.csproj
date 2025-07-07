@@ -32,6 +32,8 @@
         <PackageReference Include="Cortex.Mediator" Version="1.6.1"/>
         <!-- Cloudinary Image Storage related packages -->
         <PackageReference Include="CloudinaryDotNet" Version="1.27.6"/>
+        <!-- PayPal Payment Gateway related packages -->
+        <PackageReference Include="PayPal.SDK.NETCore" Version="1.9.1.2" />
     </ItemGroup>
 
     <ItemGroup>

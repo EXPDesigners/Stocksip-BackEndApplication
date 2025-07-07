@@ -36,6 +36,8 @@ public class Account
         AccountId = Guid.NewGuid().ToString();
         OwnerUserId = new UserId(ownerUserId);
         BusinessName = new BusinessName(businessName);
+        OwnerUserId = new UserId(ownerUserId);
+        CreatedDate = DateOnly.FromDateTime(DateTime.Now);
         Email = new EmailAddress(email);
         AccountRole = new AccountRole(accountRole);
         CreatedDate = DateTime.UtcNow;
@@ -62,6 +64,10 @@ public class Account
         Status = EAccountStatus.ACTIVE;
     }
     
+    /// <summary>
+    /// This method is used to deactivate the account, changing its status to INACTIVE.
+    /// </summary>
+    /// <returns>A boolean indicating whether the account was successfully deactivated.</returns>
     public string GetCreationDate()
     {
         return CreatedDate.ToString("yyyy-M-d");

@@ -18,4 +18,6 @@ public interface IAccountQueryService
     /// </summary>
     Task<Account?> Handle(GetAccountByEmailQuery query);
     
+    
+    Task<string?> Handle(GetAccountStatusByIdQuery query);
 }

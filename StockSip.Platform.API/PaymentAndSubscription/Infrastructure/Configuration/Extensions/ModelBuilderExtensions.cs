@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Aggregates;
+using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Entities;
 
-namespace StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Configuration.Extensions;
+namespace StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Persistence.Configuration.Extensions;
+
 
 /// <summary>
 /// Extensiones de <see cref="ModelBuilder"/> para el bounded‑context **Payment & Subscription**.
@@ -57,5 +59,110 @@ public static class ModelBuilderExtensions
               .IsRequired()
               .HasColumnName("owner_user_id");
         });
+        
+                // Subscription ORM Mapping Rules
+        
+        builder.Entity<Subscription>().HasKey(s => s.SubscriptionId);
+        builder.Entity<Subscription>().Property(s => s.SubscriptionId).ValueGeneratedOnAdd();
+        
+        builder.Entity<Subscription>().HasOne(s => s.Account)
+            .WithMany()
+            .HasForeignKey(s => s.AccountId)
+            .IsRequired();
+        
+        builder.Entity<Subscription>().HasOne(s => s.Plan)
+            .WithMany()
+            .HasForeignKey(s => s.PlanId)
+            .IsRequired();
+
+        builder.Entity<Subscription>().Property(s => s.SubscriptionStatus)
+            .HasConversion<string>()
+            .HasMaxLength(20)
+            .IsRequired();
+
+        builder.Entity<Subscription>().Property(s => s.CreatedDate).IsRequired();
+        builder.Entity<Subscription>().Property(s => s.ExpiredDate).IsRequired();
+
+        // Plan ORM Mapping Rules
+        builder.Entity<Plan>().HasKey(p => p.PlanId);
+        builder.Entity<Plan>().Property(p => p.PlanId).ValueGeneratedOnAdd();
+
+        builder.Entity<Plan>().Property(p => p.Description).IsRequired().HasMaxLength(100);
+
+        builder.Entity<Plan>().Property(p => p.PlanType)
+            .HasConversion<string>()
+            .HasMaxLength(20)
+            .IsRequired();
+
+        builder.Entity<Plan>().Property(p => p.PaymentFrequency)
+            .HasConversion<string>()
+            .HasMaxLength(20)
+            .IsRequired();
+
+        builder.Entity<Plan>().Property(p => p.MaxWarehouses).IsRequired();
+        builder.Entity<Plan>().Property(p => p.MaxProducts).IsRequired();
+
+        builder.Entity<Plan>().OwnsOne(p => p.Price, money =>
+        {
+            money.WithOwner();
+            money.Property(m => m.Amount).IsRequired();
+            money.Property(m => m.Currency).IsRequired().HasMaxLength(3);
+        });
+        
+        
+        var freePlan = Plan.CreateFreePlan();
+        var monthlyPlan = Plan.CreatePremiumMonthly();
+        var annualPlan = Plan.CreatePremiumAnnual();
+        
+        builder.Entity<Plan>().HasData(
+            new 
+            {
+                freePlan.PlanId,
+                freePlan.PlanType,
+                freePlan.Description,
+                freePlan.PaymentFrequency,
+                freePlan.MaxWarehouses,
+                freePlan.MaxProducts
+            },
+            new 
+            {
+                monthlyPlan.PlanId,
+                monthlyPlan.PlanType,
+                monthlyPlan.Description,
+                monthlyPlan.PaymentFrequency,
+                monthlyPlan.MaxWarehouses,
+                monthlyPlan.MaxProducts
+            },
+            new 
+            {
+                annualPlan.PlanId,
+                annualPlan.PlanType,
+                annualPlan.Description,
+                annualPlan.PaymentFrequency,
+                annualPlan.MaxWarehouses,
+                annualPlan.MaxProducts
+            }
+        );
+
+        builder.Entity<Plan>().OwnsOne(p => p.Price).HasData(
+            new
+            {
+                PlanId = freePlan.PlanId,
+                Amount = freePlan.Price.Amount,
+                Currency = freePlan.Price.Currency
+            },
+            new
+            {
+                PlanId = monthlyPlan.PlanId,
+                Amount = monthlyPlan.Price.Amount,
+                Currency = monthlyPlan.Price.Currency
+            },
+            new
+            {
+                PlanId = annualPlan.PlanId,
+                Amount = annualPlan.Price.Amount,
+                Currency = annualPlan.Price.Currency
+            });
+    }
     }
 }

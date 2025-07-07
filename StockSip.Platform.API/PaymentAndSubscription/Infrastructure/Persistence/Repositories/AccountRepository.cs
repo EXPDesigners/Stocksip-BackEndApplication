@@ -5,7 +5,7 @@ using StockSip.Platform.API.PaymentAndSubscription.Domain.Repositories;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Repositories;
 
-namespace StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Repositories;
+namespace StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Persistence.Repositories;
 
 /// <summary>
 /// Implements <see cref="IAccountRepository"/> using Entity Framework Core.
@@ -39,5 +39,13 @@ public class AccountRepository(AppDbContext context)
             .FirstOrDefaultAsync(a => a.OwnerUserId.OwnerUserId == userId);
 
         return account?.AccountId;
+    }
+
+    public async Task<string?> FindStatusByAccountId(string accountId)
+    {
+        var account = await Context.Set<Account>()
+            .FirstOrDefaultAsync(account => account.AccountId == accountId);
+
+        return account?.Status.ToString();
     }
 }

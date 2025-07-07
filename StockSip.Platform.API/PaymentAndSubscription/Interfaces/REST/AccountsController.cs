@@ -23,8 +23,8 @@ public class AccountsController(
     IAccountQueryService   accountQueryService)
     : ControllerBase
 {
-    #region
-
+    #region 
+    
     [HttpGet("{accountId}")]
     [SwaggerOperation(
         Summary     = "Get Account by ID",
@@ -36,7 +36,6 @@ public class AccountsController(
     {
         var account = await accountQueryService.Handle(new GetAccountByIdQuery(accountId));
         if (account is null) return NotFound($"Account with ID {accountId} not found.");
-
         var resource = AccountResourceFromEntityAssembler.ToResourceFromEntity(account);
         return Ok(resource);
     }
@@ -100,4 +99,13 @@ public class AccountsController(
     }
 
     #endregion
+    
+    [HttpGet("{accountId}/status")]
+    public async Task<IActionResult> GetAccountStatus([FromRoute] string accountId)
+    {
+        var account = await accountQueryService.Handle(new GetAccountByIdQuery(accountId));
+        if (account is null) return NotFound($"Account with ID {accountId} not found.");
+        var resource = new AccountStatusResource(account.Status.ToString());
+        return Ok(resource);
+    }
 }

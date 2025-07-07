@@ -23,4 +23,9 @@ public class AccountQueryService(IAccountRepository accountRepository) : IAccoun
     
     public async Task<Account?> Handle(GetAccountByEmailQuery query) =>
         await accountRepository.FindByEmailAsync(query.Email);
+
+    public async Task<string?> Handle(GetAccountStatusByIdQuery query)
+    {
+        return await accountRepository.FindStatusByAccountId(query.AccountId);
+    }
 }

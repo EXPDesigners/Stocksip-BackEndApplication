@@ -6,6 +6,6 @@
 public record UpdateProductResource(string Name, 
                                     string BrandName, 
                                     string LiquorType, 
-                                    double UnitPriceAmount, 
+                                    decimal UnitPriceAmount, 
                                     int MinimumStock, 
                                     IFormFile? Image);

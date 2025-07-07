@@ -44,10 +44,14 @@ using StockSip.Platform.API.OrderOperationAndMonitoring.Infrastructure.External;
 using StockSip.Platform.API.OrderOperationAndMonitoring.Infrastructure.Persistence.EFC.Repositories;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.CommandService;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.OutboundServices.ACL;
+using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.OutboundServices.PayPal;
 using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.QueryService;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Repositories;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Services;
-using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Repositories;
+using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.PaymentProviders.PayPal.Client;
+using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.PaymentProviders.PayPal.Configuration;
+using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.PaymentProviders.PayPal.Services;
+using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Persistence.Repositories;
 using StockSip.Platform.API.PaymentAndSubscription.Interfaces.ACL;
 using StockSip.Platform.API.Shared.Application.Internal.EventHandlers;
 using StockSip.Platform.API.Shared.Domain.Repositories;
@@ -69,6 +73,7 @@ builder.Services.AddCors(o =>
          .AllowAnyHeader());
 });
 
+// Add Configuration for Entity Framework Core
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -118,14 +123,18 @@ builder.Services.AddSwaggerGen(o =>
     });
 });
 
-// Shared
+// Dependency Injection
+
+// Shared Bounded Context
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+// Alerts And Notifications - Bounded Context
 builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 builder.Services.AddScoped<IAlertCommandService, AlertCommandService>();
 builder.Services.AddScoped<IAlertQueryService, AlertQueryService>();
 builder.Services.AddScoped<IAlertsAndNotificationsContextFacade, AlertsAndNotificationsContextFacade>();
 
+// Inventory Management - Bounded Context
 builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
 builder.Services.AddScoped<IWarehouseCommandService, WarehouseCommandService>();
 builder.Services.AddScoped<IWarehouseQueryService, WarehouseQueryService>();
@@ -140,24 +149,44 @@ builder.Services.AddScoped<IInventoryCommandService, InventoryCommandService>();
 builder.Services.AddScoped<IInventoryQueryService, InventoryQueryService>();
 builder.Services.AddScoped<ExternalAlertsAndNotificationsService>();
 
+// Cloudinary Configuration
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
 builder.Services.AddScoped<IEventHandler<ProductProblemDetectedEvent>, ProductProblemDetectedEventHandler>();
 
+// Payment and Subscription - Bounded Context
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountQueryService, AccountQueryService>();
 builder.Services.AddScoped<IAccountCommandService, AccountCommandService>();
+
 builder.Services.AddScoped<IExternalAuthenticationService, ExternalAuthenticationService>();
 builder.Services.AddScoped<IPaymentAndSubscriptionFacade, PaymentAndSubscriptionFacade>();
 builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 
+builder.Services.AddScoped<IPlanRepository, PlanRepository>();
+
+builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+builder.Services.AddScoped<ISubscriptionCommandService, SubscriptionCommandService>();
+builder.Services.AddScoped<ISubscriptionQueryService, SubscriptionQueryService>();
+
+builder.Services.AddScoped<IPlanQueryService, PlanQueryService>();
+
+
+builder.Services.AddHttpClient();
+builder.Services.Configure<PayPalSettings>(builder.Configuration.GetSection("PaypalSettings"));
+builder.Services.AddScoped<IPaymentService, PayPalService>();
+builder.Services.AddSingleton<PayPalClient>();
+
+// Order And Monitoring Bounded Context
 builder.Services.AddScoped<ICatalogRepository, CatalogRepository>();
 builder.Services.AddScoped<ICatalogCommandService, CatalogCommandService>();
 builder.Services.AddScoped<ICatalogQueryService, CatalogQueryService>();
 builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
 builder.Services.AddScoped<IPurchaseOrderCommandService, PurchaseOrderCommandService>();
 builder.Services.AddScoped<IPurchaseOrderQueryService, PurchaseOrderQueryService>();
+
+builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
 
 builder.Services.AddHttpClient<IAccountClient, AccountClient>(c =>
     c.BaseAddress = new Uri(builder.Configuration["AccountApi:BaseUrl"]!));
@@ -211,12 +240,17 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
+// Apply CORS Policy
 app.UseCors("AllowAllPolicy");
 
+// Configure the Authentication HTTP request pipeline.
 app.UseRequestAuthorization();
+
 app.UseHttpsRedirection();
+
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.Run();
 

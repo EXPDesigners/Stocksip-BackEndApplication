@@ -4,4 +4,5 @@ public enum EPaymentFrequency
 {
     Annual,
     Monthly,
+    None
 }

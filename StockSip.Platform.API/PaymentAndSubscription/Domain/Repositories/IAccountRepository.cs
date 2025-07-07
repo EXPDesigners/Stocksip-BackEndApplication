@@ -13,4 +13,6 @@ public interface IAccountRepository : IBaseRepository<Account>
     Task<string?> FindByUserIdAsync(string accountId);
     
     Task<Account?> FindByEmailAsync(string email);
+    
+    Task<string?> FindStatusByAccountId(string accountId);
 }
