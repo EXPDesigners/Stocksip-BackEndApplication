@@ -12,4 +12,5 @@ public interface IWarehouseQueryService
     
     Task<IEnumerable<ProductExit>> Handle(GetAllProductExitsByWarehouseIdQuery query);
     Task<IEnumerable<ProductExit>> Handle(GetAllProductExitsByProductIdAndWarehouseIdQuery query);
+    Task<int?> Handle(GetWarehousesCountUsagesQuery query);
 }

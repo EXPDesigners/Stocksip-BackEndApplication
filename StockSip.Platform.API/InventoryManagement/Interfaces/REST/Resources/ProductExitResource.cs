@@ -7,6 +7,6 @@ public record ProductExitResource(string Id,
     string ProductId, 
     string WarehouseId, 
     int Quantity, 
-    DateTime ProductExpirationDate, 
+    DateOnly ProductExpirationDate, 
     DateTime ExitDate, 
     string ExitReason);

@@ -27,11 +27,20 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// </returns>
     public async Task<IEnumerable<Product>> FindByProviderIdAndWarehouseIdAsync(ProviderId providerId, string warehouseId)
     {
-        return await Context.Set<Product>()
-            .Where(product => product.ProviderId == providerId && 
+        var products = await Context.Set<Product>()
+            .Where(product => product.AccountId == providerId &&
                               product.Inventories.Any(inventory => inventory.WarehouseId == warehouseId))
-            .Include(product => product.Inventories.Any(inventory => inventory.WarehouseId == warehouseId))
+            .Include(product => product.Inventories)
             .ToListAsync();
+        
+        foreach (var product in products)
+        {
+            product.Inventories = product.Inventories
+                .Where(inventory => inventory.WarehouseId == warehouseId)
+                .ToList();
+        }
+
+        return products;
     }
 
     /// <summary>
@@ -101,9 +110,7 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     public async Task<IEnumerable<Product>> FindProductsByAccountIdAsync(AccountId accountId)
     {
         return await Context.Set<Product>()
-            .Where(product => product.Inventories.Any(inventory => inventory.Warehouse.AccountId == accountId))
-            .Include(product => product.Inventories
-                .Where(inventory => inventory.Warehouse.AccountId == accountId))
+            .Where(product => product.AccountId.Id == accountId.Id)
             .ToListAsync();
     }
 
@@ -132,7 +139,7 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// <returns>
     /// True if a product with the specified ID exists; otherwise, false.
     /// </returns>
-    public async Task<bool> ExistsByIdAsync(string productId)
+    public async Task<bool> ExistsByProductIdAsync(string productId)
     {
         return await Context.Set<Product>().AnyAsync(product => product.ProductId == productId);
     }
@@ -144,20 +151,43 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// <param name="liquorType"> The liquor type of the product. </param>
     /// <param name="additionalName"> The additional name of the product. </param>
     /// <returns></returns>
-    public async Task<bool> ExistsByFullNameIgnoreCase(string brandName, string liquorType, string? additionalName)
+    public async Task<bool> ExistsByFullNameIgnoreCaseAsync(string brandName, string liquorType, string? additionalName, string accountId)
     {
         if (!Enum.TryParse<ELiquorType>(liquorType, true, out var parsedLiquorType))
         {
             return false;
         }
 
+        brandName = brandName.ToLower();
+        additionalName = additionalName?.ToLower();
+
         return await Context.Set<Product>()
             .AnyAsync(p =>
-                additionalName != null &&
-                p.ProductName.Name.Equals(additionalName, StringComparison.CurrentCultureIgnoreCase) &&
-                p.Brand.Equals(brandName, StringComparison.CurrentCultureIgnoreCase) &&
-                p.LiquorType == parsedLiquorType); 
+                p.ProductName.Name.ToLower() == additionalName &&
+                p.Brand.ToLower() == brandName &&
+                p.LiquorType == parsedLiquorType && 
+                p.AccountId.Id == accountId); 
     }
-    
-    
+
+    /// <summary>
+    /// This async method retrieves the image URL of a product by its product ID.
+    /// </summary>
+    /// <param name="productId">The unique identifier of the product.</param>
+    /// <returns>A string representing the image URL of the product.</returns>
+    /// <exception cref="InvalidOperationException">No image URL found for the specified product ID.</exception>
+    public async Task<string> FindImageUrlByProductIdAsync(string productId)
+    {
+        var imageUrl = await Context.Set<Product>()
+            .Where(p => p.ProductId == productId)
+            .Select(p => p.ImageUrl!.ImageUri.ToString())
+            .FirstOrDefaultAsync();
+        
+        return imageUrl ?? throw new InvalidOperationException("Image URL not found for the specified product ID.   ");
+    }
+
+    public async Task<int> CountByAccountIdAsync(AccountId accountId)
+    {
+        return await Context.Set<Product>()
+            .CountAsync(product => product.AccountId.Id == accountId.Id);
+    }
 }

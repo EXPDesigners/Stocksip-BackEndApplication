@@ -17,7 +17,26 @@ public class WarehouseInventoriesController (
     IInventoryQueryService inventoryQueryService
     ) : ControllerBase
 {
-    [HttpGet("product/{productId}/expiration-date/{expirationDate:datetime}")]
+    
+    [HttpGet]
+    [SwaggerOperation(
+        Summary = "Get all products by warehouse ID",
+        Description = "Retrieves all products associated with a specific warehouse ID.",
+        OperationId = "GetProductsByWarehouseId")]
+    [SwaggerResponse(StatusCodes.Status200OK, "List of products found!", typeof(IEnumerable<ProductInventoryResource>))]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "No products found for the specified warehouse ID...")]
+    public async Task<IActionResult> GetProductsByWarehouseId(string warehouseId)
+    {
+        var getAllProductsByWarehouseIdQuery = new GetAllProductsByWarehouseIdQuery(warehouseId);
+        var products = await inventoryQueryService.Handle(getAllProductsByWarehouseIdQuery);
+        var productResources = products
+            .Select(ProductInventoryResourceFromEntityAssembler.ToResourceFromEntity)
+            .ToList();
+        
+        return Ok(productResources);
+    }
+    
+    [HttpGet("products/{productId}/expiration-date/{expirationDate:datetime}")]
     [SwaggerOperation(
         Summary = "Get an inventory by its product ID, warehouse ID and expiration date",
         Description = "Retrieves an inventory by its product ID, warehouse ID, and expiration date.",
@@ -27,7 +46,7 @@ public class WarehouseInventoriesController (
     public async Task<IActionResult> GetInventoryByProductIdAndWarehouseIdAndBestBeforeDate(
         string productId, 
         string warehouseId,
-        DateTime expirationDate)
+        DateOnly expirationDate)
     {
         var getInventoryByIdAndWarehouseIdAndExpirationDateQuery =
             new GetInventoryByProductIdAndWarehouseIdAndBestBeforeDateQuery(productId, warehouseId, expirationDate);
@@ -40,7 +59,7 @@ public class WarehouseInventoriesController (
         return Ok(inventoryResource);
     }
     
-    [HttpPut("product/{productId}/moves")]
+    [HttpPut("products/{productId}/moves")]
     [SwaggerOperation(
         Summary = "Move products to another warehouse",
         Description =
@@ -50,8 +69,8 @@ public class WarehouseInventoriesController (
     [SwaggerResponse(StatusCodes.Status404NotFound, "Stock not found in the specified source warehouse...")]
     public async Task<IActionResult> MoveProductToAnotherWarehouse(
         [FromBody] MoveProductsToAnotherWarehouseResource resource,
-        string warehouseId,
-        string productId)
+        [FromRoute] string warehouseId,
+        [FromRoute] string productId)
     {
         var moveProductsToAnotherWarehouseCommand =
             MoveProductsToAnotherWarehouseCommandFromResourceAssembler.ToCommandFromResource(
@@ -62,12 +81,10 @@ public class WarehouseInventoriesController (
             return NotFound($"Inventory of product ID {productId} not found in warehouse {warehouseId} with expiration date {resource.MovedStockExpirationDate}. So products cannot be moved.");
         }
         var inventoryResource = InventoryResourceFromEntityAssembler.ToResourceFromEntity(movedStock);
-        return CreatedAtAction(nameof(GetInventoryByProductIdAndWarehouseIdAndBestBeforeDate), 
-            new { productId, resource.NewWarehouseId, resource.MovedStockExpirationDate }, 
-            inventoryResource);
+        return Ok(inventoryResource);
     }
     
-    [HttpPut("product/{productId}/additions")]
+    [HttpPut("products/{productId}/additions")]
     [SwaggerOperation(
         Summary = "Add stock to a product in a warehouse",
         Description = "Adds stock to a product in a warehouse by its product ID, warehouse ID, and expiration date.",
@@ -79,6 +96,12 @@ public class WarehouseInventoriesController (
         string productId,
         string warehouseId)
     {
+        Console.WriteLine($"📥 AddStockToProduct:");
+        Console.WriteLine($"➡ productId: {productId}");
+        Console.WriteLine($"➡ warehouseId: {warehouseId}");
+        Console.WriteLine($"➡ stockExpirationDate: {resource.StockExpirationDate}");
+        Console.WriteLine($"➡ addedQuantity: {resource.AddedQuantity}");
+        
         var addStockCommand = AddStockToProductCommandFromResourceAssembler.ToCommandFromResource(resource, productId, warehouseId);
         var updatedInventory = await inventoryCommandService.Handle(addStockCommand);
         if (updatedInventory is null)
@@ -87,11 +110,11 @@ public class WarehouseInventoriesController (
         }
         var inventoryResource = InventoryResourceFromEntityAssembler.ToResourceFromEntity(updatedInventory);
         return CreatedAtAction(nameof(GetInventoryByProductIdAndWarehouseIdAndBestBeforeDate), 
-            new { productId, warehouseId, resource.StockExpirationDate}, 
+            new { productId = productId, warehouseId = warehouseId, expirationDate = resource.StockExpirationDate }, 
             inventoryResource);
     }
     
-    [HttpPut("{productId}/substractions")]
+    [HttpPut("products/{productId}/substractions")]
     [SwaggerOperation(
         Summary = "Decrease stock from a product in a warehouse",
         Description = "Decreases stock from a product in a warehouse by its product ID, warehouse ID, and expiration date.",
@@ -110,14 +133,14 @@ public class WarehouseInventoriesController (
             return NotFound($"Product with ID {productId} not found in warehouse {warehouseId} with expiration date {resource.ExpirationDate}. So stock cannot be decreased.");
         }
         
-        var inventoryResource = ProductResourceFromEntityAssembler.ToResourceFromEntity(updatedInventory.Product);
+        var inventoryResource = InventoryResourceFromEntityAssembler.ToResourceFromEntity(updatedInventory);
         
         return CreatedAtAction(nameof(GetInventoryByProductIdAndWarehouseIdAndBestBeforeDate), 
-            new { productId, warehouseId, resource.ExpirationDate}, 
+            new { productId = productId, warehouseId = warehouseId, expirationDate = resource.ExpirationDate }, 
             inventoryResource);
     }
     
-    [HttpPost("product/{productId}")]
+    [HttpPost("products/{productId}")]
     [SwaggerOperation(
         Summary = "Add stock to a product in a warehouse",
         Description = "Adds stock to a product in a warehouse by its product ID and warehouse ID, including the expiration date.",
@@ -143,7 +166,7 @@ public class WarehouseInventoriesController (
             inventoryResource);
     }
     
-    [HttpDelete("product/{productId}")]
+    [HttpDelete("products/{productId}")]
     [SwaggerOperation(
         Summary = "Deletes a product from a warehouse",
         Description = "Deletes a product from a warehouse by its ID, warehouse ID, and expiration date.",

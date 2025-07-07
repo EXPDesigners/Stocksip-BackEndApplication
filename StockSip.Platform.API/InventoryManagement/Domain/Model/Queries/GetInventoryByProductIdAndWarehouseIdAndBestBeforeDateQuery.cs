@@ -3,4 +3,4 @@
 /// <summary>
 /// Query used to get an inventory object.
 /// </summary>
-public record GetInventoryByProductIdAndWarehouseIdAndBestBeforeDateQuery(string ProductId, string WarehouseId, DateTime BestBeforeDate);
+public record GetInventoryByProductIdAndWarehouseIdAndBestBeforeDateQuery(string ProductId, string WarehouseId, DateOnly BestBeforeDate);

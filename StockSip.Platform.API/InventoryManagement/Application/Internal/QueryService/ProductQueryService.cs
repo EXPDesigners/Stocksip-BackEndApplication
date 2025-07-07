@@ -1,6 +1,7 @@
 ﻿using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Entities;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.InventoryManagement.Domain.Repositories;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
 
@@ -26,20 +27,6 @@ public class ProductQueryService(
     public async Task<IEnumerable<Product>> Handle(GetAllProductsByProviderIdAndWarehouseIdQuery query)
     {
         return await productRepository.FindByProviderIdAndWarehouseIdAsync(query.ProviderId, query.WarehouseId);
-    }
-
-    /// <summary>
-    /// Method to retrieve all products associated with a specific warehouse ID.
-    /// </summary>
-    /// <param name="query">
-    /// The query containing the warehouse ID for which products are to be retrieved.
-    /// </param>
-    /// <returns>
-    /// The list of products associated with the specified warehouse ID.
-    /// </returns>
-    public async Task<IEnumerable<Product>> Handle(GetAllProductsByWarehouseIdQuery query)
-    {
-        return await productRepository.FindByWarehouseIdAsync(query.WarehouseId); 
     }
 
     /// <summary>
@@ -97,5 +84,10 @@ public class ProductQueryService(
     public async Task<IEnumerable<ProductExit>> Handle(GetAllProductExitsByProductIdQuery query)
     {
         return await productRepository.FindProductExitsByProductIdAsync(query.ProductId);
+    }
+
+    public async Task<int> Handle(GetProductsCountUsagesQuery query)
+    {
+        return await productRepository.CountByAccountIdAsync(new AccountId(query.AccountId));
     }
 }

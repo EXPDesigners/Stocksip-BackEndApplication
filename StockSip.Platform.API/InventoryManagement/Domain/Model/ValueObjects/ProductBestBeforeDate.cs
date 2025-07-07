@@ -8,7 +8,7 @@ public record ProductBestBeforeDate()
     /// <summary>
     /// The expiration date of the product.
     /// </summary>
-    public DateTime BestBeforeDate { get; }
+    public DateOnly BestBeforeDate { get; }
 
     /// <summary>
     /// Default constructor for the ProductBestBeforeDate value object.
@@ -19,7 +19,7 @@ public record ProductBestBeforeDate()
     /// <exception cref="ArgumentException">
     /// Throws this exception if the best before date is not a future date.
     /// </exception>
-    public ProductBestBeforeDate(DateTime bestBeforeDate) : this()
+    public ProductBestBeforeDate(DateOnly bestBeforeDate) : this()
     {
         if (IsBestBeforeDateValid(bestBeforeDate))
         {
@@ -40,9 +40,9 @@ public record ProductBestBeforeDate()
     /// <returns>
     /// True if the best before date is a future date; otherwise, false.
     /// </returns>
-    private static bool IsBestBeforeDateValid(DateTime bestBeforeDate)
+    private static bool IsBestBeforeDateValid(DateOnly bestBeforeDate)
     {
-        return bestBeforeDate > DateTime.Now;
+        return bestBeforeDate > DateOnly.FromDateTime(DateTime.Now);
     }
     
     /// <summary>
@@ -51,7 +51,7 @@ public record ProductBestBeforeDate()
     /// <returns>
     /// The best before date of the product as a DateTime value.
     /// </returns>
-    public DateTime GetBestBeforeDate()
+    public DateOnly GetBestBeforeDate()
     {
         return BestBeforeDate;
     }

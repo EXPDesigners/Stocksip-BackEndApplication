@@ -1,5 +1,6 @@
 ﻿using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Queries;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
 using StockSip.Platform.API.InventoryManagement.Domain.Services;
@@ -41,7 +42,7 @@ public class ProductsController(
         Summary = "Get Product by ID",
         Description = "Retrieves a product by its unique identifier.",
         OperationId = "GetProductById")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Product found!", typeof(ProductResource))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Product found!", typeof(ProductInventoryResource))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "Product not found...")]
     public async Task<IActionResult> GetProductById([FromRoute] string productId)
     {
@@ -52,34 +53,6 @@ public class ProductsController(
         }
         var resource = ProductResourceFromEntityAssembler.ToResourceFromEntity(product);
         return Ok(resource);
-    }
-
-    /// <summary>
-    /// This endpoint creates a new product.
-    /// </summary>
-    /// <param name="resource">
-    /// The resource containing the product details to be created.
-    /// </param>
-    /// <returns>
-    /// An IActionResult indicating the result of the creation operation, including the created product resource if successful.
-    /// </returns>
-    [HttpPost]
-    [SwaggerOperation(
-        Summary = "Create a New Product",
-        Description = "Creates a new product and returns the created product resource.",
-        OperationId = "CreateProduct")]
-    [SwaggerResponse(StatusCodes.Status201Created, "Product created successfully!", typeof(ProductResource))]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "Product could not be created...")]
-    public async Task<IActionResult> CreateProduct([FromBody] CreateProductResource resource)
-    {
-        var createProductCommand = CreateProductCommandFromResourceAssembler.ToCommandFromResource(resource);
-        var product = await productCommandService.Handle(createProductCommand);
-        if (product is null)
-        {
-            return BadRequest("Failed to create product. Please check the provided data...");
-        }
-        var createdResource = ProductResourceFromEntityAssembler.ToResourceFromEntity(product);
-        return CreatedAtAction(nameof(GetProductById), new { productId = createdResource.Id }, createdResource);
     }
 
     /// <summary>
@@ -99,9 +72,9 @@ public class ProductsController(
         Summary = "Update an Existing Product",
         Description = "Updates an existing product by its unique identifier and returns the updated product resource.",
         OperationId = "UpdateProductInformation")]
-    [SwaggerResponse(StatusCodes.Status201Created, "Product updated successfully!", typeof(ProductResource))]
+    [SwaggerResponse(StatusCodes.Status201Created, "Product updated successfully!", typeof(ProductInventoryResource))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Product could not be updated...")]
-    public async Task<IActionResult> UpdateProductInformation([FromBody] UpdateProductResource resource, [FromRoute] string productId)
+    public async Task<IActionResult> UpdateProductInformation([FromForm] UpdateProductResource resource, [FromRoute] string productId)
     {
         var updateProductCommand = UpdateProductCommandFromResourceAssembler.ToCommandFromResource(resource, productId);
         var updatedProduct = await productCommandService.Handle(updateProductCommand);
@@ -110,36 +83,26 @@ public class ProductsController(
             return BadRequest($"Failed to update product with ID {productId}. Please check the provided data.");
         }
         var updatedResource = ProductResourceFromEntityAssembler.ToResourceFromEntity(updatedProduct);
-        return CreatedAtAction(nameof(GetProductById), new { productId = updatedResource.Id }, updatedResource);
+        return CreatedAtAction(nameof(GetProductById), new { productId = updatedResource.ProductId }, updatedResource);
     }
 
     /// <summary>
-    /// This endpoint retrieves all products associated with a specific profile ID.
+    /// This endpoint is used to delete a product by its unique identifier.
     /// </summary>
-    /// <param name="profileId">
-    /// The unique identifier of the profile for which products are to be retrieved.
-    /// </param>
-    /// <returns>
-    /// An IActionResult containing a list of product resources if found, or a NotFound result if no products are found for the specified profile ID.
-    /// </returns>
-    [HttpGet]
+    /// <param name="productId">The unique identifier of the product to be deleted.</param>
+    /// <returns>A response indicating the result of the deletion operation.</returns>
+    [HttpDelete("{productId}")]
     [SwaggerOperation(
-        Summary = "Get all products by profile ID",
-        Description = "Retrieves all products associated with a specific profile ID.",
-        OperationId = "GetAllProductsByProfileId")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Products found!", typeof(IEnumerable<ProductResource>))]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "No products found for the specified profile ID...")]
-    public async Task<IActionResult> GetAllProductsByProfileId(string profileId)
+        Summary = "Delete a Product",
+        Description = "Deletes a product by its unique identifier.",
+        OperationId = "DeleteProduct"
+    )]
+    [SwaggerResponse(StatusCodes.Status200OK, "Product deleted successfully.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Product not found.")]
+    public async Task<IActionResult> DeleteProduct([FromRoute] string productId)
     {
-        var targetProfileId = new AccountId(profileId);
-        var getAllProductsByProfileIdQuery = new GetAllProductsByAccountIdQuery(targetProfileId);
-        var products = await productQueryService.Handle(getAllProductsByProfileIdQuery);
-        var productsEnumerable = products.ToList();
-        if (productsEnumerable.Count == 0)
-        {
-            return NotFound($"No products found for profile with ID {profileId}.");
-        }
-        var productResources = productsEnumerable.Select(ProductResourceFromEntityAssembler.ToResourceFromEntity);
-        return Ok(productResources);
+        var deleteProductCommand = new DeleteProductCommand(productId);
+        await productCommandService.Handle(deleteProductCommand);
+        return Ok(new { Message = $"Product with ID {productId} has been deleted successfully." });
     }
 }

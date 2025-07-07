@@ -22,4 +22,4 @@ public record UpdateWarehouseCommand(string WarehouseId,
                                      double MaxTemperature,
                                      double MinTemperature,
                                      double Capacity,
-                                     string ProfileId);
+                                     IFormFile? Image);

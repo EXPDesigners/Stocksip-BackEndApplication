@@ -114,4 +114,42 @@ public class WarehouseRepository(AppDbContext context) : BaseRepository<Warehous
                 w.AccountId == accountId &&
                 w.WarehouseId != warehouseId);
     }
+
+    /// <summary>
+    /// This method retrieves the account ID associated with a specific warehouse ID.
+    /// </summary>
+    /// <param name="warehouseId">The unique identifier of the warehouse.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the account ID associated with the warehouse.</returns>
+    /// <exception cref="InvalidOperationException">An exception is thrown if the warehouse is not found.</exception>
+    public async Task<string> FindAccountIdByWarehouseIdAsync(string warehouseId)
+    {
+        var accountId = await Context.Set<Warehouse>()
+            .Where(w => w.WarehouseId == warehouseId)
+            .Select(w => w.AccountId.Id)
+            .FirstOrDefaultAsync();
+        
+        return accountId ?? throw new InvalidOperationException("Warehouse not found");
+    }
+
+    /// <summary>
+    /// This method retrieves the image URL of a warehouse by its warehouse ID.
+    /// </summary>
+    /// <param name="warehouseId">The unique identifier of the warehouse.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the image URL of the warehouse.</returns>
+    /// <exception cref="InvalidOperationException">An exception is thrown if the warehouse is not found or if the image URL is null.</exception>
+    public async Task<string> FindImageUrlByWarehouseIdAsync(string warehouseId)
+    {
+        var imageUrl = await Context.Set<Warehouse>()
+            .Where(w => w.WarehouseId == warehouseId)
+            .Select(w => w.ImageUrl!.ImageUri.ToString())
+            .FirstOrDefaultAsync();
+
+        return imageUrl ?? throw new InvalidOperationException("Warehouse not found or image URL is null");
+    }
+
+    public async Task<int> CountByAccountIdAsync(AccountId accountId)
+    {
+        return await Context.Set<Warehouse>()
+            .CountAsync(w => w.AccountId == accountId);
+    }
 }

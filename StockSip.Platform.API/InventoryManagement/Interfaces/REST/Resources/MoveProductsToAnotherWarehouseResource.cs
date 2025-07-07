@@ -3,4 +3,4 @@
 /// <summary>
 /// This record represents a resource for moving products from one warehouse to another.
 /// </summary>
-public record MoveProductsToAnotherWarehouseResource(string NewWarehouseId, DateTime MovedStockExpirationDate, int MovedQuantity);
+public record MoveProductsToAnotherWarehouseResource(string NewWarehouseId, DateOnly MovedStockExpirationDate, int MovedQuantity);

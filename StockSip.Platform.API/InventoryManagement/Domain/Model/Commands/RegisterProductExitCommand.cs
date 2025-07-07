@@ -18,4 +18,4 @@
 /// <param name="ExitReason">
 /// The reason for the product exit, represented as a string.
 /// </param>
-public record RegisterProductExitCommand(string WarehouseId, string ProductId, DateTime ExpirationDate, int QuantityExited, string ExitReason);
+public record RegisterProductExitCommand(string WarehouseId, string ProductId, DateOnly ExpirationDate, int QuantityExited, string ExitReason);

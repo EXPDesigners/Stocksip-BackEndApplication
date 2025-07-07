@@ -14,7 +14,7 @@ public static class CreateWarehouseCommandFromResourceAssembler
     /// </summary>
     /// <param name="resource">The CreateWarehouseResource to transform.</param>
     /// <returns>The CreateWarehouseCommand created from the resource.</returns>
-    public static CreateWarehouseCommand ToCommandFromResource(CreateWarehouseResource resource)
+    public static CreateWarehouseCommand ToCommandFromResource(CreateWarehouseResource resource, string accountId)
     {
         return new CreateWarehouseCommand(
             resource.Name,
@@ -26,7 +26,8 @@ public static class CreateWarehouseCommandFromResourceAssembler
             resource.MaxTemperature,
             resource.MinTemperature,
             resource.Capacity,
-            resource.ProfileId
+            accountId,
+            resource.Image
         );
     }
 }

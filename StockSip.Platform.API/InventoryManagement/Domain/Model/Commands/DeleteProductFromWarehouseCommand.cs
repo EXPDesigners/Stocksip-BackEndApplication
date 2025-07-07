@@ -12,4 +12,4 @@ namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 /// <param name="ExpirationDate">
 /// The date when the product will no longer be available in the warehouse.
 /// </param>
-public record DeleteProductFromWarehouseCommand(string ProductId, string WarehouseId, DateTime ExpirationDate);
+public record DeleteProductFromWarehouseCommand(string ProductId, string WarehouseId, DateOnly ExpirationDate);

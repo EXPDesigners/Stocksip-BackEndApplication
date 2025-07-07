@@ -20,28 +20,7 @@ namespace StockSip.Platform.API.InventoryManagement.Interfaces.REST;
 [SwaggerTag("Available Warehouse Endpoints")]
 public class WarehousesController(IWarehouseCommandService warehouseCommandService, IWarehouseQueryService warehouseQueryService) : ControllerBase
 {
-    /// <summary>
-    /// This endpoint creates a new warehouse.
-    /// </summary>
-    /// <param name="resource">The resource containing the warehouse details to be created.</param>
-    /// <returns>An IActionResult indicating the result of the creation operation.</returns>
-    [HttpPost]
-    [SwaggerOperation( 
-        Summary = "Create a New Warehouse",
-        Description = "Creates a new Warehouse and returns the created warehouse resource.",
-        OperationId = "CreateWarehouse")]
-    [SwaggerResponse(StatusCodes.Status201Created, "Warehouse created successfully", typeof(WarehouseResource))]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "Warehouse could not be created")]    
-    public async Task<IActionResult> CreateWarehouse([FromBody] CreateWarehouseResource resource)
-    {
-        var createWarehouseCommand = CreateWarehouseCommandFromResourceAssembler.ToCommandFromResource(resource);
-        var warehouse = await warehouseCommandService.Handle(createWarehouseCommand);
-        if (warehouse is null) return BadRequest("Failed to create warehouse. Please check the provided data.");
-        var createdResource = WarehouseResourceFromEntityAssembler.ToResourceFromEntity(warehouse);
-        return CreatedAtAction(nameof(GetWarehouseById), new { warehouseId = warehouse.WarehouseId }, createdResource);
-    }
     
-        
     [HttpPut("{warehouseId}")]
     [SwaggerOperation(
         Summary = "Update an Existing Warehouse",
@@ -49,7 +28,7 @@ public class WarehousesController(IWarehouseCommandService warehouseCommandServi
         OperationId = "UpdateWarehouse")]
     [SwaggerResponse(StatusCodes.Status201Created, "Warehouse updated successfully", typeof(WarehouseResource))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Warehouse could not be updated")]
-    public async Task<IActionResult> UpdateWarehouse([FromRoute] string warehouseId, [FromBody] UpdateWarehouseResource resource)
+    public async Task<IActionResult> UpdateWarehouse([FromRoute] string warehouseId, [FromForm] UpdateWarehouseResource resource)
     {
         var createWarehouseCommand = UpdateWarehouseCommandFromResourceAssembler.ToCommandFromResource(resource, warehouseId);
         var warehouse = await warehouseCommandService.Handle(createWarehouseCommand);

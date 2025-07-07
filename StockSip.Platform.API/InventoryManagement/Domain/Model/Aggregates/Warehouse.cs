@@ -48,25 +48,25 @@ public class Warehouse
     /// Constructs a new instance of the Warehouse class using a CreateWarehouseCommand.
     /// </summary>
     /// <param name="command">The command to create a warehouse</param>
-    public Warehouse(CreateWarehouseCommand command) : this(
+    public Warehouse(CreateWarehouseCommand command, string imageUrl) : this(
         command.Name,
         new WarehouseAddress(command.Street, command.City, command.District, command.PostalCode, command.Country),
         new Temperature(command.MinTemperature, command.MaxTemperature),
         new Capacity(command.Capacity),
-        new ImageUrl(null),
-        new AccountId(command.ProfileId)) 
+        new ImageUrl(imageUrl),
+        new AccountId(command.AccountId)) 
     {}
 
     /// <summary>
     /// Constructs a new instance of the Warehouse class using an UpdateWarehouseCommand.
     /// </summary>
-    public void UpdateWarehouse(string name, string street, string city, string district, string postalCode, string country, double maxTemperature, double minTemperature, double totalCapacity)
+    public void UpdateWarehouse(string name, string street, string city, string district, string postalCode, string country, double maxTemperature, double minTemperature, double totalCapacity, string imageUrl)
     {
         this.Name = ValidateName(name);
         Address = new WarehouseAddress(street, city, district, postalCode, country);
         Temperature = new Temperature(minTemperature, maxTemperature);
         Capacity = new Capacity(totalCapacity);
-        ImageUrl = new ImageUrl(null);
+        ImageUrl = new ImageUrl(imageUrl);
     }
     
     /// <summary>

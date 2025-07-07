@@ -13,14 +13,14 @@ public static class CreateProductCommandFromResourceAssembler
     /// </summary>
     /// <param name="resource"> The CreateProductResource to transform. </param>
     /// <returns> The CreateProductCommand created from the resource. </returns>
-    public static CreateProductCommand ToCommandFromResource(CreateProductResource resource)
+    public static CreateProductCommand ToCommandFromResource(CreateProductResource resource, string accountId)
     {
-        return new CreateProductCommand(resource.AdditionalName,
+        return new CreateProductCommand(resource.Name,
             resource.LiquorType,
             resource.BrandName,
             resource.UnitPriceAmount,
             resource.MinimumStock,
-            resource.ImageUrl,
-            resource.ProviderId);
+            resource.Image,
+            accountId);
     }
 }

@@ -52,4 +52,24 @@ public interface IWarehouseRepository : IBaseRepository<Warehouse>
     /// <returns>Exists by address, city, postal code, profile ID, and a different warehouse ID; otherwise, false.</returns>
     Task<bool> ExistsByAddressStreetAndAddressCityAndAddressPostalCodeIgnoreCaseAndProfileIdAndProfileIdIsNotAsync(string street, string city, string postalCode, AccountId accountId, string warehouseId);
     
+    /// <summary>
+    /// Get the account ID associated with a specific warehouse ID.
+    /// </summary>
+    /// <param name="warehouseId">The unique identifier of the warehouse.</param>
+    /// <returns>The account ID associated with the warehouse.</returns>
+    Task<string> FindAccountIdByWarehouseIdAsync(string warehouseId);
+    
+    /// <summary>
+    /// Get the image URL associated with a specific warehouse ID.
+    /// </summary>
+    /// <param name="warehouseId">The unique identifier of the warehouse.</param>
+    /// <returns>The image URL associated with the warehouse.</returns>
+    Task<string> FindImageUrlByWarehouseIdAsync(string warehouseId);
+    
+    /// <summary>
+    /// This method counts the number of warehouses associated with a specific account ID.
+    /// </summary>
+    /// <param name="accountId">The unique identifier of the account.</param>
+    /// <returns>A task that represents the asynchronous operation, containing the count of warehouses.</returns>
+    Task<int> CountByAccountIdAsync(AccountId accountId);
 }

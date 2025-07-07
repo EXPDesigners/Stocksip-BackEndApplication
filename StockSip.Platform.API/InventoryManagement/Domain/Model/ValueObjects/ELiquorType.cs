@@ -29,5 +29,6 @@ public enum ELiquorType
     Creamy,
     Herbal,
     Fruity,
-    Special
+    Special,
+    NoLiquorType
 }

@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices.JavaScript;
+using StockSip.Platform.API.AlertsAndNotifications.Domain.Model.ValueObjects;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
 using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
@@ -13,17 +14,23 @@ public partial class ProductExit
     /// <summary>
     /// The unique identifier for the product exit, generated as a new GUID.
     /// </summary>
-    public string Id { get; } = Guid.NewGuid().ToString();
+    public string ProductExitId { get; } = Guid.NewGuid().ToString();
     
     /// <summary>
     /// The inventory of the product associated with the exit, represented as an Inventory entity.
     /// </summary>
     public Inventory Inventory { get; internal set; }
     
+    public string InventoryId { get; set; }
+    
+    public Product Product { get; internal set; }
+    
     /// <summary>
     /// The unique identifier of the product associated with the exit.
     /// </summary>
     public string ProductId { get; private set; }
+    
+    public Warehouse Warehouse { get; internal set; }
     
     /// <summary>
     /// The unique identifier of the warehouse from which the product is exiting.
@@ -49,6 +56,11 @@ public partial class ProductExit
     /// The date and time when the product exit occurred.
     /// </summary>
     public DateTime ExitDate { get; } = DateTime.Now;
+    
+    /// <summary>
+    /// Default constructor for Entity Framework Core.
+    /// </summary>
+    protected ProductExit() {}
 
     /// <summary>
     /// Default constructor for the ProductExit class, required by EF Core.
@@ -65,7 +77,7 @@ public partial class ProductExit
     /// <param name="productQuantity">
     /// The quantity of the product being exited from the inventory.
     /// </param>
-    public ProductExit(string productId, string warehouseId, string exitReason, int productQuantity, DateTime productExpirationDate)
+    public ProductExit(string productId, string warehouseId, string exitReason, int productQuantity, DateOnly productExpirationDate)
     {
         ProductId = productId;
         WarehouseId = warehouseId;

@@ -22,29 +22,9 @@ public class WarehouseProductsController(
     IProductCommandService productCommandService,
     IProductQueryService productQueryService) : ControllerBase
 {
-    [HttpGet]
-    [SwaggerOperation(
-        Summary = "Get all products by warehouse ID",
-        Description = "Retrieves all products associated with a specific warehouse ID.",
-        OperationId = "GetProductsByWarehouseId")]
-    [SwaggerResponse(StatusCodes.Status200OK, "List of products found!", typeof(IEnumerable<ProductResource>))]
-    [SwaggerResponse(StatusCodes.Status404NotFound, "No products found for the specified warehouse ID...")]
-    public async Task<IActionResult> GetProductsByWarehouseId(string warehouseId)
-    {
-        var getAllProductsByWarehouseIdQuery = new GetAllProductsByWarehouseIdQuery(warehouseId);
-        var products = await productQueryService.Handle(getAllProductsByWarehouseIdQuery);
-        var enumerable = products.ToList();
-        if (enumerable.Count == 0)
-        {
-            return NotFound($"No products found for warehouse with ID {warehouseId}.");
-        }
-        var productResources = enumerable
-            .Select(ProductResourceFromEntityAssembler.ToResourceFromEntity);
-        return Ok(productResources);
-    }
     
     /// <summary>
-    /// This endpoint retrieves all products associated with a specific Provider and Warehouse ID.
+    /// This endpoint retrieves all products associated with a specific SupplierSupplier and Warehouse ID.
     /// </summary>
     /// <param name="providerId">
     /// The unique identifier of the provider whose products are to be retrieved.
@@ -58,9 +38,9 @@ public class WarehouseProductsController(
     [HttpGet("provider/{providerId}")]
     [SwaggerOperation(
         Summary = "Get all products by provider and warehouse ID",
-        Description = "Retrieves all products with a specific Provider and Warehouse ID.",
+        Description = "Retrieves all products with a specific Supplier and Warehouse ID.",
         OperationId = "GetAllProductsByProviderIdAndWarehouseId")]
-    [SwaggerResponse(StatusCodes.Status200OK, "List of products found!", typeof(IEnumerable<ProductResource>))]
+    [SwaggerResponse(StatusCodes.Status200OK, "List of products found!", typeof(IEnumerable<ProductInventoryResource>))]
     [SwaggerResponse(StatusCodes.Status404NotFound, "No products found for the specified provider and warehouse ID...")]
     public async Task<IActionResult> GetAllProductsByProviderIdAndWarehouseId(
         string providerId, 
