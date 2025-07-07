@@ -92,7 +92,7 @@ public partial class Product
                     string? providerId = null)
     {
         ProductName = new ProductName(additionalName);
-        LiquorType = Enum.Parse<ELiquorType>(liquorType, true); ;
+        LiquorType = Enum.Parse<ELiquorType>(liquorType, true);
         Brand = brandName;
         UnitPrice = new Money(unitPriceAmount, "PEN");
         MinimumStock = new ProductMinimumStock(minimumStock);
@@ -108,7 +108,7 @@ public partial class Product
         UnitPrice = new Money(command.UnitPriceAmount, "PEN");
         MinimumStock = new ProductMinimumStock(command.MinimumStock);
         ImageUrl = new ImageUrl(imageUrl);
-        if (command.ProviderId != null) AccountId = new ProviderId(command.ProviderId);
+        if (command.AccountId != null) AccountId = new ProviderId(command.AccountId);
     }
 
     /// <summary>
@@ -148,7 +148,7 @@ public partial class Product
     /// <exception cref="ArgumentException">
     /// Thrown when the updated price is less than or equal to zero.
     /// </exception>
-    public void UpdateInformation(string name, string brand, string liquorType, double updatedPrice, int updatedMinimumStock, string updatedImageUrl)
+    public void UpdateInformation(string name, string brand, string liquorType, decimal updatedPrice, int updatedMinimumStock, string updatedImageUrl)
     {
         ProductName = new ProductName(name);
         LiquorType = Enum.Parse<ELiquorType>(liquorType, true);

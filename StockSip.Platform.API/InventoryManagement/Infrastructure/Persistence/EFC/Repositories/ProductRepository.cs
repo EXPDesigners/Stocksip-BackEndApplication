@@ -151,7 +151,7 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
     /// <param name="liquorType"> The liquor type of the product. </param>
     /// <param name="additionalName"> The additional name of the product. </param>
     /// <returns></returns>
-    public async Task<bool> ExistsByFullNameIgnoreCaseAsync(string brandName, string liquorType, string? additionalName)
+    public async Task<bool> ExistsByFullNameIgnoreCaseAsync(string brandName, string liquorType, string? additionalName, string accountId)
     {
         if (!Enum.TryParse<ELiquorType>(liquorType, true, out var parsedLiquorType))
         {
@@ -163,10 +163,10 @@ public class ProductRepository(AppDbContext context) : BaseRepository<Product>(c
 
         return await Context.Set<Product>()
             .AnyAsync(p =>
-                additionalName != null &&
                 p.ProductName.Name.ToLower() == additionalName &&
                 p.Brand.ToLower() == brandName &&
-                p.LiquorType == parsedLiquorType); 
+                p.LiquorType == parsedLiquorType && 
+                p.AccountId.Id == accountId); 
     }
 
     /// <summary>

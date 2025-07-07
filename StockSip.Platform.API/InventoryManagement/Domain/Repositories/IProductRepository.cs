@@ -43,7 +43,7 @@ public interface IProductRepository : IBaseRepository<Product>
     /// <summary>
     /// This method checks if a product with the specified full name (brand name, liquor type, and additional name) exists in the database, ignoring lower or upper case.
     /// </summary>
-    Task<bool> ExistsByFullNameIgnoreCaseAsync(string brandName, string liquorType, string? additionalName);
+    Task<bool> ExistsByFullNameIgnoreCaseAsync(string brandName, string liquorType, string? additionalName, string accountId);
     
     /// <summary>
     /// This method retrieves the image URL of a product by its ID.

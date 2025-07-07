@@ -13,13 +13,13 @@ public class Account
     
     public BusinessName BusinessName { get; internal set; }
     
+    public EmailAddress Email { get; internal set; }
+    
     public EAccountStatus Status { get; set; }
     
     public AccountRole AccountRole { get; internal set; }
     
-    public StreetAddress StreetAddress { get; internal set; }
-    
-    public DateTime CreatedDate { get; internal set; }
+    public DateOnly CreatedDate { get; internal set; }
     
     public UserId OwnerUserId { get; internal set; }
     
@@ -31,15 +31,28 @@ public class Account
     /// <summary>
     /// Constructor to create a new account with the specified owner user ID, account role, and address.
     /// </summary>
-    public Account(string ownerUserId, string accountRole, string address)
+    public Account(string ownerUserId, string businessName, string email, string accountRole)
     {
         AccountId = Guid.NewGuid().ToString();
         OwnerUserId = new UserId(ownerUserId);
+        BusinessName = new BusinessName(businessName);
+        OwnerUserId = new UserId(ownerUserId);
+        CreatedDate = DateOnly.FromDateTime(DateTime.Now);
+        Email = new EmailAddress(email);
         AccountRole = new AccountRole(accountRole);
-        StreetAddress = new StreetAddress(address);
-        CreatedDate = DateTime.UtcNow;
         Status = EAccountStatus.INACTIVE;
     }
+    
+    public Account(CreateAccountCommand cmd)
+    {
+        AccountId     = Guid.NewGuid().ToString();
+        Email         = new EmailAddress(cmd.Email);
+        OwnerUserId   = new UserId(cmd.OwnerUserId);
+        AccountRole   = new AccountRole(cmd.AccountRole);
+        BusinessName  = new BusinessName(cmd.BusinessName);
+        Status        = EAccountStatus.INACTIVE;
+    }
+
 
     /// <summary>
     /// This method is used to activate the account, changing its status to ACTIVE.
@@ -49,6 +62,10 @@ public class Account
         Status = EAccountStatus.ACTIVE;
     }
     
+    /// <summary>
+    /// This method is used to deactivate the account, changing its status to INACTIVE.
+    /// </summary>
+    /// <returns>A boolean indicating whether the account was successfully deactivated.</returns>
     public string GetCreationDate()
     {
         return CreatedDate.ToString("yyyy-M-d");

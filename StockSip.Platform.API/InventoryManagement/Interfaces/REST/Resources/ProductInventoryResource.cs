@@ -8,7 +8,7 @@ namespace StockSip.Platform.API.InventoryManagement.Interfaces.REST.Resources;
 public record ProductInventoryResource(string ProductId,
                                        string Name,
                                        string Type,
-                                       double UnitPriceAmount,
+                                       decimal UnitPriceAmount,
                                        int MinimumStock,
                                        string ImageUrl,
                                        int CurrentStock, 

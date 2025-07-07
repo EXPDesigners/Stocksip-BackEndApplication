@@ -54,7 +54,7 @@ public class Warehouse
         new Temperature(command.MinTemperature, command.MaxTemperature),
         new Capacity(command.Capacity),
         new ImageUrl(imageUrl),
-        new AccountId(command.ProfileId)) 
+        new AccountId(command.AccountId)) 
     {}
 
     /// <summary>

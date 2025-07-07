@@ -29,7 +29,7 @@ public class ProductCommandService (
     /// <exception cref="ArgumentException"> Thrown when a product with the same name already exists.</exception>
     public async Task<Product?> Handle(CreateProductCommand command)
     {
-        if (await productRepository.ExistsByFullNameIgnoreCaseAsync(command.BrandName, command.LiquorType, command.Name))
+        if (await productRepository.ExistsByFullNameIgnoreCaseAsync(command.BrandName, command.LiquorType, command.Name, command.AccountId))
         {
             throw new ArgumentException($"Product with full name {command.BrandName} {command.LiquorType} {command.Name} already exists.");
         }

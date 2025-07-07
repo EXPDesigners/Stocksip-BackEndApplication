@@ -8,6 +8,6 @@ public record ProductResource(string ProductId,
                               string Name,
                               string BrandName, 
                               string LiquorType, 
-                              double UnitPriceAmount, 
+                              decimal UnitPriceAmount, 
                               int MinimumStock, 
                               string AccountId);

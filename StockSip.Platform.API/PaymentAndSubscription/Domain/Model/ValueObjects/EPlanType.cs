@@ -5,6 +5,7 @@ namespace StockSip.Platform.API.PaymentAndSubscription.Domain.Model.ValueObjects
 /// </summary>
 public enum EPlanType
 {
-    FREE,
-    PREMIUM
+    Free,
+    PremiumMonthly,
+    PremiumAnnual,
 }
