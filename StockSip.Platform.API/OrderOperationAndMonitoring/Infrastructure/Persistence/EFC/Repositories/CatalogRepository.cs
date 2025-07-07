@@ -10,6 +10,7 @@ namespace StockSip.Platform.API.OrderOperationAndMonitoring.Infrastructure.Persi
 public class CatalogRepository(AppDbContext context)
     : BaseRepository<Catalog>(context), ICatalogRepository
 {
+      
     private DbSet<Catalog> Catalogs => Context.Set<Catalog>();
 
     public async Task<IEnumerable<Catalog>> FindByAccountIdAsync(AccountId accountId)
@@ -22,7 +23,7 @@ public class CatalogRepository(AppDbContext context)
     public async Task<IEnumerable<Catalog>> FindPublishedByAccountIdAsync(AccountId accountId)
     {
         return await Catalogs
-            .Where(c => c.AccountId == accountId && c.IsPublished)
+            .Where(c => c.AccountId.Value == accountId.Value && c.IsPublished)
             .ToListAsync();
     }
 
@@ -55,4 +56,16 @@ public class CatalogRepository(AppDbContext context)
         await Catalogs
             .Include(c => c.Items)
             .FirstOrDefaultAsync(c => c.Items.Any(i => i.Id == itemId));
+    
+    public async Task<CatalogItem?> FindItemByIdAsync(string itemId)
+    {
+        return await Context.Set<CatalogItem>()
+            .FirstOrDefaultAsync(i => i.Id == itemId);
+    }
+    
+    public async Task RemoveItemAsync(CatalogItem item)
+    {
+        Context.Remove(item);
+        await Context.SaveChangesAsync();
+    }
 }

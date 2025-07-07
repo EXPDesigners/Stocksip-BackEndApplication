@@ -65,6 +65,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRouting(o => o.LowercaseUrls = true);
 builder.Services.AddControllers(o => o.Conventions.Add(new KebabCaseRouteNamingConvention()));
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddCors(o =>
 {
@@ -189,10 +190,6 @@ builder.Services.AddScoped<IPurchaseOrderCommandService, PurchaseOrderCommandSer
 builder.Services.AddScoped<IPurchaseOrderQueryService, PurchaseOrderQueryService>();
 
 builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
-
-builder.Services.AddHttpClient<IAccountClient, AccountClient>(c =>
-    c.BaseAddress = new Uri(builder.Configuration["AccountApi:BaseUrl"]!));
-
 builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserCommandService, UserCommandService>();
@@ -200,24 +197,22 @@ builder.Services.AddScoped<IUserQueryService, UserQueryService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IHashingService, HashingService>();
 builder.Services.AddScoped<IAuthenticationContextFacade, AuthenticationContextFacade>();
-builder.Services.AddHttpClient<IAccountClient, AccountClient>(client =>
+builder.Services.AddHttpClient<IAccountClient, AccountClient>((sp, client) =>
 {
-    var url = builder.Configuration["AccountApi:BaseUrl"];
-    if (string.IsNullOrWhiteSpace(url))
-        throw new InvalidOperationException("Missing AccountApi:BaseUrl in configuration");
-    client.BaseAddress = new Uri(url);
+    var cfg      = sp.GetRequiredService<IConfiguration>();
+    var accessor = sp.GetRequiredService<IHttpContextAccessor>();
+
+    client.BaseAddress =
+        new Uri(cfg["AccountApi:BaseUrl"] ?? "http://localhost:5043");
+    
+    var auth = accessor.HttpContext?.Request.Headers["Authorization"].FirstOrDefault();
+    if (!string.IsNullOrWhiteSpace(auth))
+        client.DefaultRequestHeaders.Authorization =
+            System.Net.Http.Headers.AuthenticationHeaderValue.Parse(auth);
 });
 
 // Pipeline behaviors
 builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
-builder.Services.AddHttpClient<IAccountClient, AccountClient>(client =>
-{
-    var url = builder.Configuration["AccountApi:BaseUrl"];
-    if (string.IsNullOrWhiteSpace(url))
-        throw new InvalidOperationException("Missing AccountApi:BaseUrl in configuration");
-
-    client.BaseAddress = new Uri(url);
-});
 
 builder.Services.AddScoped(typeof(ICommandPipelineBehavior<>), typeof(LoggingCommandBehavior<>));
 

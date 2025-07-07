@@ -1,5 +1,6 @@
 using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc;
+using StockSip.Platform.API.Authorization.Infrastructure.Pipeline.Middleware.Attributes;
 using StockSip.Platform.API.OrderOperationAndMonitoring.Domain.Model.Commands;
 using StockSip.Platform.API.OrderOperationAndMonitoring.Domain.Model.Queries;
 using StockSip.Platform.API.OrderOperationAndMonitoring.Domain.Model.ValueObjects;
@@ -49,18 +50,29 @@ public class CatalogsController(
             : Ok(CatalogResourceFromEntityAssembler.ToResourceFromEntity(catalog));
     }
 
+    [AllowAnonymous]
     [HttpGet("published")]
     [SwaggerOperation(Summary = "Get published catalogs by provider email")]
     public async Task<IActionResult> GetPublishedByProviderEmail([FromQuery] string providerEmail)
     {
         try
         {
-            var catalogs = await catalogQueryService.GetPublishedCatalogsByProviderEmailAsync(providerEmail);
+            var catalogs = await catalogQueryService
+                .GetPublishedCatalogsByProviderEmailAsync(providerEmail);
+
             return Ok(catalogs.Select(CatalogResourceFromEntityAssembler.ToResourceFromEntity));
         }
-        catch (ArgumentException ex)
+        catch (ArgumentException ex) when (ex.Message.StartsWith("No account found"))
         {
-            return BadRequest(ex.Message);
+            return NotFound(ex.Message);                     // 404
+        }
+        catch (ArgumentException ex) when (ex.Message.Contains("not a Supplier"))
+        {
+            // Opción A → 403 sin necesidad de AddAuthentication
+            return StatusCode(StatusCodes.Status403Forbidden, ex.Message);
+
+            // O si prefieres Opción B:
+            // return BadRequest(ex.Message);
         }
     }
 
@@ -130,11 +142,20 @@ public class CatalogsController(
 
 
     [HttpDelete("catalogItems/{id}")]
-    [SwaggerOperation(Summary = "Delete catalog item")]
     public async Task<IActionResult> DeleteCatalogItem([FromRoute] string id)
     {
+        Console.WriteLine($"[DELETE] Recibido ID: {id}");
+
         var success = await catalogCommandService
             .Handle(new DeleteCatalogItemCommand(id));
-        return success ? NoContent() : NotFound();
+
+        if (!success)
+        {
+            Console.WriteLine($"[DELETE] No se encontró item con id: {id}");
+            return NotFound();
+        }
+
+        Console.WriteLine($"[DELETE] Eliminación exitosa del item: {id}");
+        return NoContent();
     }
 }
