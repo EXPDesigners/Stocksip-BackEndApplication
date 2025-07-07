@@ -13,7 +13,7 @@ public class PurchaseOrder
 
     public void ChangeStatus(OrderStatus newStatus)
     {
-        if (Status == OrderStatus.Received)
+        if (Status == OrderStatus.Canceled)
             throw new InvalidOperationException("Cannot move from CANCELED.");
         Status = newStatus;
     }
