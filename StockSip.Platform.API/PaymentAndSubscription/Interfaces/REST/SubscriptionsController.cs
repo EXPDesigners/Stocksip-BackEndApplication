@@ -71,6 +71,12 @@ public class SubscriptionsController(ISubscriptionCommandService subscriptionCom
     }
     
     [HttpGet("upgrade-complete")]
+    [SwaggerOperation(
+        Summary = "Complete Subscription Upgrade",
+        Description = "Completes the upgrade process after payment success.",
+        OperationId = "CompleteSubscriptionUpgrade")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Subscription upgraded successfully.")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid upgrade completion request.")]
     public async Task<IActionResult> UpgradeSuccess([FromQuery] CompleteUpgradeResource resource)
     {
         var completeSubscriptionCommand = CompleteUpgradeFromResourceAssembler.ToCommandFromResource(resource);
