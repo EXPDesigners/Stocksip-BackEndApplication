@@ -1,9 +1,10 @@
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using Microsoft.EntityFrameworkCore;
+using StockSip.Platform.API.AlertsAndNotifications.Infrastructure.Persistence.EFC.Configuration.Extensions;  // Alerts
 using StockSip.Platform.API.Authorization.Infrastructure.Persistence.EFC.Configuration.Extensions;          // Auth
 using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Configuration.Extensions;   // Inventory
 using StockSip.Platform.API.OrderOperationAndMonitoring.Infrastructure.Persistence.EFC.Configuration.Extensions; // Orders & Monitoring
-using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Persistence.Configuration.Extensions;
+using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Persistence.Configuration.Extensions;    // Payment
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;               // Shared (snake‑case, etc.)
 
 namespace StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
@@ -27,6 +28,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         // ─── Bounded‑context configurations ───────────────────────────────────────
         builder.ApplyInventoryManagementConfiguration();
         builder.ApplyPaymentAndSubscriptionConfiguration();
+        builder.ApplyAlertsAndNotificationsConfiguration();
         builder.ApplyOrderOperationAndMonitoringConfiguration();
         builder.ApplyAuthenticationConfiguration();
 
