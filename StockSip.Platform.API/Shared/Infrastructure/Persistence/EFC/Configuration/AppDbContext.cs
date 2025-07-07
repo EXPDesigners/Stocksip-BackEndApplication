@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using StockSip.Platform.API.Authorization.Infrastructure.Persistence.EFC.Configuration.Extensions;          // Auth
 using StockSip.Platform.API.InventoryManagement.Infrastructure.Persistence.EFC.Configuration.Extensions;   // Inventory
 using StockSip.Platform.API.OrderOperationAndMonitoring.Infrastructure.Persistence.EFC.Configuration.Extensions; // Orders & Monitoring
-using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Configuration.Extensions;                // Payments
+using StockSip.Platform.API.PaymentAndSubscription.Infrastructure.Persistence.Configuration.Extensions;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;               // Shared (snake‑case, etc.)
 
 namespace StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;

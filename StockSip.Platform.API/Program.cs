@@ -58,6 +58,7 @@ using StockSip.Platform.API.Shared.Domain.Repositories;
 using StockSip.Platform.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using StockSip.Platform.API.Shared.Infrastructure.Persistence.EFC.Repositories;
+using StockSip.Platform.API.Shared.Infrastructure.SPA.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -127,6 +128,7 @@ builder.Services.AddSwaggerGen(o =>
 
 // Shared Bounded Context
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.Configure<FrontendSettings>(builder.Configuration.GetSection("Frontend"));
 
 // Alerts And Notifications - Bounded Context
 builder.Services.AddScoped<IAlertRepository, AlertRepository>();

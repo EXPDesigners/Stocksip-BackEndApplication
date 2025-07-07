@@ -19,7 +19,7 @@ public class Account
     
     public AccountRole AccountRole { get; internal set; }
     
-    public DateTime CreatedDate { get; internal set; }
+    public DateOnly CreatedDate { get; internal set; }
     
     public UserId OwnerUserId { get; internal set; }
     
@@ -40,7 +40,6 @@ public class Account
         CreatedDate = DateOnly.FromDateTime(DateTime.Now);
         Email = new EmailAddress(email);
         AccountRole = new AccountRole(accountRole);
-        CreatedDate = DateTime.UtcNow;
         Status = EAccountStatus.INACTIVE;
     }
     
@@ -51,7 +50,6 @@ public class Account
         OwnerUserId   = new UserId(cmd.OwnerUserId);
         AccountRole   = new AccountRole(cmd.AccountRole);
         BusinessName  = new BusinessName(cmd.BusinessName);
-        CreatedDate   = DateTime.UtcNow;
         Status        = EAccountStatus.INACTIVE;
     }
 

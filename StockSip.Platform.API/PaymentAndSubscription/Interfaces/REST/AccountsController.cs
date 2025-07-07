@@ -23,6 +23,24 @@ public class AccountsController(
     IAccountQueryService   accountQueryService)
     : ControllerBase
 {
+    
+    [HttpPost("sign-up")]
+    [AllowAnonymous]
+    [SwaggerOperation(
+        Summary = "Create Account",
+        Description = "Creates a new account with the provided details.",
+        OperationId = "CreateAccount")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Account created successfully.")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Failed to create account.")]
+    public async Task<IActionResult> CreateAccount([FromBody] SignUpWithAccountResource resource)
+    {
+        var createAccountCommand = SignUpWithAccountFromResourceAssembler.ToCommandFromResource(resource);
+        var account = await accountCommandService.Handle(createAccountCommand);
+        if (account is null) return BadRequest("Failed to create account");
+        var resourceFromEntity = AccountResourceFromEntityAssembler.ToResourceFromEntity(account);
+        return Ok(resourceFromEntity);
+    }
+    
     #region 
     
     [HttpGet("{accountId}")]
@@ -54,48 +72,6 @@ public class AccountsController(
 
         var resource = AccountResourceFromEntityAssembler.ToResourceFromEntity(account);
         return Ok(resource);
-    }
-
-    #endregion
-
-    #region
-    
-    [HttpPost("sign-up")]
-    [AllowAnonymous]
-    [SwaggerOperation(
-        Summary     = "Sign‑up",
-        Description = "Creates an authentication user and a linked account.",
-        OperationId = "Accounts_SignUp")]
-    [ProducesResponseType(typeof(AccountResource), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> SignUp([FromBody] SignUpWithAccountResource body)
-    {
-        var cmd     = SignUpWithAccountFromResourceAssembler.ToCommandFromResource(body);
-        var created = await accountCommandService.Handle(cmd);
-        if (created is null) return BadRequest("Failed to create account.");
-
-        var resource = AccountResourceFromEntityAssembler.ToResourceFromEntity(created);
-        return Ok(resource);
-    }
-    
-    [HttpPost]
-    [SwaggerOperation(
-        Summary     = "Create Account",
-        Description = "Creates a new account with the supplied data.",
-        OperationId = "Accounts_Create")]
-    [ProducesResponseType(typeof(AccountResource), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateAccount([FromBody] CreateAccountResource body)
-    {
-        var cmd     = CreateAccountCommandFromResourceAssembler.ToCommand(body);
-        var created = await accountCommandService.Handle(cmd);
-        if (created is null) return BadRequest("Could not create account.");
-
-        var resource = AccountResourceFromEntityAssembler.ToResourceFromEntity(created);
-        return CreatedAtAction(
-            nameof(GetAccountById),
-            new { accountId = resource.AccountId },
-            resource);
     }
 
     #endregion

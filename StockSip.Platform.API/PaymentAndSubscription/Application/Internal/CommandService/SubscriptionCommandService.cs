@@ -1,10 +1,12 @@
-﻿using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.OutboundServices.PayPal;
+﻿using Microsoft.Extensions.Options;
+using StockSip.Platform.API.PaymentAndSubscription.Application.Internal.OutboundServices.PayPal;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Aggregates;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.Commands;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Model.ValueObjects;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Repositories;
 using StockSip.Platform.API.PaymentAndSubscription.Domain.Services;
 using StockSip.Platform.API.Shared.Domain.Repositories;
+using StockSip.Platform.API.Shared.Infrastructure.SPA.Configuration;
 
 namespace StockSip.Platform.API.PaymentAndSubscription.Application.Internal.CommandService;
 
@@ -12,9 +14,10 @@ public class SubscriptionCommandService(IAccountRepository accountRepository,
                                                IPlanRepository planRepository,
                                                ISubscriptionRepository subscriptionRepository,
                                                IPaymentService paymentService,
-                                               IUnitOfWork unitOfWork) : ISubscriptionCommandService
+                                               IUnitOfWork unitOfWork,
+                                               IOptions<FrontendSettings> frontendOptions) : ISubscriptionCommandService
 {
-    
+    private readonly string _baseUrl = frontendOptions.Value.BaseUrl;
     public async Task<string?> Handle(SubscribeToPlanCommand command) {
         
         var account = await accountRepository.FindByIdAsync(command.AccountId)
@@ -44,8 +47,8 @@ public class SubscriptionCommandService(IAccountRepository accountRepository,
         var approvalUrl = await paymentService.CreateOrder(
             plan.PlanType.ToString(),
             plan.Price.Amount,
-            returnUrl: $"http://localhost:5175/payments-success?accountId={command.AccountId}&planId={command.PlanId}",
-            cancelUrl: "http://localhost:5175/payments-cancel"
+            returnUrl: $"{_baseUrl}/payments-success?accountId={command.AccountId}&planId={command.PlanId}",
+            cancelUrl: $"{_baseUrl}/payments-cancel"
         );
 
         return approvalUrl;
@@ -84,8 +87,8 @@ public class SubscriptionCommandService(IAccountRepository accountRepository,
         var approvalUrl = await paymentService.CreateOrder(
             upgradePlan.PlanType.ToString(),
             upgradePlan.Price.Amount,
-            returnUrl: $"http://localhost:5175/payments-upgrade-success?accountId={command.AccountId}&planId={command.PlanId}",
-            cancelUrl: "http://localhost:5175/payments-cancel"
+            returnUrl: $"{_baseUrl}/payments-upgrade-success?accountId={command.AccountId}&planId={command.PlanId}",
+            cancelUrl: $"{_baseUrl}/payments-cancel"
         );
 
         return approvalUrl;
