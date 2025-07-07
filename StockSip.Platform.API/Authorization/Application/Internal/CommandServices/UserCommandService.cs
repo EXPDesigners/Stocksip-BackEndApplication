@@ -1,4 +1,5 @@
-﻿using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices;
+﻿using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Hashing;
+using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Token;
 using StockSip.Platform.API.Authorization.Domain.Model.Aggregate;
 using StockSip.Platform.API.Authorization.Domain.Model.Commands;
 using StockSip.Platform.API.Authorization.Domain.Repositories;
@@ -37,7 +38,7 @@ public class UserCommandService(
         var accountId  = await paymentAndSubscriptionFacade.GetAccountIdByUserIdAsync(user.UserId);
         var accountRole = accountId is null
             ? null
-            : await paymentAndSubscriptionFacade.GetAccountRoleByAccountIdAsync(accountId);   // 👈 nuevo
+            : await paymentAndSubscriptionFacade.GetAccountRoleByAccountIdAsync(accountId);
 
         return (user, token, accountId, accountRole);
     }

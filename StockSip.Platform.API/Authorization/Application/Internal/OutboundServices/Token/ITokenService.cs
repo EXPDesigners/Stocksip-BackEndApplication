@@ -1,6 +1,6 @@
 ﻿using StockSip.Platform.API.Authorization.Domain.Model.Aggregate;
 
-namespace StockSip.Platform.API.Authorization.Application.Internal.OutboundServices;
+namespace StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Token;
 
 /// <summary>
 /// Defines the contract for a token service that handles token generation and validation.

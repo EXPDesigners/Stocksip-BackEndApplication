@@ -1,4 +1,4 @@
-﻿using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices;
+﻿using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Hashing;
 using BCryptNet = BCrypt.Net.BCrypt;
 
 namespace StockSip.Platform.API.Authorization.Infrastructure.Hashing.BCrypt.Services;

@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices;
+using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Token;
 using StockSip.Platform.API.Authorization.Domain.Model.Aggregate;
 using StockSip.Platform.API.Authorization.Infrastructure.Tokens.JWT.Configuration;
 

@@ -1,4 +1,4 @@
-﻿namespace StockSip.Platform.API.Authorization.Application.Internal.OutboundServices;
+﻿namespace StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Hashing;
 
 /// <summary>
 /// The hashing service interface for password management.

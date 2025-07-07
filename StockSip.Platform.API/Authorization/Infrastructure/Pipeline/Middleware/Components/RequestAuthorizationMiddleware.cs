@@ -1,5 +1,4 @@
-﻿using System.Security.Authentication;
-using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices;
+﻿using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Token;
 using StockSip.Platform.API.Authorization.Domain.Model.Queries;
 using StockSip.Platform.API.Authorization.Domain.Services;
 using StockSip.Platform.API.Authorization.Infrastructure.Pipeline.Middleware.Attributes;
