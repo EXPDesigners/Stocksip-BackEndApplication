@@ -12,7 +12,6 @@ using StockSip.Platform.API.AlertsAndNotifications.Infrastructure.Persistence.EF
 using StockSip.Platform.API.AlertsAndNotifications.Interfaces.ACL;
 using StockSip.Platform.API.Authorization.Application.Internal.ACL;
 using StockSip.Platform.API.Authorization.Application.Internal.CommandServices;
-using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices;
 using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Hashing;
 using StockSip.Platform.API.Authorization.Application.Internal.OutboundServices.Token;
 using StockSip.Platform.API.Authorization.Application.Internal.QueryServices;
