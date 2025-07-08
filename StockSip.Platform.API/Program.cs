@@ -77,8 +77,13 @@ builder.Services.AddCors(o =>
          .AllowAnyHeader());
 });
 
-// Add Configuration for Entity Framework Core
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Configuración de la cadena de conexión usando variables de entorno separadas
+var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
+var dbUser = Environment.GetEnvironmentVariable("DB_USER");
+var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
+var dbName = Environment.GetEnvironmentVariable("DB_NAME");
+
+var connectionString = $"server={dbHost};user={dbUser};password={dbPassword};database={dbName};port=3306;SslMode=Required;";
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
