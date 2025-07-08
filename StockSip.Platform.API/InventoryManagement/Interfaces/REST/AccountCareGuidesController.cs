@@ -76,7 +76,7 @@ public class AccountCareGuidesController (
             return BadRequest("Failed to create care guide. Please check the provided data.");
         }
         var createdCareGuide = CareGuideResourceFromEntityAssembler.ToResourceFromEntity(careGuideToCreate);
-        return CreatedAtAction(nameof(GetCareGuideById), new { careGuideId = createdCareGuide.Id }, createdCareGuide);
+        return CreatedAtAction(nameof(GetCareGuideById), new { accountId, careGuideId = createdCareGuide.Id }, createdCareGuide);
     }
     
     [HttpPost("product/{productId}")]
