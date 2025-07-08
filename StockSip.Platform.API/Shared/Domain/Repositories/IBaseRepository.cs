@@ -21,7 +21,8 @@ public interface IBaseRepository<TEntity>
     /// </summary>
     /// <param name="id">The Entity ID to Find</param>
     /// <returns>Entity object if found</returns>
-    Task<TEntity?> FindByIdAsync(int id);
+    Task<TEntity?> FindByIdAsync(string id);
+    
 
     /// <summary>
     ///     Update entity
@@ -32,7 +33,7 @@ public interface IBaseRepository<TEntity>
     /// <summary>
     ///     Remove and entity
     /// </summary>
-    /// <param name="entity">The entity object to remove</param>
+    /// <param name="entity">The entity objects to remove</param>
     void Remove(TEntity entity);
 
     /// <summary>

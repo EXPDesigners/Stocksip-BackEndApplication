@@ -28,7 +28,16 @@
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.11.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.5"/>
         <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.11.0"/>
+        <!-- CQRS/Mediator Pattern related packages -->
+        <PackageReference Include="Cortex.Mediator" Version="1.6.1"/>
+        <!-- Cloudinary Image Storage related packages -->
+        <PackageReference Include="CloudinaryDotNet" Version="1.27.6"/>
+        <!-- PayPal Payment Gateway related packages -->
+        <PackageReference Include="PayPal.SDK.NETCore" Version="1.9.1.2" />
+    </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="PaymentAndSubscription\Interfaces\Rest\Transform\" />
     </ItemGroup>
 
 </Project>

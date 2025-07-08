@@ -1,0 +1,197 @@
+using StockSip.Platform.API.InventoryManagement.Domain.Model.Commands;
+using StockSip.Platform.API.InventoryManagement.Domain.Model.ValueObjects;
+using StockSip.Platform.API.Shared.Domain.Model.ValueObjects;
+
+namespace StockSip.Platform.API.InventoryManagement.Domain.Model.Aggregates;
+
+/// <summary>
+/// Represents a product in the inventory management system.
+/// </summary>
+public partial class Product
+{
+    /// <summary>
+    /// The unique identifier of the product.
+    /// </summary>
+    public string ProductId { get; private set; } = Guid.NewGuid().ToString();
+    
+    /// <summary>
+    /// The name of the product, which includes the brand name, liquor type, and additional name.
+    /// </summary>
+    public ProductName ProductName { get; private set; }
+    
+    /// <summary>
+    /// The unit price of the product, represented as a Money value object.
+    /// </summary>
+    public Money UnitPrice { get; private set; }
+    
+    /// <summary>
+    /// The brand associated with the product, represented as a Brand entity.
+    /// </summary>
+    public string Brand { get; internal set; }
+    
+    /// <summary>
+    /// The type of liquor represented by the product, defined as an enumeration.
+    /// </summary>
+    public ELiquorType LiquorType { get; private set; }
+    
+    /// <summary>
+    /// The minimum stock level for the product, represented as a ProductMinimumStock value object.
+    /// </summary>
+    public ProductMinimumStock MinimumStock { get; private set; }
+    
+    /// <summary>
+    /// The URL of the product's image, represented as an ImageUrl value object.
+    /// </summary>
+    public ImageUrl ImageUrl { get; private set; }
+    
+    /// <summary>
+    /// The unique identifier of the provider associated with the product, if any.
+    /// </summary>
+    public ProviderId? AccountId { get; private set; }
+    
+    /// <summary>
+    /// The collection of inventories associated with the product, represented as a list of Inventory entities.
+    /// </summary>
+    public ICollection<Inventory> Inventories { get; internal set; } = new List<Inventory>();
+    
+    /// <summary>
+    /// Default constructor for Entity Framework Core.
+    /// </summary>
+    private Product() { }
+    
+    /// <summary>
+    /// Default constructor for the Product class.
+    /// </summary>
+    /// <param name="imageUrl">
+    /// The URL of the product's image.
+    /// </param>
+    /// <param name="additionalName">
+    /// The additional name of the product, which can be null or empty.
+    /// </param>
+    /// <param name="brandName">
+    /// The name of the brand associated with the product, represented as a string.
+    /// </param>
+    /// <param name="liquorType">
+    /// The type of liquor represented by the product, defined as a string.
+    /// </param>
+    /// <param name="unitPriceAmount">
+    /// The unit price of the product, represented as an integer amount.
+    /// </param>
+    /// <param name="minimumStock">
+    /// The minimum stock level for the product, represented as an integer.
+    /// </param> 
+    /// <param name="providerId">
+    /// The unique identifier of the provider associated with the product, if any.
+    /// </param>
+    public Product(string imageUrl, 
+                    string? additionalName, 
+                    string brandName, 
+                    string liquorType, 
+                    int unitPriceAmount,
+                    int minimumStock,
+                    string? providerId = null)
+    {
+        ProductName = new ProductName(additionalName);
+        LiquorType = Enum.Parse<ELiquorType>(liquorType, true);
+        Brand = brandName;
+        UnitPrice = new Money(unitPriceAmount, "PEN");
+        MinimumStock = new ProductMinimumStock(minimumStock);
+        ImageUrl = new ImageUrl(null);
+        if (providerId != null) AccountId = new ProviderId(providerId);
+    }
+    
+    public Product(CreateProductCommand command, string imageUrl)
+    {
+        ProductName = new ProductName(command.Name);
+        LiquorType = Enum.Parse<ELiquorType>(command.LiquorType, true);
+        Brand = command.BrandName;
+        UnitPrice = new Money(command.UnitPriceAmount, "PEN");
+        MinimumStock = new ProductMinimumStock(command.MinimumStock);
+        ImageUrl = new ImageUrl(imageUrl);
+        if (command.AccountId != null) AccountId = new ProviderId(command.AccountId);
+    }
+
+    /// <summary>
+    /// Method to set the minimum stock level for the product.
+    /// </summary>
+    /// <param name="newMinimumStock">
+    /// The new minimum stock level to be set, represented as an integer.
+    /// </param>
+    public void SetMinimumStock(int newMinimumStock)
+    {
+        MinimumStock = MinimumStock.UpdateMinimumStock(newMinimumStock);
+    }
+    
+    /// <summary>
+    /// Retrieves the current minimum stock level of the product.
+    /// </summary>
+    /// <returns>
+    /// Returns the current minimum stock level as a ProductMinimumStock value object.
+    /// </returns>
+    public ProductMinimumStock GetMinimumStock()
+    {
+        return MinimumStock;
+    }
+
+    /// <summary>
+    /// Method to update the product's information, including price, minimum stock, and image URL.
+    /// </summary>
+    /// <param name="updatedPrice">
+    /// The updated price of the product, represented as a double.
+    /// </param>
+    /// <param name="updatedMinimumStock">
+    /// The updated minimum stock level for the product, represented as an integer.
+    /// </param>
+    /// <param name="updatedImageUrl">
+    /// The updated URL of the product's image, represented as a string.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the updated price is less than or equal to zero.
+    /// </exception>
+    public void UpdateInformation(string name, string brand, string liquorType, decimal updatedPrice, int updatedMinimumStock, string updatedImageUrl)
+    {
+        ProductName = new ProductName(name);
+        LiquorType = Enum.Parse<ELiquorType>(liquorType, true);
+        Brand = brand;
+        SetMinimumStock(updatedMinimumStock);
+        ImageUrl = new ImageUrl(updatedImageUrl);
+        UnitPrice = new Money(updatedPrice, "PEN");
+    }
+
+    /// <summary>
+    /// Verifies if the product has an inventory relation with the specified inventory.
+    /// </summary>
+    /// <param name="inventory">
+    /// The inventory to check for a relation with the product.
+    /// </param>
+    /// <returns>
+    /// True if the product has a relation with the specified inventory; otherwise, false.
+    /// </returns>
+    private bool ExistsInventoryRelation(Inventory inventory)
+    {
+        return Inventories.Any(i => i == inventory);
+    }
+    
+    /// <summary>
+    /// This method adds an inventory relation to the product.
+    /// </summary>
+    /// <param name="inventory">
+    /// The inventory to be added to the product's inventory relations.
+    /// </param>
+    public void AddInventoryRelation(Inventory inventory)
+    {
+        if (ExistsInventoryRelation(inventory)) return;
+        Inventories.Add(inventory);
+    }
+
+    /// <summary>
+    /// This method removes an inventory relation from the product.
+    /// </summary>
+    /// <param name="inventory">
+    /// The inventory to be removed from the product's inventory relations.
+    /// </param>
+    public void RemoveInventoryRelation(Inventory inventory)
+    {
+        Inventories.Remove(inventory);
+    }
+}
