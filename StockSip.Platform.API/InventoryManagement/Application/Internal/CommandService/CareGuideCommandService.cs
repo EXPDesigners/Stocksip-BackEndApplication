@@ -48,8 +48,15 @@ public class CareGuideCommandService(
     /// </returns>
     public async Task<CareGuide?> Handle(CreateCareGuideWithoutProductIdCommand command)
     {
-        var careGuide = new CareGuide(command.AccountId, command.Title, command.Summary, command.Summary,
-            command.MinTemp, command.MaxTemp, command.PlaceStorage, command.Recommendation);
+        var careGuide = new CareGuide(
+            command.AccountId,
+            command.Title,
+            command.Summary,
+            command.MinTemp,
+            command.MaxTemp,
+            command.PlaceStorage,
+            command.Recommendation
+        );
         await careGuideRepository.AddAsync(careGuide);
         await unitOfWork.CompleteAsync();
         return careGuide;
@@ -125,7 +132,7 @@ public class CareGuideCommandService(
     }
 
     /// <summary>
-    /// This async method is used to delete a careguide.
+    /// This async method is used to delete a care guide.
     /// </summary>
     /// <param name="command">
     /// The command containing the details to delete a care guide.

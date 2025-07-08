@@ -27,7 +27,7 @@ public class CareGuide
     /// <summary>
     /// The unique identifier of the product in the inventory.
     /// </summary>
-    public string? ProductId { get; private set; }
+    public string? ProductId { get; set; }
     
     /// <summary>
     /// The title of the document.
@@ -126,6 +126,7 @@ public class CareGuide
         string recommendation)
     {
         AccountId = accountId;
+        ProductId = null;
         Title = title;
         Summary = summary;
         RecommendedMinTemperature = minTemp;
@@ -168,7 +169,7 @@ public class CareGuide
     /// </summary>
     public void UnassignCareGuide()
     {
-        ProductId = "";
+        ProductId = null;
         Product = null;
     }
     
@@ -188,4 +189,5 @@ public class CareGuide
             ProductId = newProductId;
         }
     }
+    public CareGuide() { }
 }

@@ -136,5 +136,21 @@ public static class ModelBuilderExtensions
         
         // ProductExit ORM Mapping Rules
 
+        // CareGuide ORM Mapping Rules
+        builder.Entity<CareGuide>().HasKey(cg => cg.Id);
+        builder.Entity<CareGuide>().Property(cg => cg.Id).IsRequired();
+        builder.Entity<CareGuide>().Property(cg => cg.Title).IsRequired().HasMaxLength(200);
+        builder.Entity<CareGuide>().Property(cg => cg.Summary).IsRequired().HasMaxLength(1000);
+        builder.Entity<CareGuide>().Property(cg => cg.RecommendedMinTemperature).IsRequired();
+        builder.Entity<CareGuide>().Property(cg => cg.RecommendedMaxTemperature).IsRequired();
+        builder.Entity<CareGuide>().Property(cg => cg.RecommendedPlaceStorage).IsRequired().HasMaxLength(200);
+        builder.Entity<CareGuide>().Property(cg => cg.GeneralRecommendation).IsRequired().HasMaxLength(1000);
+        builder.Entity<CareGuide>().Property(cg => cg.ProductId).HasMaxLength(100);
+        builder.Entity<CareGuide>().Property(cg => cg.AccountId).HasConversion(v => v.Id, v => new AccountId(v)).IsRequired().HasColumnName("account_id");
+        builder.Entity<CareGuide>()
+            .HasOne(cg => cg.Product)
+            .WithMany()
+            .HasForeignKey(cg => cg.ProductId)
+            .IsRequired(false);
     }
 }
